@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "React UI Builder & Template Library"
+version = "1.0.0"
+id = "artifacts/ui-builder"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26111
+
+[services.development]
+run = "pnpm --filter @workspace/ui-builder run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ui-builder", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/ui-builder/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26111"
+BASE_PATH = "/"

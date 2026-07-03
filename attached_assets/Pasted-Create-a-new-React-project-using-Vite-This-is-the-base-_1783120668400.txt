@@ -1,0 +1,200 @@
+Create a new React project using Vite.
+
+This is the base setup for a future SaaS called:
+
+React UI Builder & Template Library
+
+⸻
+
+⚙️ TECH STACK
+
+Install and configure:
+
+* React (Vite)
+* react-router-dom
+* firebase (latest SDK)
+
+⸻
+
+🔥 FIREBASE SETUP (IMPORTANT)
+
+Initialize Firebase in the project:
+
+Create:
+/src/firebase.js
+
+It must include:
+
+* Firebase initialization
+* Auth setup (Google Auth enabled placeholder)
+* Firestore database setup
+* Export:
+    * auth
+    * db
+    * app
+
+⚠️ DO NOT implement login logic yet
+⚠️ DO NOT build auth UI
+⚠️ ONLY initialize Firebase connection structure
+
+⸻
+
+🧭 FIREBASE SERVICES TO ENABLE (CONFIG ONLY)
+
+Set up placeholders for:
+
+* Firebase Authentication
+* Firestore Database
+* Firebase Hosting (structure ready, no deploy)
+
+No usage in UI yet.
+
+⸻
+
+📦 INSTALL DEPENDENCIES
+
+Ensure installed:
+
+* react-router-dom
+* firebase
+
+Project must run successfully.
+
+⸻
+
+🧭 ROUTER SETUP
+
+Use React Router v6.
+
+Create routes:
+
+PUBLIC ROUTES
+
+* /
+* /components
+* /components/:slug
+* /templates
+* /templates/:slug
+
+PRIVATE ROUTES (NO LOGIC YET)
+
+* /login
+* /builder
+
+⸻
+
+📁 REQUIRED FOLDER STRUCTURE
+
+Create exactly:
+
+/src
+/pages
+Home.jsx
+Components.jsx
+ComponentDetail.jsx
+Templates.jsx
+TemplateDetail.jsx
+Builder.jsx
+Login.jsx
+
+/components
+Navbar.jsx
+
+/data
+components.js
+templates.js
+
+/routes
+AppRouter.jsx
+
+firebase.js
+App.jsx
+main.jsx
+
+⸻
+
+📄 PAGE REQUIREMENTS
+
+Each page must:
+
+* Be a valid React component
+* Return minimal placeholder text only
+* No styling
+* No UI design
+* No logic
+
+Example output:
+
+* “Home”
+* “Components”
+* “Template Detail”
+
+⸻
+
+🧭 NAVBAR REQUIREMENTS
+
+Create Navbar.jsx:
+
+* Use react-router-dom Link
+* Links:
+    * /
+    * /components
+    * /templates
+    * /builder
+    * /login
+
+No styling or layout design.
+
+⸻
+
+📦 DATA FILES
+
+Create empty exports:
+
+components.js:
+[]
+
+templates.js:
+[]
+
+No mock data yet.
+
+⸻
+
+🧠 APP SETUP
+
+In App.jsx:
+
+* Wrap app with RouterProvider
+* Use AppRouter
+* No auth logic yet
+* No Firebase usage yet (just imported config exists)
+
+⸻
+
+🚫 STRICT RULES
+
+DO NOT:
+
+* Build authentication UI
+* Use Firebase in components
+* Add login/logout logic
+* Add Firestore reads/writes
+* Add styling or UI design
+* Build builder features
+* Add business logic
+
+⸻
+
+🎯 FINAL OUTPUT
+
+After setup, the project must:
+
+* Run successfully in Vite
+* Have React Router working
+* Have all routes accessible
+* Have Firebase initialized in firebase.js
+* Have Firestore + Auth configured (empty state)
+* Have clean folder structure
+* Have Navbar with working links
+* Have empty placeholder pages
