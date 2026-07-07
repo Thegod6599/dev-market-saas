@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
-    <nav>
+    <nav className='flex justify-between align-center p-4'>
       <Link to="/">Home</Link>
       <Link to="/components">Components</Link>
       <Link to="/templates">Templates</Link>

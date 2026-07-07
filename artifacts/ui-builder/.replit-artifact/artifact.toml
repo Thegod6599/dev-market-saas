@@ -16,7 +16,7 @@ run = "pnpm --filter @workspace/ui-builder run dev"
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/ui-builder", "run", "build" ]
 serve = "static"
-publicDir = "artifacts/ui-builder/dist/public"
+publicDir = "public/dist/public"
 
 [[services.production.rewrites]]
 from = "/*"
