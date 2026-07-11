@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import logo from '../../assets/logo.png';
-import homeIcon from '../../assets/icons/home.png';
-import componentsIcon from '../../assets/icons/components.png';
-import templatesIcon from '../../assets/icons/template.png';
-import builderIcon from '../../assets/icons/builder.png';
-import userIcon from '../../assets/icons/user.png';
+import homeIcon from '../../assets/icons/home.svg';
+import componentsIcon from '../../assets/icons/components.svg';
+import templatesIcon from '../../assets/icons/template.svg';
+import builderIcon from '../../assets/icons/builder.svg';
+import userIcon from '../../assets/icons/user.svg';
 function Navbar() {
   return (
     <nav className={styles.nav}>
