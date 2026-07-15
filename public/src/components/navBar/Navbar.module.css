@@ -6,7 +6,7 @@
   align-items: center;
   padding: 0 2rem;
   background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1)
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .links {
@@ -17,6 +17,8 @@
 .logo {
   width: 150px;
   height: auto;
+  transform: translateY(5px);
+  
 }
 
 .links a {
@@ -31,10 +33,24 @@
   font-size: 1.1rem;
   font-weight: 800;
   text-decoration: none;
+  transition: transform 0.2s ease-in-out;
 }
 
 .icons {
   width: 20px;
   height: 20px;
   object-fit: contain;
+}
+
+.logo,
+.login,
+.links a {
+  cursor: pointer;
+}
+
+.links a:hover {
+  transform: scale(1.05);
+}
+.login:hover {
+  transform: scale(1.1);
 }
