@@ -6,9 +6,16 @@ import componentsIcon from '../../assets/icons/components.svg';
 import templatesIcon from '../../assets/icons/template.svg';
 import builderIcon from '../../assets/icons/builder.svg';
 import userIcon from '../../assets/icons/user.svg';
+import { useState } from 'react'
+
+
+
 function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   return (
-    <nav className={styles.nav}>
+    <>
+    <div className={styles.navContainer}>
+    <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ""}`}>
       <Link to="/">
         <img className={styles.logo} src={logo} alt="Logo" />
       </Link>
@@ -32,8 +39,24 @@ function Navbar() {
       </div>
       <Link className={styles.login}to="/login">
         <img className={styles.icons} src={userIcon} alt='login'/>
+        Login
       </Link>
+
+      <div className={styles.dropdown}>
+      <button onClick={() => setIsMenuOpen(!isMenuOpen)}>drop down</button>
+      </div>
     </nav>
+    {isMenuOpen && (
+      <div className={styles.mobilelinks}>
+        <Link to="/">Home</Link>
+        <Link to="/components">Components</Link>
+        <Link to="/templates">Templates</Link>
+        <Link to="/builder">Builder</Link>
+        <Link to="/login">Login</Link>
+      </div>
+      )}
+      </div>
+    </>
   );
 }
 
