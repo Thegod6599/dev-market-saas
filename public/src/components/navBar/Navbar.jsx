@@ -6,8 +6,9 @@ import componentsIcon from '../../assets/icons/components.svg';
 import templatesIcon from '../../assets/icons/template.svg';
 import builderIcon from '../../assets/icons/builder.svg';
 import userIcon from '../../assets/icons/user.svg';
+import menuIcon from '../../assets/icons/menu.svg';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react'
-
 
 
 function Navbar() {
@@ -43,17 +44,26 @@ function Navbar() {
       </Link>
 
       <div className={styles.dropdown}>
-      <button onClick={() => setIsMenuOpen(!isMenuOpen)}>drop down</button>
+      <button onClick={() => setIsMenuOpen(!isMenuOpen)}><img className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ""}`} src={menuIcon}/></button>
       </div>
     </nav>
     {isMenuOpen && (
-      <div className={styles.mobilelinks}>
+      <motion.div 
+        className={styles.mobilelinks}
+        initial={{y: -20}}
+        animate={{y: 0}}
+        exit={{y: -20}}
+        transition={{
+          duration: 0.2,
+          ease: isMenuOpen ? "easeOut" : "easeIn"
+        }}
+        >
         <Link to="/">Home</Link>
         <Link to="/components">Components</Link>
         <Link to="/templates">Templates</Link>
         <Link to="/builder">Builder</Link>
         <Link to="/login">Login</Link>
-      </div>
+      </motion.div>
       )}
       </div>
     </>

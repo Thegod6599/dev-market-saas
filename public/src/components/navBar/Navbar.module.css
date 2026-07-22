@@ -66,6 +66,18 @@
 .dropdown {
   display: none;
 }
+
+.menuIcon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+.menuIcon:hover {
+  transform: scale(1.2)
+}
+.menuIconOpen {
+  transform: rotate(90deg);
+}
 @media (max-width: 768px) {
   .links,
   .login {
