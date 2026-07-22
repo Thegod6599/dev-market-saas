@@ -51,9 +51,9 @@ function Navbar() {
     {isMenuOpen && (
       <motion.div 
         className={styles.mobilelinks}
-        initial={{y: -20}}
-        animate={{y: 0}}
-        exit={{y: -20}}
+        initial={{ y: -100% }}
+        animate={{ y: 0 }}
+        exit={{ y: -100% }}
         transition={{
           duration: 0.2,
           ease: isMenuOpen ? "easeOut" : "easeIn"
