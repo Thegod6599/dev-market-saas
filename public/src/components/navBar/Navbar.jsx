@@ -47,6 +47,7 @@ function Navbar() {
       <button onClick={() => setIsMenuOpen(!isMenuOpen)}><img className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ""}`} src={menuIcon}/></button>
       </div>
     </nav>
+    <AnimatePresence>
     {isMenuOpen && (
       <motion.div 
         className={styles.mobilelinks}
@@ -65,6 +66,7 @@ function Navbar() {
         <Link to="/login">Login</Link>
       </motion.div>
       )}
+      </AnimatePresence>
       </div>
     </>
   );
