@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
+import svgr from 'vite-plugin-svgr';
 
 const rawPort = process.env.PORT;
 if (!rawPort) throw new Error('PORT environment variable is required but was not provided.');
@@ -17,6 +18,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    svgr(),
     runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== 'production' && process.env.REPL_ID !== undefined
       ? [

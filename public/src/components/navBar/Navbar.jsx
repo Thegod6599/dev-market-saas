@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import logo from '../../assets/logo.png';
-import homeIcon from '../../assets/icons/home.svg';
-import componentsIcon from '../../assets/icons/components.svg';
-import templatesIcon from '../../assets/icons/template.svg';
-import builderIcon from '../../assets/icons/builder.svg';
-import userIcon from '../../assets/icons/user.svg';
-import menuIcon from '../../assets/icons/menu.svg';
+import HomeIcon from '../../assets/icons/home.svg?react';
+import ComponentsIcon from '../../assets/icons/components.svg?react';
+import TemplatesIcon from '../../assets/icons/template.svg?react';
+import BuilderIcon from '../../assets/icons/builder.svg?react';
+import UserIcon from '../../assets/icons/user.svg?react';
+import MenuIcon from '../../assets/icons/menu.svg?react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react'
 import { useEffect } from 'react';
@@ -27,30 +27,30 @@ function Navbar() {
       </Link>
       <div className={styles.links}>
       <Link to="/">
-        <img className={styles.icons} src={homeIcon} alt='Home'/>
+        <HomeIcon className={styles.icons} />
         Home
       </Link>
       <Link to="/components">
-        <img className={styles.icons} src={componentsIcon} alt='Components'/>
+        <ComponentsIcon className={styles.icons} />
         Components
       </Link>
       <Link to="/templates">
-        <img className={styles.icons} src={templatesIcon} alt='Templates'/>
+        <TemplatesIcon className={styles.icons} />
         Templates
       </Link>
       <Link to="/builder">
-        <img className={styles.icons} src={builderIcon} alt='Builder'/>
+        <BuilderIcon className={styles.icons} />
         Builder
       </Link>
       </div>
       <Link className={styles.login}to="/login">
-        <img className={styles.icons} src={userIcon} alt='login'/>
+        <UserIcon className={styles.icons} />
         Login
       </Link>
       <button onClick={() => setIsThemeDark(!isThemeDark)}>theme</button>
 
       <div className={styles.dropdown}>
-      <button onClick={() => setIsMenuOpen(!isMenuOpen)}><img className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ""}`} src={menuIcon}/></button>
+      <button onClick={() => setIsMenuOpen(!isMenuOpen)}><MenuIcon className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ""}`} /></button>
       </div>
     </nav>
     <AnimatePresence>
