@@ -9,10 +9,15 @@ import userIcon from '../../assets/icons/user.svg';
 import menuIcon from '../../assets/icons/menu.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react'
+import { useEffect } from 'react';
 
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isThemeDark, setIsThemeDark] = useState(false)
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isThemeDark ? 'dark' : 'light');
+  }, [isThemeDark])
   return (
     <>
     <div className={styles.navContainer}>
@@ -42,6 +47,7 @@ function Navbar() {
         <img className={styles.icons} src={userIcon} alt='login'/>
         Login
       </Link>
+      <button onClick={() => setIsThemeDark(!isThemeDark)}>theme</button>
 
       <div className={styles.dropdown}>
       <button onClick={() => setIsMenuOpen(!isMenuOpen)}><img className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ""}`} src={menuIcon}/></button>
@@ -51,12 +57,12 @@ function Navbar() {
     {isMenuOpen && (
       <motion.div 
         className={styles.mobilelinks}
-        initial={{ y: -100% }}
+        initial={{ y: "-100%" }}
         animate={{ y: 0 }}
-        exit={{ y: -100% }}
+        exit={{ y: "-100%" }}
         transition={{
-          duration: 0.2,
-          ease: isMenuOpen ? "easeOut" : "easeIn"
+          duration: 0.3,
+          ease: "easeInOut"
         }}
         >
         <Link to="/">Home</Link>

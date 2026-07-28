@@ -9,8 +9,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
-  background-color: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  z-index: 100;
 }
 
 .navOpen {
@@ -20,6 +22,7 @@
 .links {
   display: flex;
   gap: 2rem;
+  color: var(--color-text-primary)
 }
 
 .logo {
@@ -38,7 +41,7 @@
 .links a,
 .login {
   font-family: 'Nunito', sans-serif;
-  font-size: 1.1rem;
+  font-size: var(--font-size-medium);
   font-weight: 800;
   text-decoration: none;
   transition: transform 0.2s ease-in-out;
@@ -48,6 +51,7 @@
   width: 20px;
   height: 20px;
   object-fit: contain;
+  fill: var(--color-icon)
 }
 
 .logo,
@@ -85,18 +89,20 @@
     display: flex;
   }
   .mobilelinks {
+    transform-origin: top;
     width: 100%;
     position: absolute;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    color: black;
+    color: var(--color-text-primary);
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
     top: 100%;
     right: 0;
-    background-color: white;
-    box-shadow: 0 6px 4px rgba(0, 0, 0, 0.08);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-medium);
     padding: 1rem;
+    z-index: 99;
   }
 }
