@@ -24,6 +24,9 @@
   gap: 2rem;
   color: var(--color-text-primary)
 }
+.login {
+  color: var(--color-text-primary)
+}
 
 .logo {
   width: 150px;

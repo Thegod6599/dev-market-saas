@@ -70,6 +70,7 @@ function Navbar() {
         <Link to="/templates">Templates</Link>
         <Link to="/builder">Builder</Link>
         <Link to="/login">Login</Link>
+        <button onClick={() => setIsThemeDark(!isThemeDark)}>theme</button>
       </motion.div>
       )}
       </AnimatePresence>
