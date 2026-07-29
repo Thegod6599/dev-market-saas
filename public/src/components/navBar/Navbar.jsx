@@ -7,6 +7,8 @@ import TemplatesIcon from '../../assets/icons/template.svg?react';
 import BuilderIcon from '../../assets/icons/builder.svg?react';
 import UserIcon from '../../assets/icons/user.svg?react';
 import MenuIcon from '../../assets/icons/menu.svg?react';
+import MoonIcon from '../../assets/icons/moon.svg?react';
+import SunIcon from '../../assets/icons/sun.svg?react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react'
 import { useEffect } from 'react';
@@ -47,7 +49,19 @@ function Navbar() {
         <UserIcon className={styles.icons} />
         Login
       </Link>
-      <button onClick={() => setIsThemeDark(!isThemeDark)}>theme</button>
+      <button onClick={() => setIsThemeDark(!isThemeDark)} className='styles.themeToggle'>
+        <AnimatePresence mode='wait'>
+          {isThemeDark ? (
+            <motion.div key='moon'>
+              <MoonIcon className={styles.icons} />
+            </motion.div>
+          ) : (
+            <motion.div key='sun'>
+              <SunIcon className={styles.icons} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </button>
 
       <div className={styles.dropdown}>
       <button onClick={() => setIsMenuOpen(!isMenuOpen)}><MenuIcon className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ""}`} /></button>
