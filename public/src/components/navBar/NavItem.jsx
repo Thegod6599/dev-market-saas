@@ -5,7 +5,7 @@ import styles from "./NavItem.module.css";
 function navItem({ name, path, icon: Icon }) {
   return (
     <NavLink to={path} className={styles.link}>
-      {({isActive})
+      {({isActive}) => (
         <>
       {isActive && (
         <motion.div
@@ -15,7 +15,8 @@ function navItem({ name, path, icon: Icon }) {
       )}
       <Icon className={styles.icon} />
       <span>{name}</span>
-      }
+        </>
+      )}
     </NavLink>
   );
 }

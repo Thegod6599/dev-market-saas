@@ -10,7 +10,7 @@ import MenuIcon from '../../assets/icons/menu.svg?react';
 import MoonIcon from '../../assets/icons/dark.svg?react';
 import SunIcon from '../../assets/icons/light.svg?react';
 import { AnimatePresence, motion } from 'framer-motion';
-import NavItem from './NavItem.jxs';
+import NavItem from './NavItem.jsx';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -46,7 +46,7 @@ function Navbar() {
   return (
     <>
     <div className={styles.navContainer}>
-      <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+    <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
       <div className={styles.links}>
           {navLinks.map((link) => (
           <navItem key={link.name} {...link}/>
