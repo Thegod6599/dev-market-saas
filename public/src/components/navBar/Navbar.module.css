@@ -15,6 +15,16 @@
   z-index: 100;
 }
 
+.themeIcons {
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-icon)
+}
+
 .navOpen {
   box-shadow: none;
 }
@@ -85,9 +95,28 @@
 }
 @media (max-width: 768px) {
   .links,
-  .login {
+  .login,
+  .themeIcons{
     display: none;
   }
+
+  .mobileThemeIcons {
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-icon)
+  }
+
+  .active {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverted);
+  border-radius: var(--radius-full);
+  padding: 0.5rem 1rem;
+}
+  
   .dropdown {
     display: flex;
   }

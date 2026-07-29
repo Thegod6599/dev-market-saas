@@ -1,0 +1,24 @@
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  overflow: hidden;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  color: var(--color-icon)
+}
+.activeNav {
+  position: absolute;
+  inset: 0;
+  backgroun: var(--color-primary);
+  border-radius: var(--radius-full);
+  z-index: -1;
+  
+}
