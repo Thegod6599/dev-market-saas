@@ -1,3 +1,10 @@
+.active .icon{
+  color: white;
+}
+.active span{
+  color: white;
+}
+.active,
 .link {
   position: relative;
   display: flex;
@@ -6,19 +13,17 @@
   padding: 0.5rem 1rem;
   border-radius: var(--radius-full);
   text-decoration: none;
-  overflow: hidden;
+  color: var(--color-text-primary);
 }
 .icon {
   width: 20px;
   height: 20px;
   object-fit: contain;
-  color: var(--color-icon)
 }
 .activeNav {
   position: absolute;
   inset: 0;
   background: var(--color-primary);
   border-radius: var(--radius-full);
-  z-index: -1;
-  
+  z-index: -1
 }

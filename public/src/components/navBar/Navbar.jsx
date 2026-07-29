@@ -47,11 +47,18 @@ function Navbar() {
     <>
     <div className={styles.navContainer}>
     <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+      <Link to="/">
+        <img src={logo} alt="logo" className={styles.logo} />
+      </Link>
       <div className={styles.links}>
           {navLinks.map((link) => (
           <NavItem key={link.name} {...link}/>
           ))}
         </div>
+      <Link to="/login" className={styles.login}>
+        <UserIcon className={styles.icons} />
+        <span>Login</span>
+      </Link>
       <button onClick={() => setIsThemeDark(!isThemeDark)} className='styles.themeToggle'>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (

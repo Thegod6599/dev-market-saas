@@ -4,7 +4,7 @@ import styles from "./NavItem.module.css";
 
 function NavItem({ name, path, icon: Icon }) {
   return (
-    <NavLink to={path} className={styles.link}>
+    <NavLink to={path} className={({isActive}) => isActive ? styles.active : styles.link}>
       {({isActive}) => (
         <>
       {isActive && (
