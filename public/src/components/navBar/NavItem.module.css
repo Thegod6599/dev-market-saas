@@ -17,7 +17,7 @@
 .activeNav {
   position: absolute;
   inset: 0;
-  backgroun: var(--color-primary);
+  background: var(--color-primary);
   border-radius: var(--radius-full);
   z-index: -1;
   

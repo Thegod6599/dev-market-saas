@@ -18,22 +18,22 @@ const navLinks = [
   {
     name: 'Home',
     path: '/',
-    icon: <HomeIcon />
+    icon: HomeIcon
   },
   {
     name: 'Components',
     path: '/components',
-    icon: <ComponentsIcon />   
+    icon: ComponentsIcon
   },
   {
     name: 'Templates',
     path: '/templates',
-    icon: <TemplatesIcon />
+    icon: TemplatesIcon
   },
   {
     name: 'Builder',
     path: '/builder',
-    icon: <BuilderIcon />
+    icon: BuilderIcon
   }
 ]
 
@@ -49,7 +49,7 @@ function Navbar() {
     <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
       <div className={styles.links}>
           {navLinks.map((link) => (
-          <navItem key={link.name} {...link}/>
+          <NavItem key={link.name} {...link}/>
           ))}
         </div>
       <button onClick={() => setIsThemeDark(!isThemeDark)} className='styles.themeToggle'>
@@ -101,7 +101,7 @@ function Navbar() {
         >
         <div className={styles.mobileLinks}>
           {navLinks.map((link) => (
-          <navItem key={link.name} {...link}/>
+          <NavItem key={link.name} {...link}/>
           ))}
         </div>
         <button onClick={() => setIsThemeDark(!isThemeDark)}>

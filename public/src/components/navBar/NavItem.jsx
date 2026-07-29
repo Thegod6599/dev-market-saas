@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import styles from "./NavItem.module.css";
 
-function navItem({ name, path, icon: Icon }) {
+function NavItem({ name, path, icon: Icon }) {
   return (
     <NavLink to={path} className={styles.link}>
       {({isActive}) => (
@@ -20,4 +20,4 @@ function navItem({ name, path, icon: Icon }) {
     </NavLink>
   );
 }
-export default navItem;
+export default NavItem;
