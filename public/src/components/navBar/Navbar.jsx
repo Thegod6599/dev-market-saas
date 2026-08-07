@@ -111,6 +111,10 @@ function Navbar() {
           <NavItem key={link.name} {...link}/>
           ))}
         </div>
+        <Link to="/login" className={styles.mobileLogin}>
+          <UserIcon className={styles.icons} />
+          <span>Login</span>
+        </Link>
         <button onClick={() => setIsThemeDark(!isThemeDark)}>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (

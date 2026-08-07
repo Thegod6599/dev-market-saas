@@ -110,6 +110,7 @@
   
   .dropdown {
     display: flex;
+    color: var(--color-icon)
   }
   .mobilelinks {
     transform-origin: top;
