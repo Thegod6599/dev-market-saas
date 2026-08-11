@@ -1,5 +1,5 @@
 import styles from './LoginForm.module.css';
-import GoogleIcon from '../../assets/google-icon.svg?react';
+import GoogleIcon from '../../assets/icons/google-icon.svg?react';
 import { useState } from 'react';
 
 function LoginForm({ onSwitch }) {
