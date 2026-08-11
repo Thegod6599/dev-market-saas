@@ -9,12 +9,14 @@ function LoginForm({ onSwitch }) {
       <div className={styles.loginForm}>
         <h2>Login</h2>
         <form>
-          <input type="email" placeholder="Email"/>
+          <div className={styles.inputContainer}>
+          <input type="email" placeholder="Email" className={styles.emailInput} required/>
           <div className={styles.passwordContainer}>
-          <input type={showPassword ? 'text' :'password'} placeholder="Password" className={styles.passwordInput}/>
+          <input type={showPassword ? 'text' :'password'} placeholder="Password" className={styles.passwordInput} required/>
           <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.passwordToggle}>
             {showPassword ? 'Hide' : 'Show'}
           </button>
+          </div>
           </div>
           <button type="submit">Login</button>
         </form>
