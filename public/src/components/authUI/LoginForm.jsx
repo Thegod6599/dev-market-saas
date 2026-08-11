@@ -1,5 +1,6 @@
 import styles from './LoginForm.module.css';
 import GoogleIcon from '../../assets/icons/google-icon.svg?react';
+import { eye, eyeOff } from 'lucide-react'
 import { useState } from 'react';
 
 function LoginForm({ onSwitch }) {
@@ -14,7 +15,7 @@ function LoginForm({ onSwitch }) {
           <div className={styles.passwordContainer}>
           <input type={showPassword ? 'text' :'password'} placeholder="Password" className={styles.passwordInput} required/>
           <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.passwordToggle}>
-            {showPassword ? 'Hide' : 'Show'}
+            {showPassword ? <eyeOff/> : <eye/>}
           </button>
           </div>
           </div>
