@@ -1,12 +1,13 @@
 import styles from './LoginForm.module.css';
 import GoogleIcon from '../../assets/icons/google-icon.svg?react';
-import { eye, eyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react';
 
 function LoginForm({ onSwitch }) {
   const [showPassword, setShowPassword] = useState(false)
   return (
     <>
+      <div className={styles.loginContainer}>
       <div className={styles.loginForm}>
         <h2>Login</h2>
         <form>
@@ -15,17 +16,23 @@ function LoginForm({ onSwitch }) {
           <div className={styles.passwordContainer}>
           <input type={showPassword ? 'text' :'password'} placeholder="Password" className={styles.passwordInput} required/>
           <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.passwordToggle}>
-            {showPassword ? <eyeOff/> : <eye/>}
+            {showPassword ? <EyeOff/> : <Eye/>}
           </button>
           </div>
           </div>
-          <button type="submit">Login</button>
+          <div className={styles.loginActions}>
+            <button type="submit" className={styles.loginButton}>Login</button>
+            <div className={styles.divider}/>
+            <button type='button' className={styles.googleButton}>
+              <GoogleIcon className={styles.googleIcon}/>
+            </button>
+          </div>
         </form>
-        <button type='button' className={styles.googleButton}>
-          <GoogleIcon className={styles.googleIcon}/>
-        </button>
+        <div className={styles.loginExtras}>
         <p className={styles.forgotPassword}>Forgot Password?</p>
         <p className={styles.switchText}>Don't have an account? <span onClick={onSwitch}>Sign Up</span></p>
+        </div>
+      </div>
       </div>
     </>
   )
