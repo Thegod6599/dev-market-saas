@@ -166,3 +166,9 @@ h2 {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+.errorMessage {
+  color: var(--color-error);
+  font-size: var(--font-size-small);
+  margin-top: var(--spacing-small);
+  text-align: center;
+}

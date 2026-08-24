@@ -28,7 +28,11 @@ export async function logout() {
   await signOut(auth);
 }
 export async function resetPassword(email) {
-  await sendPasswordResetEmail(auth, email);
+  const actionCodeSettings = {
+    url: 'https://ad5aa687-dba1-44b3-aa8e-400c86bb2e45-00-3nlcztdb1ldiw.spock.replit.dev/reset-password',
+    handleCodeInApp: true,
+  }
+  await sendPasswordResetEmail(auth, email, actionCodeSettings);
 }
 export async function updateUserPassword(user, newPassword) {
   if (!user) throw new Error("No user is currently signed in.");

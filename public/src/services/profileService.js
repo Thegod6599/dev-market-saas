@@ -22,7 +22,6 @@ export async function getProfile(uid) {
   const snapshot = await getDoc(userRef);
 
   if (!snapshot.exists()) {
-    throw new Error("User profile not found");
     return null;
   }
   return snapshot.data()

@@ -16,6 +16,7 @@ function Login() {
         <p>Authenticated: {isAuthenticated ? "yes" : "no"}</p>
         <p>User: {user ? user.email : "None"}</p>
         <p>Profile: {profile ? "loaded" : "none"}</p>
+        <p>${window.location.origin}</p>
       </div>
       <div className={styles.authContainer}>
       <AnimatePresence mode="sync">

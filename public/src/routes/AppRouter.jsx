@@ -7,8 +7,9 @@ import Templates from '../pages/Templates';
 import TemplateDetail from '../pages/TemplateDetail';
 import Builder from '../pages/Builder';
 import Login from '../pages/Login';
+import ResetPassword from '../pages/ResetPassword';
 
-function Layout() {
+function MainLayout() {
   return (
     <>
       <Navbar />
@@ -16,11 +17,18 @@ function Layout() {
     </>
   );
 }
+function AuthLayout() {
+  return (
+    <>
+      <Outlet />
+    </>
+  )
+}
 
 const router = createBrowserRouter(
   [
     {
-      element: <Layout />,
+      element: <MainLayout />,
       children: [
         { path: '/', element: <Home /> },
         { path: '/components', element: <Components /> },
@@ -28,9 +36,15 @@ const router = createBrowserRouter(
         { path: '/templates', element: <Templates /> },
         { path: '/templates/:slug', element: <TemplateDetail /> },
         { path: '/builder', element: <Builder /> },
-        { path: '/login', element: <Login /> },
       ],
     },
+    {
+      element: <AuthLayout />,
+      children: [
+        { path: '/login', element: <Login /> },
+        { path: '/reset-password', element: <ResetPassword /> }
+      ]
+    }
   ],
   { basename: import.meta.env.BASE_URL.replace(/\/$/, '') }
 );
