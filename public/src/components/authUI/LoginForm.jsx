@@ -3,8 +3,9 @@ import GoogleIcon from '../../assets/icons/google-icon.svg?react';
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react';
 import { loginWithEmail, loginWithGoogle, resetPassword } from '../../services/authService';
-import { Link, redirect } from 'react-router-dom';
 import { getAuthErrorMessage } from '../../utils/firebaseAuthErrors'
+import { useNavigate } from 'react-router-dom'
+const navigate = useNavigate()
 
 function LoginForm({ onSwitch }) {
   const [showPassword, setShowPassword] = useState(false)
@@ -29,7 +30,7 @@ function LoginForm({ onSwitch }) {
       setPassword('');
       setEmail('');
       setShowPassword(false);
-      redirect('/');
+      navigate('/');
     }
   }
   async function handleGoogleLogin() {
@@ -42,7 +43,7 @@ function LoginForm({ onSwitch }) {
       setError(getAuthErrorMessage(err))
     } finally {
       setIsSubmitting(false);
-      redirect('/');
+      navigate('/');
     }
   }
   async function handlePasswordReset() {

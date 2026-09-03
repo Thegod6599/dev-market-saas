@@ -13,6 +13,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import NavItem from './NavItem.jsx';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const navLinks = [
   {
@@ -40,9 +43,21 @@ const navLinks = [
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isThemeDark, setIsThemeDark] = useState(false)
+  const { user, profile, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isThemeDark ? 'dark' : 'light');
   }, [isThemeDark])
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    function handleClickOutside() {
+      setIsMenuOpen(false);
+    }
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMenuOpen])
   return (
     <>
     <div className={styles.navContainer}>
@@ -55,10 +70,22 @@ function Navbar() {
           <NavItem key={link.name} {...link}/>
           ))}
         </div>
-      <Link to="/login" className={styles.login}>
-        <UserIcon className={styles.icons} />
-        <span>Login</span>
-      </Link>
+      {!loading && (
+        user ? (
+          <Link to="/settings" className={styles.login} aria-label='Profile settings'>
+            {profile?.photoURL ? (
+              <img src={profile.photoURL} alt="Profile" className={styles.profilePic} />
+            ) : (
+              <UserIcon className={styles.profileIcons} />
+            )}
+          </Link>
+        ) : (
+          <Link to="/login" className={styles.login}>
+            <UserIcon className={styles.icons} />
+            <span>Login</span>
+          </Link>
+        )
+      )}
       <button onClick={() => setIsThemeDark(!isThemeDark)} className='styles.themeToggle'>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (
@@ -90,7 +117,7 @@ function Navbar() {
         </AnimatePresence>
       </button>
 
-      <div className={styles.dropdown}>
+      <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
       <button onClick={() => setIsMenuOpen(!isMenuOpen)}><MenuIcon className={`${styles.menuIcon} ${isMenuOpen ? styles.menuIconOpen : ""}`} /></button>
       </div>
     </nav>
@@ -98,6 +125,7 @@ function Navbar() {
     {isMenuOpen && (
       <motion.div 
         className={styles.mobilelinks}
+        onClick={(e) => e.stopPropagation()}
         initial={{ y: "-100%" }}
         animate={{ y: 0 }}
         exit={{ y: "-100%" }}
@@ -111,10 +139,22 @@ function Navbar() {
           <NavItem key={link.name} {...link}/>
           ))}
         </div>
-        <Link to="/login" className={styles.mobileLogin}>
-          <UserIcon className={styles.icons} />
-          <span>Login</span>
-        </Link>
+        {!loading && (
+        user ? (
+          <Link to="/settings" className={styles.mobileLogin} aria-label='Profile settings'>
+            {profile?.photoURL ? (
+              <img src={profile.photoURL} alt="Profile" className={styles.profilePic} />
+            ) : (
+              <UserIcon className={styles.profileIcons} />
+            )}
+          </Link>
+        ) : (
+          <Link to="/login" className={styles.mobileLogin}>
+            <UserIcon className={styles.icons} />
+            <span>Login</span>
+          </Link>
+        )
+      )}
         <button onClick={() => setIsThemeDark(!isThemeDark)}>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (

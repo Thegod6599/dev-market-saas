@@ -58,11 +58,24 @@
   text-decoration: none;
   transition: transform 0.2s ease-in-out;
 }
-
 .icons {
   width: 20px;
   height: 20px;
   object-fit: contain;
+}
+
+.profileIcons {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  color: var(--color-icon);
+}
+.profilePic {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  object-fit: cover;
+  border: 2px solid var(--color-icon);
 }
 
 .logo,

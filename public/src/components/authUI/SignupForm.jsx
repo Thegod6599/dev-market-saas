@@ -4,7 +4,8 @@ import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react';
 import { signupWithEmail, loginWithGoogle } from '../../services/authService';
 import { getAuthErrorMessage } from '../../utils/firebaseAuthErrors'
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+const navigate = useNavigate()
 
 function SignupForm({ onSwitch }) {
   const [showPassword, setShowPassword] = useState(false)
@@ -27,7 +28,7 @@ function SignupForm({ onSwitch }) {
       setPassword('')
       setEmail('')
       setShowPassword(false)
-      redirect('/')
+      navigate('/')
     }
   }
   async function handleGoogleLogin() {
@@ -40,7 +41,7 @@ function SignupForm({ onSwitch }) {
       setError(getAuthErrorMessage(err))
     } finally {
       setIsSubmitting(false);
-      redirect('/')
+      navigate('/')
     }
   }
   

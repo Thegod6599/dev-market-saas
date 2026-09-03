@@ -8,6 +8,7 @@ import TemplateDetail from '../pages/TemplateDetail';
 import Builder from '../pages/Builder';
 import Login from '../pages/Login';
 import ResetPassword from '../pages/ResetPassword';
+import Settings from '../pages/Settings';
 
 function MainLayout() {
   return (
@@ -42,7 +43,8 @@ const router = createBrowserRouter(
       element: <AuthLayout />,
       children: [
         { path: '/login', element: <Login /> },
-        { path: '/reset-password', element: <ResetPassword /> }
+        { path: '/reset-password', element: <ResetPassword /> },
+        { path: '/settings', element: <Settings /> },
       ]
     }
   ],
