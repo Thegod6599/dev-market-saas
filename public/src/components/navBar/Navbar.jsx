@@ -43,8 +43,35 @@ const navLinks = [
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isThemeDark, setIsThemeDark] = useState(false)
-  const { user, profile, loading } = useContext(AuthContext);
+  const { user, profile, loading, settings, updateSettings, } = useContext(AuthContext);
+  async function handleThemeChange() {
+    const newTheme = isThemeDark ? "light" : "dark";
+    await updateSettings({
+      theme: newTheme,
+    })
+  }
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!settings) return;
+
+    if (settings.theme === "dark") {
+      setIsThemeDark(true)
+    } else if (settings.theme === "light") {
+      setIsThemeDark(false)
+    } else if (settings.theme === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const updateTheme = () => {
+        setIsThemeDark(mediaQuery.matches)
+      }
+      updateTheme();
+
+      mediaQuery.addEventListener("change", updateTheme);
+
+      return () => {
+        mediaQuery.removeEventListener("change", updateTheme);
+      }
+    }
+  }, [settings]);
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isThemeDark ? 'dark' : 'light');
   }, [isThemeDark])
@@ -86,7 +113,7 @@ function Navbar() {
           </Link>
         )
       )}
-      <button onClick={() => setIsThemeDark(!isThemeDark)} className='styles.themeToggle'>
+      <button onClick={handleThemeChange} className='styles.themeToggle'>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (
             <motion.div key='moon'
@@ -155,7 +182,7 @@ function Navbar() {
           </Link>
         )
       )}
-        <button onClick={() => setIsThemeDark(!isThemeDark)}>
+        <button onClick={handleThemeChange}>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (
             <motion.div key='moon'

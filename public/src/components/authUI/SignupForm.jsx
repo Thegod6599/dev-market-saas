@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { signupWithEmail, loginWithGoogle } from '../../services/authService';
 import { getAuthErrorMessage } from '../../utils/firebaseAuthErrors'
 import { useNavigate } from 'react-router-dom';
-const navigate = useNavigate()
 
 function SignupForm({ onSwitch }) {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
