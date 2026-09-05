@@ -7,6 +7,7 @@ import {
   sendPasswordResetEmail,
   updatePassword,
   updateEmail,
+  updateProfile,
   deleteUser,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase";
@@ -16,8 +17,15 @@ export async function loginWithEmail(email, password) {
   const result = await signInWithEmailAndPassword(auth, email, password);
   return result.user;
 }
-export async function signupWithEmail(email, password) {
+export async function signupWithEmail(email, password, photoURL = "") {
   const result = await createUserWithEmailAndPassword(auth, email, password);
+
+  if (photoURL.trim()) {
+    await updateProfile(result.user, {
+      photoURL: photoURL.trim(),
+    });
+  }
+
   return result.user;
 }
 export async function loginWithGoogle() {

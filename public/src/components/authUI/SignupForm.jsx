@@ -11,6 +11,7 @@ function SignupForm({ onSwitch }) {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [photoURL, setPhotoURL] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -19,7 +20,7 @@ function SignupForm({ onSwitch }) {
     setError("");
     setIsSubmitting(true);
     try {
-      await signupWithEmail(email, password)
+      await signupWithEmail(email, password, photoURL)
     } catch (err) {
       console.error('Signup error:', err)
       setError(getAuthErrorMessage(err))
@@ -27,6 +28,7 @@ function SignupForm({ onSwitch }) {
       setIsSubmitting(false);
       setPassword('')
       setEmail('')
+      setPhotoURL('')
       setShowPassword(false)
       navigate('/')
     }
@@ -53,6 +55,7 @@ function SignupForm({ onSwitch }) {
         <form onSubmit={handleSubmit}>
           <div className={styles.inputContainer}>
           <input type="email" placeholder="Email" className={styles.emailInput} value={email} onChange={(e) => setEmail(e.target.value)} required/>
+           <input type="url" placeholder="Profile photo URL (optional)" className={styles.emailInput} value={photoURL} onChange={(e) => setPhotoURL(e.target.value)}/>
           <div className={styles.passwordContainer}>
           <input type={showPassword ? 'text' :'password'} placeholder="Password" className={styles.passwordInput} value={password} onChange={(e) => setPassword(e.target.value)} required/>
           <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.passwordToggle} disabled={isSubmitting}>

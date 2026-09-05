@@ -12,55 +12,42 @@ const DEFAULT_SETTINGS = {
 };
 
 async function ensureSettings(uid) {
-   const userRef = doc(db, "users", uid)
-   const userSnap = await getDoc(userRef);
-   if (!userSnap.exists()) {
-    await setDoc(userRef, {
-      settings: DEFAULT_SETTINGS,
-    });
-    return DEFAULT_SETTINGS;
-  }
-  const data = userSnap.data();
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+  const data = userSnap.exists() ? userSnap.data() : {};
+  const settings = {
+    ...DEFAULT_SETTINGS,
+    ...(data.settings || {}),
+  };
 
-  if (!data.settings) {
-    await updateDoc(userRef, {
-      settings: DEFAULT_SETTINGS,
-    })
-    return DEFAULT_SETTINGS
+  const settingsChanged =
+    !userSnap.exists() ||
+    Object.keys(DEFAULT_SETTINGS).some(
+      (key) => data.settings?.[key] !== settings[key],
+    );
+
+  if (settingsChanged) {
+    await setDoc(userRef, { settings }, { merge: true });
   }
-  return data.settings;
+
+  return settings;
 }
 
 export async function settingsLoad(uid) {
-  const userRef = doc(db, "users", uid)
-  const settings = await ensureSettings(uid);
-  const schemaKeys = Object.keys(DEFAULT_SETTINGS);
-  const settingsKeys = Object.keys(settings);
-  const missingKeys = schemaKeys.filter((key) => !settingsKeys.includes(key));
-  if (missingKeys.length > 0) {
-    const newSettings = { ...settings };
-    missingKeys.forEach((key) => {
-      newSettings[key] = DEFAULT_SETTINGS[key];
-    });
-    await updateDoc(userRef, {
-      settings: newSettings
-    });
-    return newSettings;
-  } else {
-    return settings;
-  }
+  return ensureSettings(uid);
 }
 
-export async function settingsUpdate(uid, changes) {
+export async function settingsUpdate(uid, changes, currentSettings = {}) {
   const userRef = doc(db, "users", uid);
-  const userSnap = await getDoc(userRef)
-  const currentSettings = userSnap.data().settings
   const updatedSettings = {
+    ...DEFAULT_SETTINGS,
     ...currentSettings,
     ...changes,
-  }
-  await updateDoc(userRef, {
-    settings: updatedSettings
-  })
-  return updatedSettings
+  };
+
+  await setDoc(userRef, {
+    settings: updatedSettings,
+  }, { merge: true });
+
+  return updatedSettings;
 }

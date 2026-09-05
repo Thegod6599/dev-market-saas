@@ -43,12 +43,28 @@ const navLinks = [
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isThemeDark, setIsThemeDark] = useState(false)
+  const [isThemeSaving, setIsThemeSaving] = useState(false)
   const { user, profile, loading, settings, updateSettings, } = useContext(AuthContext);
   async function handleThemeChange() {
-    const newTheme = isThemeDark ? "light" : "dark";
-    await updateSettings({
-      theme: newTheme,
-    })
+    if (isThemeSaving) return;
+
+    const previousTheme = isThemeDark;
+    const nextTheme = !previousTheme;
+    setIsThemeDark(nextTheme);
+
+    if (!user) return;
+
+    setIsThemeSaving(true);
+    try {
+      await updateSettings({
+        theme: nextTheme ? "dark" : "light",
+      });
+    } catch (error) {
+      console.error("Theme update failed:", error);
+      setIsThemeDark(previousTheme);
+    } finally {
+      setIsThemeSaving(false);
+    }
   }
   const navigate = useNavigate();
   useEffect(() => {
@@ -113,7 +129,7 @@ function Navbar() {
           </Link>
         )
       )}
-      <button onClick={handleThemeChange} className='styles.themeToggle'>
+      <button onClick={handleThemeChange} className='styles.themeToggle' disabled={isThemeSaving} aria-busy={isThemeSaving}>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (
             <motion.div key='moon'
@@ -182,7 +198,7 @@ function Navbar() {
           </Link>
         )
       )}
-        <button onClick={handleThemeChange}>
+        <button onClick={handleThemeChange} disabled={isThemeSaving} aria-busy={isThemeSaving}>
         <AnimatePresence mode='wait'>
           {isThemeDark ? (
             <motion.div key='moon'
