@@ -1,0 +1,352 @@
+Update my EXISTING Replit project named Code Companion. Do NOT create a new project and do NOT redesign the app.
+
+The goal is to finish migrating DevMarket’s database layer from Firestore to Supabase PostgreSQL, while keeping Firebase Authentication and Firebase Hosting.
+
+Existing architecture
+
+* React + Vite
+* React Router / react-router-dom
+* Firebase Authentication is already used for login
+* Firebase Hosting is already used
+* Firestore was previously used for database storage
+* Supabase PostgreSQL is now replacing Firestore
+* Do NOT switch authentication from Firebase Auth to Supabase Auth
+* Do NOT switch to Next.js
+* Keep the existing UI and architecture unless a change is required for the integration
+
+Supabase project
+
+Use the existing Supabase project named:
+
+DevMarket
+
+Project ref:
+
+wpserowroctgguicilsp
+
+Region:
+
+ca-central-1
+
+There is another Supabase project in the account. DO NOT USE OR MODIFY IT.
+
+The DevMarket Supabase database already contains these tables:
+
+Global/public tables
+
+* categories
+* components
+* tags
+* component_tags
+* templates
+
+User/personal tables
+
+* profiles
+* settings
+* favorites
+* feedback
+
+RLS is already enabled and policies have already been created for these tables.
+
+Do not recreate the database tables unless inspection shows something is actually missing.
+
+⸻
+
+1. Install and configure Supabase
+
+Add the current pinned @supabase/supabase-js dependency.
+
+Create/use the appropriate Supabase client configuration for the existing Vite app.
+
+Use environment variables for:
+
+* Supabase project URL
+* Supabase publishable key
+
+Never put a Supabase service-role key or secret key in frontend code.
+
+Do not hardcode secrets.
+
+⸻
+
+2. Keep Firebase Authentication
+
+Firebase Auth remains the source of user authentication.
+
+Do NOT replace:
+
+* Google login
+* Firebase Auth
+* existing auth provider
+* Firebase Hosting
+
+The architecture should become:
+
+Firebase Auth
+→ Firebase ID token
+→ Supabase client
+→ Supabase PostgreSQL
+→ Supabase RLS
+
+The Firebase user’s UID must correspond to the profiles.id / settings.user_id values.
+
+⸻
+
+3. Connect Firebase Auth to Supabase
+
+Configure the Supabase client so that authenticated Supabase requests use the currently signed-in Firebase user’s ID token.
+
+The Supabase integration must recognize the Firebase-authenticated user as an authenticated user for RLS.
+
+Follow the current official Supabase documentation for Firebase third-party authentication.
+
+Do not weaken RLS or bypass authentication to make this work.
+
+If the Firebase/Supabase third-party authentication setup requires a dashboard configuration that cannot be performed from the codebase, do not create an insecure workaround. Clearly identify the exact dashboard configuration that is still required.
+
+⸻
+
+4. Migrate the existing AuthContext
+
+Inspect the current AuthContext before changing anything.
+
+Preserve its existing public API and behavior where possible:
+
+* user
+* profile
+* loading
+* isAuthenticated
+* settings
+* updateSettings
+
+Firebase Auth should continue controlling the authentication state.
+
+When a Firebase user signs in:
+
+1. Get the Firebase user.
+2. Obtain the Firebase ID token.
+3. Make authenticated Supabase requests using that token.
+4. Ensure a corresponding row exists in profiles.
+5. Ensure a corresponding row exists in settings.
+6. Load the user’s profile/settings.
+7. Expose them through the existing AuthContext.
+
+Do not create duplicate profiles/settings rows.
+
+⸻
+
+5. Migrate Settings from Firestore to Supabase
+
+The existing Firestore settings functionality currently contains:
+
+theme
+reduceMotion
+
+The default settings are:
+
+theme: "system"
+reduceMotion: false
+
+Use the existing Supabase settings table.
+
+The settings behavior must remain:
+
+* system
+* light
+* dark
+
+The existing theme behavior should not change.
+
+When the user changes their theme:
+
+1. Update Supabase.
+2. Update the local React state.
+3. Keep the theme after page refresh/login.
+
+Do not modify the UI unnecessarily.
+
+The existing Settings page should continue working.
+
+reduceMotion can remain stored in the database even if it is no longer exposed as a visible Settings control.
+
+⸻
+
+6. Migrate Profiles
+
+Use the existing Supabase profiles table.
+
+Firebase UID should be used as the profile ID.
+
+Preserve the existing profile behavior.
+
+Do not create a second user identity system.
+
+⸻
+
+7. Migrate the component library
+
+Find every existing place where the app currently reads component/library data from Firestore.
+
+Replace those database reads with Supabase queries against:
+
+* components
+* categories
+* tags
+* component_tags
+* templates
+
+The public component library must be driven by the database rather than hardcoded component lists.
+
+For components:
+
+* published components should be publicly readable
+* draft/archived components should not appear in the public library
+* preserve component IDs
+* preserve slugs
+* preserve categories
+* preserve tags
+* preserve VIP status
+
+Do not store the actual JSX/CSS implementation inside the component metadata table unless the existing architecture specifically requires it.
+
+The code_reference field should remain a reference to the actual component implementation/download source.
+
+⸻
+
+8. Dynamic categories and tags
+
+The library should eventually support behavior such as:
+
+A component with:
+
+type = button
+category = marketing
+tags = [buttons, marketing, VIP]
+
+automatically appearing in the appropriate sections.
+
+Do not hardcode lists of component IDs.
+
+Use the Supabase metadata to determine where components belong.
+
+⸻
+
+9. Favorites
+
+If the current project already has favorites functionality, migrate it from Firestore to the existing Supabase favorites table.
+
+Favorites must be private to the authenticated user.
+
+A user must only be able to:
+
+* view their own favorites
+* add their own favorites
+* remove their own favorites
+
+Do not bypass RLS.
+
+⸻
+
+10. Feedback
+
+If the existing project already has feedback functionality, migrate it to the existing Supabase feedback table.
+
+Users should be able to submit feedback while authenticated.
+
+Use the existing feedback table fields and allowed types/statuses.
+
+Do not expose other users’ private feedback.
+
+⸻
+
+11. Remove Firestore database usage
+
+After each corresponding Supabase feature is confirmed working, remove the obsolete Firestore database dependency/code.
+
+IMPORTANT:
+
+Do NOT remove Firebase Authentication.
+
+Do NOT remove Firebase Hosting.
+
+The final application should use:
+
+Firebase
+└── Authentication
+    └── User identity
+Supabase
+└── PostgreSQL
+    ├── profiles
+    ├── settings
+    ├── categories
+    ├── components
+    ├── tags
+    ├── component_tags
+    ├── templates
+    ├── favorites
+    └── feedback
+
+⸻
+
+12. Environment variables
+
+Use the existing Replit Secrets/environment-variable system.
+
+Required frontend configuration should use the Supabase project URL and publishable key.
+
+Never expose:
+
+* service_role key
+* secret key
+* database password
+* PostgreSQL connection string
+
+⸻
+
+13. Do not change unrelated features
+
+Do NOT:
+
+* redesign the UI
+* rewrite the application
+* replace React/Vite
+* replace Firebase Auth
+* replace Firebase Hosting
+* add Next.js
+* build the Builder yet
+* create unnecessary backend infrastructure
+* create duplicate database tables
+* create another Supabase project
+* change existing routes unless required
+* change existing animations/styling unless required
+
+Make the smallest production-appropriate changes necessary.
+
+⸻
+
+14. Verify everything
+
+Before saying the migration is complete:
+
+1. Verify the app builds successfully.
+2. Verify Firebase login still works.
+3. Verify a signed-in Firebase user can access their Supabase profile.
+4. Verify settings load from Supabase.
+5. Change the theme and confirm it persists after refresh.
+6. Verify public published components can be loaded.
+7. Verify categories/tags can be loaded.
+8. Verify favorites are user-specific.
+9. Verify feedback submission works if that feature already exists.
+10. Verify RLS is not bypassed.
+11. Search the project for remaining Firestore database imports/usages and remove obsolete database usage where appropriate.
+
+If something cannot be tested because a Firebase/Supabase dashboard setting is missing, stop and tell me exactly what needs to be configured instead of pretending the integration works.
+
+At the end, give me a concise report containing:
+
+* what was changed
+* what was successfully verified
+* any remaining dashboard configuration
+* any remaining Firestore references
+* whether the app builds successfully

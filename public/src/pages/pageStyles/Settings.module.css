@@ -1,0 +1,56 @@
+.backButton{
+  display: flex;
+  color: var(--color-text-primary);
+  background: rgba(54, 124, 229, 0.25);
+  border-radius: var(--radius-small);
+  width: 80px;
+  height: 30px;
+  gap: 5px;
+  border: 2px solid var(--color-primary-lighter);
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.appearanceBox,
+.accountBox {
+  background: rgba(54, 124, 229, 0.25);
+  border: 2px solid var(--color-primary-lighter);
+  border-radius: var(--radius-small);
+  width: auto;
+  min-height: 80px;
+  margin: 5px 0 30px 0;
+}
+.dangerZoneBox {
+  background: rgba(244, 67, 54, 0.25);
+  border: 2px solid var(--color-error);
+  border-radius: var(--radius-small);
+  width: auto;
+  min-height: 80px;
+  margin: 5px 0 30px 0;
+}
+
+.appearanceSection h2,
+.accountSection h2,
+.dangerZone h2,
+.supportSection h2 {
+  margin-bottom: 5px;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-large);
+}
+
+.appearanceSection p,
+.accountSection p,
+.dangerZone p,
+.supportSection p {
+  margin-top: 0;
+  color: var(--color-text-secondary);
+}
+
+.dangerZone p {
+  color: var(--color-error);
+}
+
+.settingsPage {
+  padding: 20px;
+}
