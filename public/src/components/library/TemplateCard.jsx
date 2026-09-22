@@ -1,16 +1,23 @@
 import { ArrowUpRight, Download, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { getComponentResourceUrl } from '../../services/libraryService';
 import styles from './library.module.css';
 
 export default function TemplateCard({ template }) {
+  const [hasFailed, setHasFailed] = useState(false);
   const resourceUrl = getComponentResourceUrl(template);
 
   return (
     <article className={styles.templateCard}>
-      {template.preview_url ? (
+      {template.preview_url && !hasFailed ? (
         <div className={styles.previewFrame}>
-          <img src={template.preview_url} alt={`${template.name} preview`} loading="lazy" />
+          <img
+            src={template.preview_url}
+            alt={`${template.name} preview`}
+            loading="lazy"
+            onError={() => setHasFailed(true)}
+          />
         </div>
       ) : (
         <div className={styles.previewPlaceholder}>

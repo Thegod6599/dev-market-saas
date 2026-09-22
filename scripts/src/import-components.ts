@@ -1,4 +1,5 @@
 import { readdir, readFile, stat } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
@@ -104,7 +105,7 @@ async function findOrCreateCategory(client: ImportClient, categoryName: string) 
 
   const created = await client
     .from("categories")
-    .insert({ name: categoryName, slug, section_type: "components", is_active: true })
+    .insert({ name: categoryName, slug, section_type: "category", is_active: true })
     .select("id")
     .single();
   if (created.error) throw created.error;
@@ -130,22 +131,28 @@ async function importComponent(
 
   try {
     const categoryId = await findOrCreateCategory(client, metadata.category);
+    const existingComponent = await client
+      .from("components")
+      .select("id")
+      .eq("slug", metadata.slug)
+      .maybeSingle();
+    if (existingComponent.error) throw existingComponent.error;
+
+    const componentPayload = {
+      id: existingComponent.data?.id ?? randomUUID(),
+      name: metadata.name,
+      slug: metadata.slug,
+      type: metadata.type,
+      description: metadata.description,
+      category_id: categoryId,
+      status: metadata.status,
+      is_vip: metadata.is_vip,
+      preview_url: metadata.preview_url ?? null,
+      code_reference: metadata.code_reference ?? path.join(directory, "component.jsx"),
+    };
     const component = await client
       .from("components")
-      .upsert(
-        {
-          name: metadata.name,
-          slug: metadata.slug,
-          type: metadata.type,
-          description: metadata.description,
-          category_id: categoryId,
-          status: metadata.status,
-          is_vip: metadata.is_vip,
-          preview_url: metadata.preview_url ?? null,
-          code_reference: metadata.code_reference ?? path.join(directory, "component.jsx"),
-        },
-        { onConflict: "slug" },
-      )
+      .upsert(componentPayload, { onConflict: "slug" })
       .select("id")
       .single();
     if (component.error) throw component.error;

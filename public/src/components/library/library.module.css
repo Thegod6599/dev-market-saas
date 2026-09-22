@@ -506,6 +506,10 @@
     flex-direction: column;
   }
 
+  .searchField {
+    flex: 0 0 auto;
+  }
+
   .selectField select {
     width: 100%;
     max-width: none;

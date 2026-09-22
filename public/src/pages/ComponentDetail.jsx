@@ -13,7 +13,9 @@ import {
 import styles from '../components/library/library.module.css';
 
 function ComponentPreview({ component }) {
-  if (!component.preview_url) {
+  const [hasFailed, setHasFailed] = useState(false);
+
+  if (!component.preview_url || hasFailed) {
     return <LibraryEmpty>No preview has been linked for this component yet.</LibraryEmpty>;
   }
 
@@ -21,7 +23,11 @@ function ComponentPreview({ component }) {
   return (
     <div className={styles.detailPreview}>
       {isImage ? (
-        <img src={component.preview_url} alt={`${component.name} preview`} />
+        <img
+          src={component.preview_url}
+          alt={`${component.name} preview`}
+          onError={() => setHasFailed(true)}
+        />
       ) : (
         <iframe
           src={component.preview_url}

@@ -1,0 +1,1 @@
+- [Supabase library schema](supabase-library-schema.md) — importer must match the existing category section type and preserve explicit component IDs.

@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Download, Eye, LockKeyhole } from 'lucide-react';
+import { useState } from 'react';
 import { getComponentResourceUrl } from '../../services/libraryService';
 import styles from './library.module.css';
 
 function Preview({ component }) {
-  if (!component.preview_url) {
+  const [hasFailed, setHasFailed] = useState(false);
+
+  if (!component.preview_url || hasFailed) {
     return (
       <div className={styles.previewPlaceholder}>
         <span>{component.type || 'Component'}</span>
@@ -14,7 +17,12 @@ function Preview({ component }) {
 
   return (
     <div className={styles.previewFrame}>
-      <img src={component.preview_url} alt={`${component.name} preview`} loading="lazy" />
+      <img
+        src={component.preview_url}
+        alt={`${component.name} preview`}
+        loading="lazy"
+        onError={() => setHasFailed(true)}
+      />
     </div>
   );
 }

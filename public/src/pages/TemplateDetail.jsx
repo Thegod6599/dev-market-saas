@@ -13,7 +13,9 @@ import {
 import styles from '../components/library/library.module.css';
 
 function TemplatePreview({ template }) {
-  if (!template.preview_url) {
+  const [hasFailed, setHasFailed] = useState(false);
+
+  if (!template.preview_url || hasFailed) {
     return <LibraryEmpty title="No preview yet" children="A preview has not been linked for this template." />;
   }
 
@@ -21,7 +23,11 @@ function TemplatePreview({ template }) {
   return (
     <div className={styles.detailPreview}>
       {isImage ? (
-        <img src={template.preview_url} alt={`${template.name} preview`} />
+        <img
+          src={template.preview_url}
+          alt={`${template.name} preview`}
+          onError={() => setHasFailed(true)}
+        />
       ) : (
         <iframe src={template.preview_url} title={`${template.name} preview`} loading="lazy" />
       )}
