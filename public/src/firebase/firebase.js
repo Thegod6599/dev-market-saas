@@ -1,8 +1,9 @@
-// Firebase configuration (Authentication only)
+// Firebase configuration
 // Replace placeholder values with your Firebase project config from:
 // https://console.firebase.google.com → Project Settings → General → Your apps
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY            || 'YOUR_API_KEY',
@@ -14,6 +15,12 @@ const firebaseConfig = {
   measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID     || 'YOUR_MEASUREMENT_ID'
 };
 
+// Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+
+// Authentication — Google Auth provider ready, login logic added later
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+// Firestore database
+export const db = getFirestore(app);
