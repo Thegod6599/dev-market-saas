@@ -32,6 +32,14 @@ function fail(message: string): never {
   throw new Error(message);
 }
 
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object" && "message" in error) {
+    return String((error as { message: unknown }).message);
+  }
+  return typeof error === "string" ? error : JSON.stringify(error);
+}
+
 function requireConfig() {
   if (!rootDirectory) {
     fail("Usage: pnpm --filter @workspace/scripts import-components <components-folder>");
@@ -163,7 +171,7 @@ async function importComponent(
       folder: folderName,
       slug: metadata.slug,
       status: "failed",
-      message: error instanceof Error ? error.message : "unknown import error",
+      message: getErrorMessage(error),
     };
   }
 }
@@ -189,6 +197,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
+  console.error(getErrorMessage(error));
   process.exitCode = 1;
 });
