@@ -1,0 +1,12 @@
+{
+  "name": "Column Footer",
+  "slug": "footers-columns",
+  "type": "footer",
+  "category": "Footers",
+  "description": "A multi-column footer for products with broader navigation and resources.",
+  "tags": ["footer", "navigation", "content"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/footers-columns/component.jsx",
+  "preview_url": "/library/seed/footers-columns.svg"
+}

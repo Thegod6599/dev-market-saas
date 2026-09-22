@@ -1,0 +1,12 @@
+{
+  "name": "Split Action Button",
+  "slug": "buttons-split",
+  "type": "button",
+  "category": "Buttons",
+  "description": "A split action control for a primary command and its related options.",
+  "tags": ["buttons", "actions", "menus"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/buttons-split/component.jsx",
+  "preview_url": "/library/seed/buttons-split.svg"
+}

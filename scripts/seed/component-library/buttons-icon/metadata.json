@@ -1,0 +1,12 @@
+{
+  "name": "Icon Action Button",
+  "slug": "buttons-icon",
+  "type": "button",
+  "category": "Buttons",
+  "description": "A compact icon button with a clear accessible label for toolbar actions.",
+  "tags": ["buttons", "icons", "accessible"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/buttons-icon/component.jsx",
+  "preview_url": "/library/seed/buttons-icon.svg"
+}

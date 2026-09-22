@@ -23,10 +23,13 @@ export function LibraryError({ message, onRetry }) {
   );
 }
 
-export function LibraryEmpty({ children = 'No published components are available yet.' }) {
+export function LibraryEmpty({
+  title = 'The library is ready for its first drop',
+  children = 'No published components are available yet.',
+}) {
   return (
     <div className={styles.state}>
-      <h2>The library is ready for its first drop</h2>
+      <h2>{title}</h2>
       <p>{children}</p>
     </div>
   );

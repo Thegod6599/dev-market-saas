@@ -1,0 +1,12 @@
+{
+  "name": "Pricing Card",
+  "slug": "cards-pricing",
+  "type": "card",
+  "category": "Cards",
+  "description": "A pricing card with a clear plan, price, and conversion action.",
+  "tags": ["cards", "pricing", "commerce"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/cards-pricing/component.jsx",
+  "preview_url": "/library/seed/cards-pricing.svg"
+}

@@ -1,7 +1,7 @@
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 
 const CATEGORY_FIELDS =
-  'id,name,slug,section_type,is_under_construction,display_order,is_active';
+  'id,name,slug,description,section_type,is_under_construction,display_order,is_active';
 const COMPONENT_FIELDS =
   'id,name,slug,type,description,category_id,status,is_vip,preview_url,code_reference,created_at,updated_at';
 
@@ -52,10 +52,13 @@ async function loadTagsForComponents(client, componentIds) {
   return tagsByComponentId;
 }
 
-function attachTags(components, tagsByComponentId) {
+function attachTags(components, tagsByComponentId, categories = []) {
+  const categoriesById = new Map(categories.map((category) => [category.id, category]));
+
   return components.map((component) => ({
     ...component,
     tags: tagsByComponentId.get(component.id) ?? [],
+    category: categoriesById.get(component.category_id) ?? null,
   }));
 }
 
@@ -83,8 +86,82 @@ export async function getLibrary() {
 
   return {
     categories,
-    components: attachTags(components, tagsByComponentId),
+    components: attachTags(components, tagsByComponentId, categories),
   };
+}
+
+export function filterComponents(components, filters = {}) {
+  const query = String(filters.query ?? '').trim().toLowerCase();
+  const categoryId = filters.categoryId || '';
+  const type = filters.type || '';
+  const tagId = filters.tagId || '';
+
+  return components.filter((component) => {
+    const searchableText = [
+      component.name,
+      component.slug,
+      component.description,
+      component.type,
+      component.category?.name,
+      ...(component.tags ?? []).flatMap((tag) => [tag.name, tag.slug]),
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    return (
+      (!query || searchableText.includes(query)) &&
+      (!categoryId || component.category_id === categoryId) &&
+      (!type || component.type === type) &&
+      (!tagId || component.tags?.some((tag) => tag.id === tagId))
+    );
+  });
+}
+
+export function getComponentFilterOptions(components) {
+  const types = [...new Set(components.map((component) => component.type).filter(Boolean))].sort();
+  const tags = new Map();
+
+  for (const component of components) {
+    for (const tag of component.tags ?? []) {
+      tags.set(tag.id, tag);
+    }
+  }
+
+  return {
+    types,
+    tags: [...tags.values()].sort((a, b) => a.name.localeCompare(b.name)),
+  };
+}
+
+function normalizeTemplate(template) {
+  return {
+    ...template,
+    name: template.name ?? template.title ?? 'Untitled template',
+    slug: template.slug ?? template.id,
+    description: template.description ?? template.summary ?? '',
+    preview_url: template.preview_url ?? template.preview_image_url ?? template.image_url ?? null,
+    code_reference: template.code_reference ?? template.download_url ?? null,
+    type: template.type ?? 'Template',
+  };
+}
+
+export async function getTemplates() {
+  const client = requireSupabase();
+  const result = await client.from('templates').select('*').order('created_at', {
+    ascending: false,
+  });
+
+  const templates = throwIfError(result, 'templates')
+    .filter((template) => !template.status || template.status === 'published')
+    .map(normalizeTemplate);
+
+  return templates;
+}
+
+export async function getTemplateBySlug(slug) {
+  const templates = await getTemplates();
+  return templates.find((template) => template.slug === slug) ?? null;
 }
 
 export async function getComponentBySlug(slug) {

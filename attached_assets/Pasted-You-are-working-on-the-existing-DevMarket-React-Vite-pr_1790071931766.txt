@@ -1,0 +1,652 @@
+You are working on the existing DevMarket React + Vite project.
+
+Your job is to implement the remaining technical foundation needed to release the PUBLIC COMPONENT LIBRARY.
+
+IMPORTANT: Do not redesign the existing application. Work with the current architecture, routes, components, CSS variables, Firebase setup, and Supabase database.
+
+==================================================
+
+1. CURRENT ARCHITECTURE
+    ==================================================
+
+DevMarket uses a HYBRID backend architecture.
+
+FIREBASE:
+
+* Firebase Authentication
+* Firebase Firestore
+* Firebase Hosting
+
+Keep Firebase responsible for user/personal data:
+
+* authentication
+* user profiles
+* settings
+* favorites/saved items
+* other user-specific data already implemented
+
+DO NOT migrate these systems to Supabase.
+
+SUPABASE:
+Supabase PostgreSQL is responsible for shared DevMarket/library data:
+
+* categories
+* components
+* tags
+* component_tags
+* templates
+
+Supabase also already contains the future Builder foundation:
+
+* projects
+* project_pages
+* project_components
+* project_assets
+
+DO NOT build the Builder yet.
+
+==================================================
+2. PRIMARY GOAL
+
+Prepare DevMarket for an initial public release where users can:
+
+* browse components
+* browse components by category
+* search components
+* open component detail pages
+* see component previews
+* see descriptions
+* see tags
+* see component types
+* download/access the component code
+* browse templates
+* understand which areas are coming later
+
+The Builder and VIP functionality are NOT part of this release.
+
+The purpose of this release is to get real users and feedback on the component library.
+
+==================================================
+3. DATABASE / SUPABASE
+
+Use the existing Supabase project and existing schema.
+
+DO NOT create duplicate tables.
+
+DO NOT delete existing tables.
+
+DO NOT disable Row Level Security.
+
+Use the existing tables:
+
+categories
+components
+tags
+component_tags
+templates
+projects
+project_pages
+project_components
+project_assets
+
+Categories should control the sections displayed in the public library.
+
+Use fields such as:
+
+* name
+* slug
+* description
+* display_order
+* is_active
+* section_type
+* is_under_construction
+
+Components should contain metadata, NOT the actual React source code inside the frontend card.
+
+Use the existing component fields such as:
+
+* id
+* name
+* slug
+* type
+* description
+* category_id
+* status
+* is_vip
+* preview_url
+* code_reference
+* created_at
+* updated_at
+
+Tags should be related through component_tags.
+
+The component ID must remain the stable identifier.
+
+==================================================
+4. SUPABASE CLIENT
+
+Use the official Supabase JavaScript client.
+
+Use:
+
+VITE_SUPABASE_URL
+VITE_SUPABASE_PUBLISHABLE_KEY
+
+Never expose a Supabase secret/service-role key in frontend code.
+
+The public component library must be accessible without authentication.
+
+Respect existing RLS policies.
+
+Do not create an “allow all” policy.
+
+==================================================
+5. COMPONENT LIBRARY DATA LAYER
+
+Create/maintain a clean reusable data layer for:
+
+* fetching active categories
+* fetching published components
+* fetching tags
+* fetching component/tag relationships
+* fetching individual components
+* fetching templates
+* searching components
+* filtering components
+
+Do not scatter Supabase queries throughout JSX.
+
+Create reusable functions/hooks/services where appropriate.
+
+The UI should consume structured data rather than directly constructing database queries.
+
+==================================================
+6. AUTOMATIC SECTION LOADING
+
+The frontend must NOT contain manually hardcoded component lists.
+
+The flow should be:
+
+Supabase
+↓
+Categories
+↓
+Components
+↓
+Tags
+↓
+Group components by category
+↓
+Sort using display_order
+↓
+Render sections
+↓
+Render ComponentCard
+
+If an administrator later adds a new category in Supabase, the frontend should be capable of displaying that category without requiring a new JSX section.
+
+If a component is assigned to a category, it automatically appears in that category.
+
+==================================================
+7. REUSABLE SECTION COMPONENT
+
+Create a reusable library section component.
+
+It should receive category information and its components as props.
+
+Example conceptual structure:
+
+LibrarySection
+
+* title
+* description
+* category
+* components
+
+The section should support:
+
+* normal sections
+* empty sections
+* under-construction sections
+* future VIP sections
+
+If a section has:
+
+is_under_construction = true
+
+display an appropriate “Under Construction” state.
+
+Do not make under-construction sections pretend to contain usable components.
+
+==================================================
+8. REUSABLE COMPONENT CARD
+
+Create a reusable ComponentCard component.
+
+The card must be completely data-driven.
+
+It should support:
+
+* component name
+* description
+* preview image
+* type
+* tags
+* category
+* VIP indicator if applicable
+* details link
+* download/resource link
+
+The actual React source code MUST NOT be stored directly inside the card JSX.
+
+The card receives component metadata.
+
+The component ID/code_reference points to the actual resource.
+
+Keep the download implementation separated from the visual card so the storage system can change later.
+
+==================================================
+9. COMPONENT DETAIL PAGE
+
+Create/finish:
+
+/components/:slug
+
+The page should:
+
+* load the component by slug
+* show the component name
+* show description
+* show preview
+* show type
+* show tags
+* show category
+* show download/access action
+* handle loading
+* handle missing component
+* handle database errors
+
+Do not require login to view public components.
+
+==================================================
+10. DOWNLOAD / CODE SYSTEM
+
+The long-term DevMarket goal is:
+
+“Users download the code rather than simply copying and pasting it.”
+
+Build the architecture around that goal.
+
+The component record should reference the actual code/resource using code_reference.
+
+Do not place large source files inside database metadata.
+
+Keep the code retrieval/download functionality isolated.
+
+It should eventually support:
+
+* JSX files
+* CSS files
+* supporting assets
+* component folders
+* potentially complete component packages
+
+For now, implement the cleanest working version compatible with the existing code_reference field.
+
+==================================================
+11. COMPONENT SEARCH
+
+Implement the initial component search.
+
+Search should support:
+
+* component name
+* description
+* type
+* category
+* tags
+* slug
+
+The search should work against Supabase data.
+
+Do NOT implement AI search yet.
+
+However, structure the search service so an AI-powered search layer can be added later without rebuilding the library.
+
+Search should have:
+
+* loading state
+* no-results state
+* error state
+* clear/reset functionality
+
+Search results should use the same ComponentCard component.
+
+==================================================
+12. FILTERING / CATEGORIES
+
+Support filtering/browsing by:
+
+* category
+* type
+* tags
+
+Do not create separate hardcoded data structures for each category.
+
+Categories and tags come from Supabase.
+
+==================================================
+13. TEMPLATES
+
+Connect the existing Templates route/page to Supabase.
+
+Templates should use the existing templates table.
+
+Implement:
+
+* template listing
+* template cards
+* template details if an existing detail route exists
+* loading state
+* empty state
+* error state
+
+Keep templates separate from normal components.
+
+A template represents a larger/full website experience.
+
+Do not build the premium template system yet.
+
+==================================================
+14. BULK COMPONENT IMPORTER
+
+Create a separate developer/admin import tool.
+
+This tool is NOT part of the public DevMarket UI.
+
+Its purpose is to allow us to generate a folder of components and automatically upload/register them in Supabase.
+
+Support a structure similar to:
+
+components/
+navbar-modern/
+component.jsx
+preview.png
+metadata.json
+
+button-set/
+    component.jsx
+    preview.png
+    metadata.json
+card-grid/
+    component.jsx
+    preview.png
+    metadata.json
+
+Metadata should support:
+
+{
+“name”: “Modern Navbar”,
+“slug”: “navbar-modern”,
+“type”: “navbar”,
+“category”: “Navigation”,
+“description”: “A modern responsive navigation bar.”,
+“tags”: [“navigation”, “responsive”, “modern”],
+“is_vip”: false,
+“status”: “published”
+}
+
+The importer should:
+
+1. Read component folders.
+2. Read metadata.
+3. Find/create the category.
+4. Create/update the component.
+5. Find/create tags where appropriate.
+6. Create component_tags relationships.
+7. Register the code reference.
+8. Register preview/resource information.
+9. Report successes and failures.
+10. Avoid creating duplicate records when run multiple times.
+
+The importer must be safe to run repeatedly.
+
+Do not put this importer into the public application.
+
+==================================================
+15. INITIAL COMPONENT CONTENT
+
+Create enough sample components to prove the entire system works.
+
+Do NOT attempt to create hundreds of components.
+
+Create a small but useful initial set covering:
+
+Navigation
+
+* 2–3 components
+
+Buttons
+
+* 3–5 components
+
+Cards
+
+* 3–5 components
+
+Forms
+
+* 2–3 components
+
+Hero sections
+
+* 2–3 components
+
+Footers
+
+* 2–3 components
+
+Layouts
+
+* 2–3 components
+
+Use realistic metadata and tags.
+
+The exact visual design should follow the existing DevMarket design system.
+
+The purpose is to test the complete data pipeline.
+
+==================================================
+16. LIBRARY UI
+
+Preserve the current DevMarket visual identity.
+
+Use the existing CSS variables.
+
+Do not redesign the entire site.
+
+The priority is:
+
+* clean
+* readable
+* responsive
+* functional
+* consistent
+
+Do not spend excessive time on animations or pixel-perfect styling.
+
+The component library must work well on mobile and desktop.
+
+==================================================
+17. LOADING / ERROR / EMPTY STATES
+
+Every database-driven section must have appropriate states.
+
+Loading:
+
+* clear loading indicator/skeleton
+
+Empty:
+
+* explain that no components are currently available
+
+Error:
+
+* explain that the library could not load
+* provide retry functionality
+
+Search:
+
+* show a clear no-results state
+
+Component details:
+
+* show a proper not-found state
+
+Templates:
+
+* same loading/error/empty pattern
+
+==================================================
+18. PUBLIC VS AUTHENTICATED FEATURES
+
+PUBLIC:
+
+Users should be able to:
+
+* visit homepage
+* browse components
+* search
+* filter
+* view component details
+* browse templates
+* access downloads/resources where available
+
+AUTHENTICATED:
+
+Continue using Firebase for:
+
+* profile
+* settings
+* favorites/saved items
+* future Builder access
+
+Do not require authentication just to browse the component library.
+
+==================================================
+19. DO NOT IMPLEMENT YET
+
+Explicitly DO NOT build:
+
+* Builder
+* drag-and-drop editor
+* page creation system
+* route generation inside Builder
+* component customization system
+* user project editing
+* AI Builder
+* premium features
+* VIP component functionality
+* AI search
+* feedback system
+* privacy policy
+* terms of service
+* legal pages
+* advanced account management
+* complex analytics
+
+These are later phases.
+
+VIP can remain represented in the database and UI as “Coming Soon” / “Under Construction”.
+
+==================================================
+20. FIREBASE SAFETY
+
+Do not break:
+
+* Firebase Auth
+* Google authentication
+* Firestore profile data
+* Firestore settings
+* existing favorites/saved functionality
+* existing theme system
+
+Before completing, search the repository for:
+
+firebase
+firestore
+supabase
+
+and verify the two systems are being used for their intended purposes.
+
+==================================================
+21. CODE QUALITY
+
+Use the existing project architecture.
+
+Do not rewrite unrelated code.
+
+Avoid unnecessary dependencies.
+
+Use reusable components.
+
+Keep database logic separate from presentation.
+
+Avoid duplicated Supabase queries.
+
+Use proper error handling.
+
+Do not hardcode database records into JSX.
+
+Do not expose secrets.
+
+Do not disable RLS.
+
+==================================================
+22. VERIFICATION
+
+Before declaring the task complete:
+
+1. Install dependencies.
+2. Run the production build.
+3. Verify the application starts.
+4. Verify /components works.
+5. Verify component sections load from Supabase.
+6. Verify component cards use database data.
+7. Verify component detail pages work.
+8. Verify search works.
+9. Verify filtering works.
+10. Verify templates load.
+11. Verify Firebase authentication still works.
+12. Verify settings still work.
+13. Verify the public library works without authentication.
+14. Verify mobile layout.
+15. Search for remaining hardcoded component lists.
+16. Search for accidental Supabase secret/service-role usage.
+17. Verify no RLS policies were disabled.
+18. Fix any errors introduced by this work.
+
+If an unrelated existing error exists, do not rewrite unrelated systems to fix it. Clearly report it at the end.
+
+==================================================
+FINAL PRIORITY
+
+The goal is NOT to make the project perfect.
+
+The goal is to make DevMarket ready for its FIRST PUBLIC COMPONENT-LIBRARY RELEASE.
+
+Prioritize:
+
+1. Real Supabase data
+2. Automatic category sections
+3. Component cards
+4. Component details
+5. Downloads
+6. Search
+7. Filtering
+8. Templates
+9. Bulk importing
+10. Responsive basic UI
+11. Reliability
+
+Keep the Builder and premium functionality for the later development phase.

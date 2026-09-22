@@ -1,0 +1,12 @@
+{
+  "name": "Resource Card",
+  "slug": "cards-resource",
+  "type": "card",
+  "category": "Cards",
+  "description": "A flexible resource card for articles, guides, and downloadable assets.",
+  "tags": ["cards", "content", "resources"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/cards-resource/component.jsx",
+  "preview_url": "/library/seed/cards-resource.svg"
+}

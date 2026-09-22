@@ -1,0 +1,12 @@
+{
+  "name": "Product Hero",
+  "slug": "hero-product",
+  "type": "hero",
+  "category": "Hero Sections",
+  "description": "A product hero with a focused message, supporting copy, and primary action.",
+  "tags": ["hero", "marketing", "product"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/hero-product/component.jsx",
+  "preview_url": "/library/seed/hero-product.svg"
+}

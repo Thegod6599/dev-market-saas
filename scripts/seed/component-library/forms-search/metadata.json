@@ -1,0 +1,12 @@
+{
+  "name": "Search Form",
+  "slug": "forms-search",
+  "type": "form",
+  "category": "Forms",
+  "description": "A search input pattern with a visible label and submit action.",
+  "tags": ["forms", "search", "accessible"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/forms-search/component.jsx",
+  "preview_url": "/library/seed/forms-search.svg"
+}

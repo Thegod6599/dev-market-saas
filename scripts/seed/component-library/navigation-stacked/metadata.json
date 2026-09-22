@@ -1,0 +1,12 @@
+{
+  "name": "Stacked Navigation",
+  "slug": "navigation-stacked",
+  "type": "navbar",
+  "category": "Navigation",
+  "description": "A stacked navigation pattern for content-rich products and documentation sites.",
+  "tags": ["navigation", "responsive", "layout"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/navigation-stacked/component.jsx",
+  "preview_url": "/library/seed/navigation-stacked.svg"
+}

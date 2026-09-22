@@ -1,0 +1,12 @@
+{
+  "name": "Content Layout",
+  "slug": "layouts-content",
+  "type": "layout",
+  "category": "Layouts",
+  "description": "A readable content layout for articles, documentation, and long-form pages.",
+  "tags": ["layout", "content", "typography"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/layouts-content/component.jsx",
+  "preview_url": "/library/seed/layouts-content.svg"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Simple Footer",
+  "slug": "footers-simple",
+  "type": "footer",
+  "category": "Footers",
+  "description": "A compact footer with brand context and grouped navigation links.",
+  "tags": ["footer", "navigation", "responsive"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/footers-simple/component.jsx",
+  "preview_url": "/library/seed/footers-simple.svg"
+}

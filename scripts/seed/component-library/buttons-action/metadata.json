@@ -1,0 +1,12 @@
+{
+  "name": "Action Button Set",
+  "slug": "buttons-action",
+  "type": "button",
+  "category": "Buttons",
+  "description": "A focused button set for primary, secondary, and quiet actions.",
+  "tags": ["buttons", "actions", "accessible"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/buttons-action/component.jsx",
+  "preview_url": "/library/seed/buttons-action.svg"
+}

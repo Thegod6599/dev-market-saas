@@ -1,0 +1,12 @@
+{
+  "name": "Split Hero",
+  "slug": "hero-split",
+  "type": "hero",
+  "category": "Hero Sections",
+  "description": "A split hero for pairing a strong message with a visual or product preview.",
+  "tags": ["hero", "marketing", "responsive"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/hero-split/component.jsx",
+  "preview_url": "/library/seed/hero-split.svg"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Profile Card",
+  "slug": "cards-profile",
+  "type": "card",
+  "category": "Cards",
+  "description": "A profile card for people, teams, and creator directories.",
+  "tags": ["cards", "profiles", "social"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/cards-profile/component.jsx",
+  "preview_url": "/library/seed/cards-profile.svg"
+}

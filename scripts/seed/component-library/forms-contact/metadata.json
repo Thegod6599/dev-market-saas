@@ -1,0 +1,12 @@
+{
+  "name": "Contact Form",
+  "slug": "forms-contact",
+  "type": "form",
+  "category": "Forms",
+  "description": "A compact contact form with labeled fields and a direct submit action.",
+  "tags": ["forms", "contact", "accessible"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/forms-contact/component.jsx",
+  "preview_url": "/library/seed/forms-contact.svg"
+}

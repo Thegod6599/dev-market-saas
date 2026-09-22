@@ -48,6 +48,101 @@
   font-size: 1.05rem;
 }
 
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 2rem 0 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+}
+
+.searchField {
+  display: flex;
+  flex: 1 1 300px;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.6rem;
+  padding: 0 0.8rem;
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+}
+
+.searchField:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-hover-highlight);
+}
+
+.searchField input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: var(--color-text-primary);
+  background: transparent;
+  font: inherit;
+}
+
+.filterSelects {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.selectField select {
+  min-height: 2.6rem;
+  max-width: 10rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  font: inherit;
+}
+
+.clearButton,
+.filterHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.6rem;
+  padding: 0 0.65rem;
+  border: 0;
+  border-radius: var(--radius-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.clearButton {
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  color: var(--color-primary);
+  background: var(--color-surface-secondary);
+}
+
+.filterHint {
+  color: var(--color-text-light);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .section {
   margin-top: 3.75rem;
   scroll-margin-top: 6rem;
@@ -345,6 +440,39 @@
   gap: 0.75rem;
 }
 
+.templateCard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-small);
+  transition: transform var(--transition-duration-short) ease, box-shadow var(--transition-duration-short) ease;
+}
+
+.templateCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.templateBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.2rem;
+}
+
+.templateCard h3 {
+  margin: 0.35rem 0 0;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.3rem;
+}
+
+.templateBody .description {
+  flex: 1;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -370,6 +498,17 @@
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .filters,
+  .filterSelects {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .selectField select {
+    width: 100%;
+    max-width: none;
   }
 
   .sectionHeader {

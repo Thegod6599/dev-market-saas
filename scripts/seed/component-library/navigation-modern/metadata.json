@@ -1,0 +1,12 @@
+{
+  "name": "Modern Navbar",
+  "slug": "navigation-modern",
+  "type": "navbar",
+  "category": "Navigation",
+  "description": "A responsive navigation bar with clear active states and a compact mobile layout.",
+  "tags": ["navigation", "responsive", "modern"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/navigation-modern/component.jsx",
+  "preview_url": "/library/seed/navigation-modern.svg"
+}

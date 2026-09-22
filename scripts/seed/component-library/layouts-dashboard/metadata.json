@@ -1,0 +1,12 @@
+{
+  "name": "Dashboard Layout",
+  "slug": "layouts-dashboard",
+  "type": "layout",
+  "category": "Layouts",
+  "description": "A responsive dashboard shell for navigating dense product information.",
+  "tags": ["layout", "dashboard", "responsive"],
+  "is_vip": false,
+  "status": "published",
+  "code_reference": "seed/component-library/layouts-dashboard/component.jsx",
+  "preview_url": "/library/seed/layouts-dashboard.svg"
+}

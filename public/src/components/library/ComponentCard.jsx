@@ -30,6 +30,7 @@ export default function ComponentCard({ component }) {
           <div>
             <div className={styles.eyebrow}>
               {component.type || 'Component'}
+              {component.category?.name ? ` · ${component.category.name}` : ''}
               {component.is_vip ? (
                 <span className={styles.vipBadge}>
                   <LockKeyhole size={12} aria-hidden="true" />
@@ -65,7 +66,7 @@ export default function ComponentCard({ component }) {
             <Eye size={16} aria-hidden="true" />
             Details
           </Link>
-          {resourceUrl ? (
+          {resourceUrl && !component.is_vip ? (
             <a
               href={resourceUrl}
               className={styles.primaryButton}
@@ -79,7 +80,7 @@ export default function ComponentCard({ component }) {
           ) : (
             <span className={styles.disabledButton} title="No downloadable resource is linked yet">
               <Download size={16} aria-hidden="true" />
-              Download soon
+              {component.is_vip ? 'Coming soon' : 'Download soon'}
             </span>
           )}
         </div>
