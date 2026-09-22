@@ -21,3 +21,9 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+VITE_SUPABASE_URL = "https://wpserowroctgguicilsp.supabase.co/"
+VITE_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_edcEccMcV9K4G3sb4VklfA_S-ivCby2"
