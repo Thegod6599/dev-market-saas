@@ -204,3 +204,14 @@ export function getComponentResourceUrl(component) {
   const base = import.meta.env.BASE_URL || '/';
   return `${base.replace(/\/?$/, '/')}${reference.replace(/^\/+/, '')}`;
 }
+
+export function getComponentResourceFilename(component) {
+  const reference = String(component?.code_reference ?? '');
+  const filename = reference.split('/').pop()?.split('?')[0];
+
+  if (filename && /\.[a-z0-9]+$/i.test(filename)) {
+    return filename;
+  }
+
+  return `${component?.slug || 'component'}.jsx`;
+}

@@ -1,12 +1,16 @@
 import { ArrowUpRight, Download, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { getComponentResourceUrl } from '../../services/libraryService';
+import {
+  getComponentResourceFilename,
+  getComponentResourceUrl,
+} from '../../services/libraryService';
 import styles from './library.module.css';
 
 export default function TemplateCard({ template }) {
   const [hasFailed, setHasFailed] = useState(false);
   const resourceUrl = getComponentResourceUrl(template);
+  const resourceFilename = getComponentResourceFilename(template);
 
   return (
     <article className={styles.templateCard}>
@@ -48,7 +52,7 @@ export default function TemplateCard({ template }) {
             Details
           </Link>
           {resourceUrl ? (
-            <a href={resourceUrl} className={styles.primaryButton} target="_blank" rel="noreferrer" download>
+            <a href={resourceUrl} className={styles.primaryButton} download={resourceFilename}>
               <Download size={16} aria-hidden="true" />
               Download
             </a>

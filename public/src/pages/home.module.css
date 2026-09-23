@@ -1,0 +1,209 @@
+.page {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 4.5rem 0 5rem;
+  color: var(--color-text-primary);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(260px, 0.7fr);
+  align-items: end;
+  gap: 3rem;
+  padding: 2.5rem 0 3rem;
+}
+
+.kicker {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hero h1 {
+  max-width: 760px;
+  margin: 0.55rem 0 1rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 6.4rem);
+  line-height: 0.94;
+  letter-spacing: -0.06em;
+}
+
+.hero p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.searchCard {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-small);
+}
+
+.searchCard p {
+  margin: 0 0 0.8rem;
+  font-size: 0.88rem;
+}
+
+.searchForm {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.searchInput {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-primary);
+  background: var(--color-surface-secondary);
+  font: inherit;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-hover-highlight);
+}
+
+.searchButton,
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-medium);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.searchButton,
+.primaryButton {
+  border: 0;
+  color: var(--color-text-inverted);
+  background: var(--color-primary);
+  cursor: pointer;
+}
+
+.secondaryButton {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 0 0 2.5rem;
+}
+
+.stat {
+  min-width: 8rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface);
+}
+
+.stat strong {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.45rem;
+}
+
+.stat span {
+  color: var(--color-text-light);
+  font-size: 0.78rem;
+}
+
+.sectionIntro {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: -2rem;
+}
+
+.sectionIntro h2 {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.sectionIntro p {
+  margin: 0.4rem 0 0;
+  color: var(--color-text-secondary);
+}
+
+.sectionIntro a {
+  color: var(--color-primary);
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.error {
+  margin: 2rem 0;
+}
+
+@media (max-width: 760px) {
+  .page {
+    width: min(100% - 1.25rem, 1180px);
+    padding-top: 2rem;
+  }
+
+  .hero {
+    display: block;
+    padding-top: 1rem;
+  }
+
+  .searchCard {
+    margin-top: 2rem;
+  }
+
+  .sectionIntro {
+    display: block;
+    margin-bottom: -2rem;
+  }
+
+  .sectionIntro a {
+    display: inline-block;
+    margin-top: 0.8rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .searchForm {
+    flex-direction: column;
+  }
+
+  .searchButton {
+    width: 100%;
+  }
+}

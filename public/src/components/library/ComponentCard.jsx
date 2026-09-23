@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Download, Eye, LockKeyhole } from 'lucide-react';
 import { useState } from 'react';
-import { getComponentResourceUrl } from '../../services/libraryService';
+import {
+  getComponentResourceFilename,
+  getComponentResourceUrl,
+} from '../../services/libraryService';
 import styles from './library.module.css';
 
 function Preview({ component }) {
@@ -29,6 +32,7 @@ function Preview({ component }) {
 
 export default function ComponentCard({ component }) {
   const resourceUrl = getComponentResourceUrl(component);
+  const resourceFilename = getComponentResourceFilename(component);
 
   return (
     <article className={styles.card}>
@@ -78,9 +82,7 @@ export default function ComponentCard({ component }) {
             <a
               href={resourceUrl}
               className={styles.primaryButton}
-              target="_blank"
-              rel="noreferrer"
-              download
+              download={resourceFilename}
             >
               <Download size={16} aria-hidden="true" />
               Download

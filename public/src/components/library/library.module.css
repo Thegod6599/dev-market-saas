@@ -174,6 +174,66 @@
   white-space: nowrap;
 }
 
+.sectionTools {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.carouselControls {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.carouselButton {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: color var(--transition-duration-short) ease,
+    border-color var(--transition-duration-short) ease,
+    background-color var(--transition-duration-short) ease;
+}
+
+.carouselButton:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.carouselButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.carouselViewport {
+  overflow-x: auto;
+  margin: 0 -0.25rem;
+  padding: 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-dark) transparent;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+}
+
+.carouselTrack {
+  display: flex;
+  gap: 1.25rem;
+  min-width: max-content;
+}
+
+.carouselTrack > .card {
+  flex: 0 0 calc((min(1180px, 100vw - 2rem) - 2.5rem) / 3);
+  max-width: 370px;
+  scroll-snap-align: start;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -483,6 +543,10 @@
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .carouselTrack > .card {
+    flex-basis: calc((min(100vw - 2rem, 1180px) - 1.25rem) / 2);
+  }
 }
 
 @media (max-width: 620px) {
@@ -498,6 +562,14 @@
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .carouselTrack {
+    gap: 0.85rem;
+  }
+
+  .carouselTrack > .card {
+    flex-basis: min(82vw, 330px);
   }
 
   .filters,
@@ -519,5 +591,10 @@
     align-items: start;
     flex-direction: column;
     gap: 0.25rem;
+  }
+
+  .sectionTools {
+    width: 100%;
+    justify-content: space-between;
   }
 }

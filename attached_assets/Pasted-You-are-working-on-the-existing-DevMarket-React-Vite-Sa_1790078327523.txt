@@ -1,0 +1,737 @@
+You are working on the existing DevMarket React + Vite SaaS project.
+
+This is a focused polish/fix pass on the existing implementation. Do not redesign the architecture or rewrite unrelated parts of the application. Preserve the current hybrid Firebase + Supabase architecture and existing DevMarket visual identity.
+
+⸻
+
+IMPORTANT ARCHITECTURE
+
+DevMarket uses a HYBRID architecture.
+
+Firebase
+
+Keep Firebase responsible for:
+
+* Firebase Authentication
+* Google sign-in
+* Firebase Firestore user/profile data
+* User settings
+* Favorites/saved items
+* Other existing personal/user-owned data
+
+Do not migrate these to Supabase.
+Do not replace Firebase Authentication.
+
+Supabase
+
+Supabase PostgreSQL is responsible for:
+
+* Shared component library data
+* Categories
+* Components
+* Tags
+* Component/tag relationships
+* Templates
+* Future Builder data
+
+Existing Supabase schema and RLS policies are already configured.
+
+Do not recreate the database.
+Do not delete existing tables.
+Do not disable RLS.
+Do not introduce a second database architecture.
+
+⸻
+
+CURRENT STATE
+
+The library foundation has already been implemented and verified.
+
+Currently Supabase contains:
+
+* 16 published components
+* 7 categories
+* 25 tags
+* 48 component-tag relationships
+
+Already implemented:
+
+* Supabase-backed component loading
+* Categories
+* Tags
+* Component/tag relationships
+* Search foundation
+* Filters
+* Reusable library sections
+* Empty states
+* Under-construction states
+* Component cards
+* Component detail pages
+* Metadata
+* VIP/Coming Soon states
+* Resource links
+* Safe preview fallbacks
+* Public template listing/detail routes
+* Developer-only component importer
+* Metadata validation
+* Category/tag creation
+* Slug-based upserts
+* Stable component IDs on reruns
+* Relationship refresh
+* Failure reporting
+* Responsive mobile filter layout
+* Firebase architecture preserved
+* Supabase schema/RLS preserved
+* Production build passes
+* Importer TypeScript check passes
+* Desktop/mobile previews verified
+* Component detail route verified
+* No browser console/workflow startup errors
+
+Now fix the following issues.
+
+⸻
+
+1. FIX COMPONENT DOWNLOADS
+
+Current problem:
+
+When downloading a component, the downloaded file is incorrectly becoming something like:
+
+file.jsx.html
+
+This needs to be fixed.
+
+The download system must provide the actual component source/resource in the correct format.
+
+Requirements:
+
+* .jsx files should download as .jsx
+* .css files should download as .css
+* Do not accidentally wrap JSX inside an HTML document
+* Do not append .html to component source files
+* Preserve the actual component contents
+* Preserve the existing code_reference/resource architecture
+* Do not put large source-code blobs into PostgreSQL metadata
+* Keep download/resource retrieval separate from the visual ComponentCard
+* Make the implementation extensible for future:
+    * JSX
+    * CSS
+    * assets
+    * multiple files
+    * folders
+    * complete component packages
+
+If the current implementation uses a resource URL, inspect how that resource is being served and ensure the browser receives the correct content type and filename.
+
+Test the actual downloaded file, not just whether clicking the button produces a download.
+
+⸻
+
+2. TURN LIBRARY SECTIONS INTO REAL CAROUSELS
+
+Current problem:
+
+Library sections are currently displaying cards in one horizontal line rather than behaving like actual carousels.
+
+Convert the existing section layout into a proper reusable horizontal carousel.
+
+Requirements:
+
+* Horizontal scrolling
+* Left/right navigation controls
+* Smooth scrolling
+* Responsive behavior
+* Appropriate card sizing
+* Correct overflow handling
+* Controls should be hidden/disabled when scrolling isn’t possible
+* Work with different numbers of components
+* Work on desktop
+* Work on mobile/touch devices
+* Do not break existing ComponentCard styling
+* Reuse the existing design tokens/CSS variables
+* Do not create a completely different visual design
+
+The carousel should remain reusable because categories are dynamically loaded from Supabase.
+
+⸻
+
+3. FIX SEARCH BEHAVIOR
+
+Current problem:
+
+When searching something such as:
+
+nav
+
+matching components may appear in the Navigation section, but unrelated sections such as Buttons still appear empty.
+
+That is incorrect.
+
+The filtering/search pipeline should work like this:
+
+Supabase components
+        ↓
+search/filter components
+        ↓
+remove non-matching components
+        ↓
+group remaining components by category
+        ↓
+render only categories containing results
+
+For example, if nav only matches Navigation components:
+
+Show:
+
+Navigation
+[matching components]
+
+Do NOT show:
+
+Buttons
+[empty]
+Cards
+[empty]
+Forms
+[empty]
+
+Categories with zero matching components must not be rendered during a search/filter result.
+
+Requirements:
+
+* Search component name
+* Search description
+* Search type
+* Search category
+* Search slug
+* Search tags
+* Case-insensitive matching
+* Partial matching
+* Search should update the displayed sections
+* Empty categories should disappear
+* No-results state should appear when nothing matches
+* Resetting search should restore all applicable sections
+* Existing filters must work together with search
+
+Do not hardcode special cases such as:
+
+if search === "nav"
+
+This must be generic.
+
+⸻
+
+4. FIX THE HOME PAGE
+
+Current problem:
+
+The Home page is currently fully empty.
+
+Connect the Home page to the existing Supabase library data.
+
+The existing DevMarket home page concept is search-first.
+
+Keep that design direction.
+
+The home page should provide useful library content such as:
+
+* Search
+* Featured/relevant component content
+* Component categories/sections where appropriate
+* Links into the component library
+* Existing DevMarket navigation
+
+Use actual Supabase data.
+
+Do NOT invent fake metrics such as:
+
+* fake download counts
+* fake popularity
+* fake user counts
+* fake ratings
+
+unless those fields actually exist in the database.
+
+If there is no real popularity/featured field, use a deterministic/simple approach based on existing data rather than pretending it represents popularity.
+
+Do not redesign the homepage from scratch.
+
+⸻
+
+5. COMPONENT PREVIEWS HAVE NOT BEEN CREATED YET
+
+Current problem:
+
+The library has preview support, but the actual preview images for the components have not been created/registered yet.
+
+Create proper preview images for the existing published components.
+
+There are currently 16 published components.
+
+Requirements:
+
+* Every published component should have an appropriate preview
+* Preview should show the actual component
+* Preview should be visually readable
+* Use a consistent aspect ratio/format
+* Preview should work in ComponentCard
+* Preview should work on the component detail page
+* Preview should have a safe fallback if missing
+* Register/upload the previews using the project’s existing resource/storage implementation
+* Update the appropriate Supabase preview_url values
+* Do not store the image itself inside PostgreSQL
+* Do not break the existing database schema
+
+Use the existing DevMarket design system and component appearance.
+
+Do not generate random decorative screenshots that don’t represent the actual component.
+
+After creating previews, verify that they actually load from the public library.
+
+⸻
+
+6. SMALL STYLING/POLISH FIXES
+
+There are also several small styling issues in the current implementation.
+
+Inspect the library on:
+
+* Desktop
+* Mobile
+* Component cards
+* Detail pages
+* Search
+* Filters
+* Carousels
+* Home page
+* Empty states
+* Loading states
+* Error states
+
+Fix obvious visual problems such as:
+
+* spacing
+* alignment
+* overflow
+* button sizing
+* responsive layout
+* text wrapping
+* inconsistent margins/padding
+* carousel control positioning
+* mobile filter layout
+* card sizing
+* visual consistency
+
+Use the existing CSS variables/design tokens.
+
+Do NOT perform a major redesign.
+
+⸻
+
+7. ADD BUILDER “COMING SOON”
+
+The Builder is not ready to be implemented yet.
+
+Do NOT build the Builder.
+
+Instead, make the existing Builder navigation/entry point clearly communicate that the Builder is Coming Soon.
+
+Requirements:
+
+* Keep the existing Build navigation item
+* When users access the Builder entry point, show a polished Coming Soon state
+* Explain that the DevMarket Builder is under development
+* Keep the page consistent with the existing DevMarket visual identity
+* Make it responsive
+* Do not implement:
+    * drag and drop
+    * page creation
+    * route creation
+    * project editing
+    * component customization
+    * asset management
+    * code generation
+    * Builder database functionality
+
+This is ONLY a Coming Soon placeholder.
+
+Do not remove the existing future Builder architecture.
+
+⸻
+
+8. CREATE component-import.md
+
+Create a documentation file named:
+
+component-import.md
+
+Place it in an appropriate top-level documentation location in the repository. Prefer the repository root unless an existing docs structure clearly makes more sense.
+
+The document should explain exactly how a developer adds/imports components into DevMarket.
+
+Include:
+
+Folder structure
+
+Example:
+
+devmarket-components/
+└── components/
+    └── navbar-modern/
+        ├── component.jsx
+        ├── styles.css
+        ├── preview.png
+        └── metadata.json
+
+Explain each file.
+
+metadata.json
+
+Include a complete example:
+
+{
+  "name": "Modern Navbar",
+  "slug": "navbar-modern",
+  "type": "navbar",
+  "category": "Navigation",
+  "description": "A modern responsive navigation bar.",
+  "tags": [
+    "navigation",
+    "responsive",
+    "modern"
+  ],
+  "is_vip": false,
+  "status": "published"
+}
+
+Explain every field.
+
+Slugs
+
+Explain valid slug formatting and that the slug is used for:
+
+/components/:slug
+
+Categories
+
+Explain that categories come from Supabase and that adding a category does not require manually editing JSX.
+
+Tags
+
+Explain how tags work and how they are associated through the component-tag relationship.
+
+Previews
+
+Explain:
+
+* what preview.png is
+* what it should contain
+* recommended consistency
+* that previews are stored as resources rather than database blobs
+
+Component source
+
+Explain that actual JSX/CSS should remain outside PostgreSQL metadata.
+
+Import process
+
+Explain that the importer:
+
+1. Reads component folders
+2. Validates metadata
+3. Finds/creates category
+4. Creates/updates component
+5. Finds/creates tags
+6. Refreshes component-tag relationships
+7. Registers code/resource references
+8. Registers preview/resource
+9. Reports successes
+10. Reports failures
+
+Re-running imports
+
+Explain that imports are idempotent and that the same slug should update the existing component rather than create duplicates.
+
+Explain stable IDs.
+
+Updating components
+
+Explain how to update an existing component without creating duplicates.
+
+Publishing
+
+Explain:
+
+published
+draft
+archived
+
+and which status makes a component publicly visible.
+
+VIP
+
+Explain that:
+
+"is_vip": true
+
+currently represents a UI/status indicator only and does not implement payment or premium functionality.
+
+Complete example
+
+Provide a complete example component folder and metadata.
+
+Pre-import checklist
+
+Include:
+
+* component works
+* CSS works
+* preview exists
+* valid metadata JSON
+* slug
+* category
+* tags
+* description
+* VIP status
+* publish status
+
+Post-import checklist
+
+Include:
+
+* component appears in correct section
+* preview loads
+* tags appear
+* search works
+* filters work
+* detail page works
+* download works
+
+Architecture reminder
+
+Document the current hybrid architecture:
+
+Firebase Authentication
+        ↓
+Firebase user/personal data
+Supabase PostgreSQL
+        ↓
+Shared DevMarket library + future Builder data
+Component resources
+        ↓
+Actual JSX/CSS/assets/previews
+
+Also explicitly document:
+
+Never put the Supabase service-role/secret key into frontend VITE_ environment variables.
+
+⸻
+
+9. SECURITY REQUIREMENTS
+
+Do not expose secrets.
+
+The frontend may use the Supabase publishable/anonymous client key where appropriate.
+
+Never put:
+
+SUPABASE_SERVICE_ROLE_KEY
+
+or a Supabase secret key into:
+
+VITE_*
+
+Do not commit secret keys.
+
+If the importer requires a service-role/secret key, it must remain server-side/private, such as a secure environment variable.
+
+Do not put the service-role key into:
+
+* React code
+* browser code
+* public metadata
+* Git
+* documentation examples
+* client-side environment variables
+
+Do not weaken RLS to make the importer or library work.
+
+⸻
+
+10. PRESERVE FIREBASE
+
+Before finishing, verify that these still work:
+
+* Google authentication
+* Firebase Auth
+* Firestore profile data
+* Firestore settings
+* Theme settings
+* Favorites/saved data
+* Existing authenticated behavior
+
+Do not replace Firestore with Supabase for these systems.
+
+⸻
+
+11. DO NOT BUILD THESE YET
+
+Do NOT implement:
+
+* Full Builder
+* Drag/drop Builder
+* Project creation
+* Page creation
+* Route creation
+* Builder customization
+* Asset management
+* AI Builder
+* AI search
+* Premium subscriptions
+* Payment system
+* VIP purchasing
+* VIP access control
+* Feedback system
+* Legal pages
+* Privacy system
+* Terms system
+* Advanced analytics
+
+VIP/premium can remain visually marked as Coming Soon.
+
+Builder should remain Coming Soon.
+
+⸻
+
+12. TESTING / ACCEPTANCE CRITERIA
+
+Before finishing, test the actual application.
+
+Library
+
+Verify:
+
+* /components loads
+* Categories load from Supabase
+* Published components load
+* Tags load
+* Relationships work
+* Component cards work
+* Component detail pages work
+* Search works
+* Filters work
+* Search + filters work together
+* Empty categories disappear during search/filtering
+* No-results state works
+* Loading state works
+* Error/retry state works
+* Carousels work
+* Mobile carousel behavior works
+
+Downloads
+
+Actually click download and verify:
+
+component.jsx → component.jsx
+styles.css → styles.css
+
+No:
+
+component.jsx.html
+
+or other incorrect extensions.
+
+Previews
+
+Verify all published components have working previews.
+
+Home
+
+Verify / is no longer empty.
+
+Builder
+
+Verify Builder entry point displays the Coming Soon state.
+
+Templates
+
+Keep the existing Templates Coming Soon behavior if the templates table remains empty.
+
+Do not invent template records just to make the page non-empty.
+
+Firebase
+
+Verify authentication/settings/profile behavior remains intact.
+
+Responsive
+
+Verify:
+
+* desktop
+* tablet-sized layout
+* mobile
+
+Build
+
+Run the production build.
+
+Run the importer TypeScript check.
+
+Fix errors introduced by this task.
+
+Do not spend time fixing unrelated pre-existing issues unless they prevent the requested functionality from working.
+
+⸻
+
+13. IMPORTANT IMPLEMENTATION RULES
+
+Before changing anything:
+
+1. Inspect the existing implementation.
+2. Reuse existing components/services/hooks where possible.
+3. Reuse the existing Supabase client.
+4. Reuse existing CSS variables.
+5. Reuse existing ComponentCard.
+6. Reuse existing library data-loading logic.
+7. Reuse existing importer functionality.
+8. Do not duplicate Supabase queries unnecessarily.
+9. Do not hardcode component/category lists in JSX.
+10. Keep database logic separate from presentation.
+11. Keep downloads separate from cards.
+12. Keep the importer developer-only.
+13. Do not create unnecessary dependencies.
+14. Do not rewrite unrelated parts of DevMarket.
+
+⸻
+
+PRIORITY ORDER
+
+Complete the work in this order:
+
+1. Fix component downloads
+2. Fix search/filter section logic
+3. Implement real section carousels
+4. Create/register component previews
+5. Populate the Home page
+6. Add Builder Coming Soon
+7. Fix responsive/small styling issues
+8. Create component-import.md
+9. Run full verification
+
+The goal is to leave DevMarket with a stable, polished, usable public component library ready for release, while keeping the Builder and premium functionality for later development.
+
+At the end, report:
+
+* files changed
+* files created
+* database changes, if any
+* preview resources created
+* download behavior verified
+* search/filter behavior verified
+* Home page status
+* Builder Coming Soon status
+* importer documentation location
+* production build result
+* any remaining issues
+* any pre-existing issues that were intentionally left untouched

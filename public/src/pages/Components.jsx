@@ -1,5 +1,6 @@
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import LibrarySection from '../components/library/LibrarySection';
 import {
   LibraryEmpty,
@@ -13,7 +14,7 @@ import {
 } from '../services/libraryService';
 import styles from '../components/library/library.module.css';
 
-function groupComponents(categories, components) {
+function groupComponents(categories, components, hasFilters) {
   const groups = categories.map((category) => ({
     ...category,
     components: components.filter((component) => component.category_id === category.id),
@@ -32,19 +33,21 @@ function groupComponents(categories, components) {
     });
   }
 
-  return groups;
+  return hasFilters ? groups.filter((group) => group.components.length > 0) : groups;
 }
 
 function Components() {
+  const [searchParams] = useSearchParams();
   const [library, setLibrary] = useState({ categories: [], components: [] });
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [filters, setFilters] = useState({
-    query: '',
+    query: searchParams.get('query') ?? '',
     categoryId: '',
     type: '',
     tagId: '',
   });
+  const hasFilters = Object.values(filters).some(Boolean);
 
   const loadLibrary = useCallback(async () => {
     setStatus('loading');
@@ -64,8 +67,12 @@ function Components() {
   }, [loadLibrary]);
 
   const groups = useMemo(
-    () => groupComponents(library.categories, filterComponents(library.components, filters)),
-    [library.categories, library.components, filters],
+    () => groupComponents(
+      library.categories,
+      filterComponents(library.components, filters),
+      hasFilters,
+    ),
+    [library.categories, library.components, filters, hasFilters],
   );
   const filteredComponents = useMemo(
     () => filterComponents(library.components, filters),
@@ -75,7 +82,6 @@ function Components() {
     () => getComponentFilterOptions(library.components),
     [library.components],
   );
-  const hasFilters = Object.values(filters).some(Boolean);
   const updateFilter = (key, value) => setFilters((current) => ({ ...current, [key]: value }));
   const clearFilters = () => setFilters({ query: '', categoryId: '', type: '', tagId: '' });
 

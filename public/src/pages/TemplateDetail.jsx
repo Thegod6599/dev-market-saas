@@ -2,6 +2,7 @@ import { ArrowLeft, Download, ExternalLink } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  getComponentResourceFilename,
   getComponentResourceUrl,
   getTemplateBySlug,
 } from '../services/libraryService';
@@ -77,6 +78,7 @@ function TemplateDetail() {
   }
 
   const resourceUrl = getComponentResourceUrl(template);
+  const resourceFilename = getComponentResourceFilename(template);
   return (
     <main className={styles.detailPage}>
       <Link to="/templates" className={styles.backLink}>
@@ -93,7 +95,7 @@ function TemplateDetail() {
       <TemplatePreview template={template} />
       <div className={styles.detailActions}>
         {resourceUrl ? (
-          <a href={resourceUrl} className={styles.primaryButton} target="_blank" rel="noreferrer" download>
+          <a href={resourceUrl} className={styles.primaryButton} download={resourceFilename}>
             <Download size={16} aria-hidden="true" />
             Download resource
           </a>
