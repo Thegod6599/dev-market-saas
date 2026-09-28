@@ -138,11 +138,14 @@ function validateMetadata(value: unknown, folderName: string): ComponentMetadata
 
 async function readComponentFolders(directory: string) {
   const entries = await readdir(directory, { withFileTypes: true });
-  const folders = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+  const isSingleComponent = entries.some((entry) => entry.isFile() && entry.name === "metadata.json");
+  const folders = isSingleComponent
+    ? [path.basename(directory)]
+    : entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
   const results: Array<{ folderName: string; directory: string; metadata: ComponentMetadata }> = [];
 
   for (const folderName of folders) {
-    const folderPath = path.join(directory, folderName);
+    const folderPath = isSingleComponent ? directory : path.join(directory, folderName);
     const metadataPath = path.join(folderPath, "metadata.json");
     const componentPath = path.join(folderPath, "component.jsx");
     const cssPath = path.join(folderPath, "component.css");
@@ -169,7 +172,17 @@ async function readComponentFolders(directory: string) {
     const outputDirectory = path.join(repositoryRoot, "public", "public", "library", "packages");
     await mkdir(outputDirectory, { recursive: true });
     await writeFile(path.join(outputDirectory, metadata.slug + ".zip"), archive);
-    results.push({ folderName, directory: folderPath, metadata });
+    let importedMetadata = metadata;
+    try {
+      const preview = await readFile(path.join(folderPath, "preview.svg"));
+      const previewDirectory = path.join(repositoryRoot, "public", "public", "library", "previews");
+      await mkdir(previewDirectory, { recursive: true });
+      await writeFile(path.join(previewDirectory, metadata.slug + ".svg"), preview);
+      importedMetadata = { ...metadata, preview_url: "/library/previews/" + metadata.slug + ".svg" };
+    } catch (error) {
+      if (!(error && typeof error === "object" && "code" in error && error.code === "ENOENT")) throw error;
+    }
+    results.push({ folderName, directory: folderPath, metadata: importedMetadata });
   }
 
   return results;
