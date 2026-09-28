@@ -217,7 +217,7 @@ export function getComponentResourceFilename(component) {
 }
 
 export function getComponentPackageUrl(component) {
-  return /\\.zip(?:[?#].*)?$/i.test(String(component?.code_reference ?? ''))
+  return /\.zip(?:[?#].*)?$/i.test(String(component?.code_reference ?? ''))
     ? getComponentResourceUrl(component)
     : null;
 }

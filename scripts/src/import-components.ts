@@ -1,4 +1,5 @@
-import { readdir, readFile, stat } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -54,6 +55,62 @@ function requireConfig() {
   }
 }
 
+
+function crc32(bytes: Buffer) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function makeZip(folder: string, files: Array<{ name: string; content: string }>) {
+  const local: Buffer[] = [];
+  const central: Buffer[] = [];
+  let offset = 0;
+  for (const file of files) {
+    const name = Buffer.from(folder + "/" + file.name, "utf8");
+    const body = Buffer.from(file.content, "utf8");
+    const crc = crc32(body);
+    const header = Buffer.alloc(30);
+    header.writeUInt32LE(0x04034b50, 0);
+    header.writeUInt16LE(20, 4);
+    header.writeUInt16LE(0x0800, 6);
+    header.writeUInt32LE(crc, 14);
+    header.writeUInt32LE(body.length, 18);
+    header.writeUInt32LE(body.length, 22);
+    header.writeUInt16LE(name.length, 26);
+    local.push(header, name, body);
+    const entry = Buffer.alloc(46);
+    entry.writeUInt32LE(0x02014b50, 0);
+    entry.writeUInt16LE(20, 4);
+    entry.writeUInt16LE(20, 6);
+    entry.writeUInt16LE(0x0800, 8);
+    entry.writeUInt32LE(crc, 16);
+    entry.writeUInt32LE(body.length, 20);
+    entry.writeUInt32LE(body.length, 24);
+    entry.writeUInt16LE(name.length, 28);
+    entry.writeUInt32LE(offset, 42);
+    central.push(entry, name);
+    offset += header.length + name.length + body.length;
+  }
+  const directory = Buffer.concat(central);
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(files.length, 8);
+  end.writeUInt16LE(files.length, 10);
+  end.writeUInt32LE(directory.length, 12);
+  end.writeUInt32LE(offset, 16);
+  return Buffer.concat([...local, directory, end]);
+}
+
+function packageName(name: string, slug: string) {
+  const words = (name || slug).match(/[A-Za-z0-9]+/g) ?? [];
+  const value = words.map((word) => word[0].toUpperCase() + word.slice(1)).join("") || "Component";
+  return /^[A-Za-z_$]/.test(value) ? value : "Component" + value;
+}
+
 function validateMetadata(value: unknown, folderName: string): ComponentMetadata {
   if (!value || typeof value !== "object") fail(`${folderName}: metadata.json must contain an object.`);
   const metadata = value as Partial<ComponentMetadata>;
@@ -91,6 +148,25 @@ async function readComponentFolders(directory: string) {
     const metadata = validateMetadata(JSON.parse(await readFile(metadataPath, "utf8")), folderName);
 
     await Promise.all([stat(componentPath), stat(cssPath), stat(readmePath)]);
+    const [jsx, css, readme] = await Promise.all([
+      readFile(componentPath, "utf8"), readFile(cssPath, "utf8"), readFile(readmePath, "utf8"),
+    ]);
+    if (!jsx.trim() || !css.trim() || !readme.trim()) fail(`${folderName}: JSX, CSS, and README must not be empty.`);
+    if (!jsx.includes("./component.css")) fail(`${folderName}: component.jsx must import ./component.css.`);
+    if (/devmarket|supabase|firebase/i.test(jsx + "\n" + css)) {
+      fail(`${folderName}: component source must not contain DevMarket or service-specific logic.`);
+    }
+    const componentName = packageName(metadata.name, metadata.slug);
+    const packagedJsx = jsx.replaceAll("./component.css", "./" + componentName + ".css");
+    const archive = makeZip(componentName, [
+      { name: componentName + ".jsx", content: packagedJsx },
+      { name: componentName + ".css", content: css },
+      { name: "README.md", content: readme },
+    ]);
+    const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+    const outputDirectory = path.join(repositoryRoot, "public", "public", "library", "packages");
+    await mkdir(outputDirectory, { recursive: true });
+    await writeFile(path.join(outputDirectory, metadata.slug + ".zip"), archive);
     results.push({ folderName, directory: folderPath, metadata });
   }
 
