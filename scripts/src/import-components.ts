@@ -77,6 +77,7 @@ function makeZip(folder: string, files: Array<{ name: string; content: string }>
     header.writeUInt32LE(0x04034b50, 0);
     header.writeUInt16LE(20, 4);
     header.writeUInt16LE(0x0800, 6);
+    header.writeUInt16LE(0x0021, 12);
     header.writeUInt32LE(crc, 14);
     header.writeUInt32LE(body.length, 18);
     header.writeUInt32LE(body.length, 22);
@@ -87,6 +88,7 @@ function makeZip(folder: string, files: Array<{ name: string; content: string }>
     entry.writeUInt16LE(20, 4);
     entry.writeUInt16LE(20, 6);
     entry.writeUInt16LE(0x0800, 8);
+    entry.writeUInt16LE(0x0021, 14);
     entry.writeUInt32LE(crc, 16);
     entry.writeUInt32LE(body.length, 20);
     entry.writeUInt32LE(body.length, 24);
