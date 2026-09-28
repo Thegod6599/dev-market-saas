@@ -1,18 +1,14 @@
 # DevMarket sample library
 
-The folders under `scripts/seed/component-library/` are safe-to-rerun sample
-records for the developer importer. Each folder contains:
+Every importable component folder includes `metadata.json`, `component.jsx`,
+`component.css`, and `README.md`. The importer checks this package contract
+before writing component rows and stores `library/packages/<slug>.zip` in the
+existing `components.code_reference` field. A sample preview is served from
+`public/public/library/previews`.
 
-- `metadata.json` — the Supabase component metadata
-- `component.jsx` — the referenced component source
+The Firebase Hosting configuration builds the existing Vite frontend and
+serves static library resources from its output. No Supabase schema, Storage
+bucket, or service-role key in browser code is needed.
 
-Run the importer with a Supabase service-role key kept in the shell environment:
-
-```sh
-SUPABASE_URL="https://your-project.supabase.co" \
-SUPABASE_SERVICE_ROLE_KEY="..." \
-pnpm --filter @workspace/scripts import-components scripts/seed/component-library
-```
-
-The service-role key is only for this developer tool. Never use it in the
-browser or store it in a `VITE_` variable.
+The developer importer requires a server-side service-role key. Never use a
+`VITE_` variable for it.

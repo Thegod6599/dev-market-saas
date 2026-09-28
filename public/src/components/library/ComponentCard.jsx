@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight, Download, Eye, LockKeyhole } from 'lucide-react';
 import { useState } from 'react';
 import {
+  getComponentPackageFilename,
+  getComponentPackageUrl,
   getComponentResourceFilename,
   getComponentResourceUrl,
 } from '../../services/libraryService';
@@ -31,8 +33,9 @@ function Preview({ component }) {
 }
 
 export default function ComponentCard({ component }) {
-  const resourceUrl = getComponentResourceUrl(component);
-  const resourceFilename = getComponentResourceFilename(component);
+  const packageUrl = getComponentPackageUrl(component);
+  const resourceUrl = packageUrl || getComponentResourceUrl(component);
+  const resourceFilename = getComponentPackageFilename(component) || getComponentResourceFilename(component);
 
   return (
     <article className={styles.card}>
@@ -85,7 +88,7 @@ export default function ComponentCard({ component }) {
               download={resourceFilename}
             >
               <Download size={16} aria-hidden="true" />
-              Download
+              {packageUrl ? 'Download package' : 'Download'}
             </a>
           ) : (
             <span className={styles.disabledButton} title="No downloadable resource is linked yet">

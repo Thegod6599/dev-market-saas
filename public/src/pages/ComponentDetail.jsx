@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import {
   getComponentBySlug,
+  getComponentPackageFilename,
+  getComponentPackageUrl,
   getComponentResourceFilename,
   getComponentResourceUrl,
 } from '../services/libraryService';
@@ -89,8 +91,9 @@ function ComponentDetail() {
     );
   }
 
-  const resourceUrl = getComponentResourceUrl(component);
-  const resourceFilename = getComponentResourceFilename(component);
+  const packageUrl = getComponentPackageUrl(component);
+  const resourceUrl = packageUrl || getComponentResourceUrl(component);
+  const resourceFilename = getComponentPackageFilename(component) || getComponentResourceFilename(component);
 
   return (
     <main className={styles.detailPage}>
@@ -127,7 +130,7 @@ function ComponentDetail() {
         {resourceUrl ? (
           <a href={resourceUrl} className={styles.primaryButton} download={resourceFilename}>
             <Download size={16} aria-hidden="true" />
-            Download resource
+            {packageUrl ? 'Download package' : 'Download resource'}
           </a>
         ) : null}
         {component.preview_url ? (

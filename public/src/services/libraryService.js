@@ -215,3 +215,15 @@ export function getComponentResourceFilename(component) {
 
   return `${component?.slug || 'component'}.jsx`;
 }
+
+export function getComponentPackageUrl(component) {
+  return /\\.zip(?:[?#].*)?$/i.test(String(component?.code_reference ?? ''))
+    ? getComponentResourceUrl(component)
+    : null;
+}
+
+export function getComponentPackageFilename(component) {
+  if (!getComponentPackageUrl(component)) return null;
+  const words = String(component?.name || component?.slug || 'Component').match(/[A-Za-z0-9]+/g) ?? [];
+  return (words.map((word) => word[0].toUpperCase() + word.slice(1)).join('') || 'Component') + '.zip';
+}

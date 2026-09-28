@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "public/dist/public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "predeploy": "pnpm --filter @workspace/ui-builder run build",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

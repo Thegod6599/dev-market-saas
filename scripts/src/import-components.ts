@@ -13,7 +13,6 @@ type ComponentMetadata = {
   is_vip?: boolean;
   status?: string;
   preview_url?: string;
-  code_reference?: string;
 };
 
 type ImportSummary = {
@@ -75,7 +74,6 @@ function validateMetadata(value: unknown, folderName: string): ComponentMetadata
     is_vip: Boolean(metadata.is_vip),
     status: metadata.status ? String(metadata.status) : "published",
     preview_url: metadata.preview_url ? String(metadata.preview_url) : undefined,
-    code_reference: metadata.code_reference ? String(metadata.code_reference) : undefined,
   };
 }
 
@@ -88,9 +86,11 @@ async function readComponentFolders(directory: string) {
     const folderPath = path.join(directory, folderName);
     const metadataPath = path.join(folderPath, "metadata.json");
     const componentPath = path.join(folderPath, "component.jsx");
+    const cssPath = path.join(folderPath, "component.css");
+    const readmePath = path.join(folderPath, "README.md");
     const metadata = validateMetadata(JSON.parse(await readFile(metadataPath, "utf8")), folderName);
 
-    await stat(componentPath);
+    await Promise.all([stat(componentPath), stat(cssPath), stat(readmePath)]);
     results.push({ folderName, directory: folderPath, metadata });
   }
 
@@ -148,7 +148,7 @@ async function importComponent(
       status: metadata.status,
       is_vip: metadata.is_vip,
       preview_url: metadata.preview_url ?? null,
-      code_reference: metadata.code_reference ?? path.join(directory, "component.jsx"),
+      code_reference: `library/packages/${metadata.slug}.zip`,
     };
     const component = await client
       .from("components")
