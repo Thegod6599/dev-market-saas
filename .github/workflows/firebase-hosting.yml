@@ -49,6 +49,38 @@ jobs:
           test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo "::error::Missing Actions secret VITE_SUPABASE_PUBLISHABLE_KEY"; exit 1; }
           pnpm run build
 
+          node --input-type=module <<'NODE'
+          import { readdir, readFile } from 'node:fs/promises';
+          import path from 'node:path';
+
+          const outputDirectory = 'public/dist/public';
+          const expected = [
+            ['VITE_SUPABASE_URL', process.env.VITE_SUPABASE_URL],
+            ['VITE_SUPABASE_PUBLISHABLE_KEY', process.env.VITE_SUPABASE_PUBLISHABLE_KEY],
+          ];
+
+          async function collectJavaScript(directory) {
+            const files = await readdir(directory, { withFileTypes: true });
+            const contents = await Promise.all(files.map(async (file) => {
+              const filePath = path.join(directory, file.name);
+              if (file.isDirectory()) return collectJavaScript(filePath);
+              return file.name.endsWith('.js') ? readFile(filePath, 'utf8') : '';
+            }));
+            return contents.flat(Infinity).join('\n');
+          }
+
+          const bundle = await collectJavaScript(path.join(outputDirectory, 'assets'));
+          if (!(await readFile(path.join(outputDirectory, 'index.html'), 'utf8'))) {
+            throw new Error('Firebase Hosting build output is missing index.html.');
+          }
+          for (const [name, value] of expected) {
+            if (!value || !bundle.includes(value)) {
+              throw new Error(`The production bundle does not contain configured ${name}.`);
+            }
+          }
+          console.log('Verified Supabase client configuration in the Firebase Hosting build output.');
+          NODE
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
