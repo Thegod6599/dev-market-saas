@@ -1,31 +1,46 @@
 # Action Button Set
 
-A standalone React button with primary, secondary, and quiet variants.
+## Description
 
-## Use
+A reusable React button component with primary, secondary, and quiet action styles. It uses a native button element and includes keyboard focus, disabled, and reduced-motion states.
 
-Copy this directory into a React/Vite app:
+## Installation
 
-```jsx
-import { ActionButton } from './ActionButtonSet/ActionButtonSet.jsx';
-import './ActionButtonSet/ActionButtonSet.css';
+Copy the ActionButtonSet folder into your React/Vite project's source tree, such as src/components/ActionButtonSet/. The project needs React 18 or newer and a JSX-capable build tool.
 
-<ActionButton onClick={() => save()}>Save changes</ActionButton>
-<ActionButton variant="secondary">Cancel</ActionButton>
-```
+## Import
+
+The component imports its companion CSS file automatically:
+
+    import { ActionButton } from './components/ActionButtonSet/ActionButtonSet.jsx';
+
+## Usage
+
+    import { ActionButton } from './components/ActionButtonSet/ActionButtonSet.jsx';
+
+    export function SaveActions() {
+      return (
+        <div>
+          <ActionButton onClick={() => console.log('Saved')}>Save changes</ActionButton>
+          <ActionButton variant="secondary" onClick={() => console.log('Cancelled')}>
+            Cancel
+          </ActionButton>
+        </div>
+      );
+    }
 
 ## Props
 
-- `children`: button contents.
-- `variant`: `primary` (default), `secondary`, or `quiet`.
-- `className`: optional additional class names.
-- `type`: native button type (defaults to `button`).
-- All other native button props are forwarded.
+- children: content displayed inside the button.
+- variant: primary (default), secondary, or quiet. Unknown values use primary.
+- className: optional class names added to the button.
+- type: native button type; defaults to button.
+- Other native button props, such as onClick, disabled, and aria-label, are forwarded to the underlying button.
 
-## Customize
+## Customization
 
-Adjust the `.action-button--*` rules in the CSS file. Styles are self-contained, use no global variables, and include keyboard focus and reduced-motion support.
+Edit the .action-button and .action-button--* rules in ActionButtonSet.css. The styles are component-scoped and use no project-wide CSS variables.
 
 ## Requirements
 
-React 18+ and a JSX-capable build. No extra packages required.
+React 18 or newer and a JSX-capable build tool. No additional runtime packages are required.

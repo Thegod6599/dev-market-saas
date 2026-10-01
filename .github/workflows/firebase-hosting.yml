@@ -49,6 +49,14 @@ jobs:
           test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo "::error::Missing Actions secret VITE_SUPABASE_PUBLISHABLE_KEY"; exit 1; }
           pnpm run build
 
+          package_archive=public/dist/public/library/packages/buttons-action.zip
+          test -s "$package_archive" || { echo "::error::Component ZIP is missing from the Firebase Hosting build output."; exit 1; }
+          unzip -t "$package_archive" >/dev/null || { echo "::error::Component ZIP failed integrity verification."; exit 1; }
+          expected_entries=$(printf '%s\n' 'ActionButtonSet/ActionButtonSet.css' 'ActionButtonSet/ActionButtonSet.jsx' 'ActionButtonSet/README.md')
+          actual_entries=$(unzip -Z1 "$package_archive" | LC_ALL=C sort)
+          test "$actual_entries" = "$expected_entries" || { echo "::error::Component ZIP entries do not match the standalone package format."; exit 1; }
+          echo "Verified standalone component ZIP in the Firebase Hosting build output."
+
           node --input-type=module <<'NODE'
           import { readdir, readFile } from 'node:fs/promises';
           import path from 'node:path';
