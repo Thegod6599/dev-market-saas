@@ -20,14 +20,25 @@ function Preview({ component }) {
     );
   }
 
+  const isImage = /\.(avif|gif|jpe?g|png|svg|webp)(\?.*)?$/i.test(component.preview_url);
+
   return (
     <div className={styles.previewFrame}>
-      <img
-        src={component.preview_url}
-        alt={`${component.name} preview`}
-        loading="lazy"
-        onError={() => setHasFailed(true)}
-      />
+      {isImage ? (
+        <img
+          src={component.preview_url}
+          alt={`${component.name} preview`}
+          loading="lazy"
+          onError={() => setHasFailed(true)}
+        />
+      ) : (
+        <iframe
+          src={component.preview_url}
+          title={`${component.name} preview`}
+          loading="lazy"
+          onError={() => setHasFailed(true)}
+        />
+      )}
     </div>
   );
 }

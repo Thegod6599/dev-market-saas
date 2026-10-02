@@ -38,6 +38,15 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, 'dist/public'),
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        app: path.resolve(import.meta.dirname, 'index.html'),
+        actionButtonSetPreview: path.resolve(
+          import.meta.dirname,
+          'component-previews/buttons-action.html',
+        ),
+      },
+    },
   },
   server: {
     port,

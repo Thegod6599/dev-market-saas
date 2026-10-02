@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #f8fafc;
+}
+
+.action-preview {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: clamp(0.75rem, 4vw, 2rem);
+}
+
+.action-preview > * {
+  max-width: 100%;
+}
