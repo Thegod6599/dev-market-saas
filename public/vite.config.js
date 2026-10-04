@@ -10,6 +10,19 @@ const port = Number(rawPort);
 if (Number.isNaN(port) || port <= 0) throw new Error(`Invalid PORT value: "${rawPort}"`);
 
 const basePath = process.env.BASE_PATH ?? '/';
+const checkpointTwoPreviewSlugs = [
+  'action-toolbar',
+  'floating-action-menu',
+  'tabs-panel',
+  'modal-dialog',
+  'empty-state',
+  'pagination',
+  'kanban-board',
+  'calendar-schedule',
+  'toggle-settings',
+  'range-slider',
+  'logo-cloud',
+];
 
 export default defineConfig({
   base: basePath,
@@ -44,6 +57,12 @@ export default defineConfig({
         actionButtonSetPreview: path.resolve(
           import.meta.dirname,
           'component-previews/buttons-action.html',
+        ),
+        ...Object.fromEntries(
+          checkpointTwoPreviewSlugs.map((slug) => [
+            `${slug}Preview`,
+            path.resolve(import.meta.dirname, 'component-previews', `${slug}.html`),
+          ]),
         ),
       },
     },

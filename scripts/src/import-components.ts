@@ -25,7 +25,8 @@ type ImportSummary = {
 
 type ImportClient = SupabaseClient<any, "public", any, any, any>;
 
-const rootDirectory = process.argv[2];
+const packagesOnly = process.argv[2] === "--packages-only";
+const rootDirectory = process.argv[packagesOnly ? 3 : 2];
 const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -41,10 +42,11 @@ function getErrorMessage(error: unknown) {
   return typeof error === "string" ? error : JSON.stringify(error);
 }
 
-function requireConfig() {
+function requireConfig(skipSupabase = false) {
   if (!rootDirectory) {
-    fail("Usage: pnpm --filter @workspace/scripts import-components <components-folder>");
+    fail("Usage: pnpm --filter @workspace/scripts import-components [--packages-only] <components-folder>");
   }
+  if (skipSupabase) return;
   if (!supabaseUrl) {
     fail("SUPABASE_URL or VITE_SUPABASE_URL is required.");
   }
@@ -275,11 +277,18 @@ async function importComponent(
 }
 
 async function main() {
-  requireConfig();
+  requireConfig(packagesOnly);
+  const items = await readComponentFolders(rootDirectory!);
+  if (packagesOnly) {
+    for (const item of items) {
+      console.log(`[packaged] ${item.folderName}: library/packages/${item.metadata.slug}.zip`);
+    }
+    return;
+  }
+
   const client: ImportClient = createClient(supabaseUrl!, serviceRoleKey!, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const items = await readComponentFolders(rootDirectory!);
   const results: ImportSummary[] = [];
 
   for (const item of items) {

@@ -24,3 +24,9 @@ pnpm --filter @workspace/scripts import-components scripts/seed/component-librar
 The importer resolves paths relative to either the repository root or the
 scripts package. The service-role key is local developer tooling only. Never
 use it in frontend code or a `VITE_` variable.
+
+To generate the same downloadable ZIPs without changing Supabase data, use:
+
+```sh
+pnpm --filter @workspace/scripts import-components --packages-only <components-folder>
+```

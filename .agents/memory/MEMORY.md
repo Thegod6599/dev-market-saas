@@ -1,1 +1,2 @@
 - [Supabase library schema](supabase-library-schema.md) — importer must match the existing category section type and preserve explicit component IDs.
+- [Scoped design-agent config changes](design-agent-config.md) — check workspace runtime configuration after delegated UI work for incidental module changes.
