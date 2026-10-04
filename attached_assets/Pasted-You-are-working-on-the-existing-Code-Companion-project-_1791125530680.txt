@@ -1,0 +1,112 @@
+You are working on the existing Code Companion project.
+
+REPOSITORY
+
+This project should currently be connected to:
+
+Thegod6599/dev-market-saas
+
+Current branch:
+
+codex/standalone-component-packages
+
+I have already switched this Replit project to that branch and pulled the latest branch state.
+
+IMPORTANT
+
+This is a setup and verification task only.
+
+DO NOT modify application code yet.
+
+DO NOT modify Supabase data.
+
+DO NOT modify Firebase configuration.
+
+DO NOT create components yet.
+
+DO NOT commit or push anything.
+
+DO NOT change branches.
+
+DO NOT initialize a new Git repository.
+
+DO NOT reset, revert, or discard existing changes.
+
+VERIFY THE ENVIRONMENT
+
+First verify:
+
+1. The project is connected to the expected GitHub repository:
+    Thegod6599/dev-market-saas
+2. The current branch is:
+    codex/standalone-component-packages
+3. The current HEAD commit is available.
+4. The working tree status is available.
+5. The existing project structure is intact.
+6. The existing component library is present.
+7. The Action Button Set work from the previous completed tasks is present, including:
+    * component implementation
+    * CSS
+    * README/package
+    * ZIP package
+    * preview
+    * library card/detail integration
+8. The existing Supabase library integration is present.
+9. The existing Vite/React setup is intact.
+10. The existing Firebase configuration is intact.
+
+BUILD ENVIRONMENT
+
+Determine whether the project can currently run:
+
+pnpm install
+pnpm run build
+
+Do NOT change dependencies or configuration just to make the environment work.
+
+If the build works, report that.
+
+If the build fails because of an existing environment/dependency issue, report the exact failure and do not attempt unrelated repairs.
+
+GIT
+
+Verify that Git is functional in this Replit project.
+
+Do NOT make a commit.
+
+Do NOT push.
+
+We will use Git commits as checkpoints during the next task.
+
+FINAL RESPONSE
+
+Return a concise report containing:
+
+Repository
+
+* remote
+* branch
+* HEAD commit
+* working-tree status
+
+Existing Library
+
+* number of currently published components, if determinable
+* Action Button Set status
+* package/ZIP status
+* preview status
+
+Environment
+
+* package manager
+* build result
+* any existing environment issue
+
+Git
+
+* whether commits can be created
+* whether pushing is available
+
+Then STOP.
+
+Do not make any application changes.
