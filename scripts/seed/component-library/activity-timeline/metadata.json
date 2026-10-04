@@ -1,0 +1,10 @@
+{
+  "name": "Activity Timeline",
+  "slug": "activity-timeline",
+  "type": "application-ui",
+  "category": "Application UI",
+  "description": "Chronological activity stream with actor, event type, detail, and relative time.",
+  "tags": ["activity", "timeline", "events", "feed"],
+  "is_vip": false,
+  "status": "published"
+}

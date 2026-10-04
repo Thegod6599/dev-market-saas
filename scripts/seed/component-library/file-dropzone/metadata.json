@@ -1,0 +1,10 @@
+{
+  "name": "File Dropzone",
+  "slug": "file-dropzone",
+  "type": "input-control",
+  "category": "Inputs & Controls",
+  "description": "Keyboard-accessible file selection area with drag and drop and accepted-file validation.",
+  "tags": ["file-picker", "dropzone", "drag-drop", "validation"],
+  "is_vip": false,
+  "status": "published"
+}

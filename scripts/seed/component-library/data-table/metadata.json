@@ -1,0 +1,10 @@
+{
+  "name": "Sortable Data Table",
+  "slug": "data-table",
+  "type": "data-utility",
+  "category": "Data & Utility",
+  "description": "Responsive, prop-driven data table with sortable columns and an empty state.",
+  "tags": ["table", "sorting", "data", "responsive"],
+  "is_vip": false,
+  "status": "published"
+}

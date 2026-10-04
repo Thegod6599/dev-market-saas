@@ -1,0 +1,10 @@
+{
+  "name": "Command Palette",
+  "slug": "command-palette",
+  "type": "application-ui",
+  "category": "Application UI",
+  "description": "Keyboard-operable command search overlay with filtering and selection.",
+  "tags": ["command-palette", "search", "keyboard", "overlay"],
+  "is_vip": false,
+  "status": "published"
+}

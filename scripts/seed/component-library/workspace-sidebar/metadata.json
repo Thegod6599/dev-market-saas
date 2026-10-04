@@ -1,0 +1,10 @@
+{
+  "name": "Workspace Sidebar",
+  "slug": "workspace-sidebar",
+  "type": "navigation",
+  "category": "Navigation",
+  "description": "Sectioned workspace navigation with expandable groups and an active destination.",
+  "tags": ["sidebar", "workspace", "navigation", "collapsible"],
+  "is_vip": false,
+  "status": "published"
+}

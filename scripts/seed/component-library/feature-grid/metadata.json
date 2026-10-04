@@ -1,0 +1,10 @@
+{
+  "name": "Feature Grid",
+  "slug": "feature-grid",
+  "type": "marketing",
+  "category": "Marketing",
+  "description": "Editorial feature presentation driven by content and optional supplied React icons.",
+  "tags": ["features", "marketing", "content", "grid"],
+  "is_vip": false,
+  "status": "published"
+}

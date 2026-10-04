@@ -1,0 +1,907 @@
+Prompt 3 — Build the First-Release Component Library
+
+You are working on the existing Code Companion project.
+
+Repository
+
+GitHub repository:
+
+Thegod6599/dev-market-saas
+
+Current branch:
+
+codex/standalone-component-packages
+
+The project is already on the correct branch and has been pulled.
+
+The current starting point is the completed Prompt 2 state:
+
+ffaa6c8aab1e5abb948fa923dc9be77d88a3d7ae
+
+Render Action Button Set previews
+
+The repository currently has 16 published components.
+
+⸻
+
+IMPORTANT WORKFLOW
+
+This task is intentionally divided into 3 checkpoints.
+
+Do NOT attempt the entire task in one pass.
+
+Complete Checkpoint 0, then Checkpoint 1.
+
+After Checkpoint 1:
+
+* run the required validation
+* review your changes
+* report exactly what was completed
+* STOP
+
+I will manually commit and push Checkpoint 1 using Replit’s built-in Git interface.
+
+Only after I tell you to continue should you start Checkpoint 2.
+
+After Checkpoint 2:
+
+* validate
+* report
+* STOP
+
+I will manually commit and push Checkpoint 2.
+
+Only after I tell you to continue should you start Checkpoint 3.
+
+After Checkpoint 3:
+
+* perform final validation
+* report
+* STOP
+
+I will manually commit and push Checkpoint 3.
+
+Git rules
+
+DO NOT create Git commits yourself.
+
+DO NOT push to GitHub.
+
+I will handle all commits and pushes through Replit’s built-in Git UI.
+
+Do not change branches.
+
+Do not modify main.
+
+Do not create a PR.
+
+Do not initialize a new Git repository.
+
+Do not reset, revert, or discard existing work.
+
+Do not use Git commands to create commits.
+
+At the end of each checkpoint, give me the recommended commit message.
+
+Recommended messages:
+
+1. Add first component library batch
+2. Add second component library batch and packages
+3. Complete first-release component library
+
+⸻
+
+IMPORTANT ENVIRONMENT RULE
+
+Do not spend time perfecting, repairing, or reconfiguring the local development environment.
+
+The environment has already been verified:
+
+* pnpm 10.26.1
+* pnpm install --frozen-lockfile succeeds
+* pnpm run build succeeds
+* Supabase queries work
+* Git repository works
+* Firebase configuration works for the current application
+
+Do not upgrade/downgrade dependencies unless absolutely required for a component itself.
+
+Do not change package managers.
+
+Do not redesign the build configuration.
+
+Do not attempt to fix unrelated warnings.
+
+Do not attempt to fix the Firebase Messaging Sender ID because it is not required for the current Firebase Auth flow.
+
+Do not attempt to optimize the existing bundle-size warning.
+
+Do not change the existing Firebase Hosting setup.
+
+⸻
+
+CHECKPOINT 0 — INSPECT THE EXISTING LIBRARY
+
+Before creating anything, inspect the existing implementation.
+
+Do not make application changes during this inspection unless absolutely necessary.
+
+Inspect:
+
+* the existing 16 components
+* component categories
+* existing tags
+* component metadata
+* component package structure
+* existing ZIP/download implementation
+* Action Button Set implementation
+* Action Button Set CSS
+* Action Button Set README
+* Action Button Set preview
+* ComponentCard
+* ComponentDetail
+* libraryService
+* LibrarySection
+* component preview architecture
+* component importer
+* existing Supabase library integration
+
+Understand how the existing package and preview system works.
+
+Do not create a second package/download architecture.
+
+Do not create a second preview architecture.
+
+Use the existing Action Button Set implementation as the reference for the new components.
+
+Critical goal
+
+The new components must be genuinely different from the existing 16.
+
+Do not simply reproduce the existing components with:
+
+* different colors
+* different text
+* different icons
+* slightly different spacing
+* different border radius
+* different sample content
+
+Plan the new component selection before implementing the batches.
+
+Then proceed to Checkpoint 1.
+
+⸻
+
+CHECKPOINT 1 — FIRST COMPONENT BATCH
+
+Create 10–12 new components.
+
+Do not create fewer than 10.
+
+Choose components from multiple categories.
+
+The purpose of this checkpoint is to establish the first substantial expansion of the library while keeping the batch manageable and testable.
+
+Component categories
+
+Use a broad mixture of:
+
+Navigation
+
+Examples:
+
+* modern navbar
+* minimal navbar
+* sidebar navigation
+* dashboard sidebar
+* command/utility navigation
+* breadcrumbs
+
+Buttons & Actions
+
+Examples:
+
+* button group
+* icon button set
+* split action button
+* floating action menu
+* loading/progress button
+* action toolbar
+
+Cards & Content
+
+Examples:
+
+* feature card
+* horizontal media card
+* profile card
+* pricing card
+* testimonial card
+* product card
+* statistics card
+* editorial/article card
+
+Forms
+
+Examples:
+
+* login form
+* signup form
+* contact form
+* multi-step form
+* search/form toolbar
+
+Inputs & Controls
+
+Examples:
+
+* search input
+* select/filter control
+* toggle/settings control
+* range/slider control
+* OTP/code input
+
+Marketing
+
+Examples:
+
+* hero section
+* feature grid
+* pricing section
+* testimonial section
+* CTA section
+* logo/partner strip
+
+Application UI
+
+Examples:
+
+* alert/notification
+* tabs
+* accordion
+* modal/dialog
+* empty state
+* progress/status panel
+* pagination
+* timeline
+* activity feed
+
+These are examples, not a requirement to implement every item.
+
+Select components that add meaningful coverage to the current library.
+
+⸻
+
+STRICT UNIQUENESS REQUIREMENT
+
+The new library must NOT feel like 30+ copies of the same AI-generated component.
+
+Do NOT create:
+
+* the same card with different colors
+* the same button with different text
+* the same navbar with a different logo
+* the same form with different labels
+* the same layout with minor spacing changes
+* color variations as separate components
+* trivial content variations
+* generic Bootstrap clones
+* generic Tailwind clones
+* components that exist only to inflate the component count
+
+A component should be meaningfully distinct through differences such as:
+
+* layout
+* hierarchy
+* composition
+* information architecture
+* interaction
+* content structure
+* responsive behavior
+* density
+* alignment
+* navigation model
+* visual treatment
+* typography
+* shape language
+* component purpose
+
+Make the components intentionally varied.
+
+Some can be:
+
+* compact
+* spacious
+* dense
+* editorial
+* application-focused
+* minimal
+* information-rich
+* horizontal
+* vertical
+* asymmetric
+* centered
+* bordered
+* borderless
+* rounded
+* sharper
+* dashboard-oriented
+* marketing-oriented
+
+Do not make every component look like it belongs to the exact same template.
+
+⸻
+
+COMPONENT FILE STANDARD
+
+Every new component must have:
+
+ComponentName/
+├── ComponentName.jsx
+├── ComponentName.css
+└── README.md
+
+Every component must:
+
+* use valid React/JSX
+* import its own CSS
+* contain complete styling
+* be standalone
+* be reusable
+* have sensible props where appropriate
+* work without DevMarket-specific infrastructure
+* be responsive
+* have intentional spacing
+* have clear visual hierarchy
+* have appropriate hover/focus/active states where relevant
+* be accessible where practical
+* use minimal dependencies
+
+Absolutely no DevMarket dependencies
+
+The component itself must NOT depend on:
+
+* DevMarket routes
+* DevMarket authentication
+* Firebase
+* Supabase
+* DevMarket database queries
+* DevMarket global CSS variables
+* DevMarket branding
+* DevMarket URLs
+* DevMarket-specific application state
+
+A developer should be able to copy the component into another React project.
+
+⸻
+
+README STANDARD
+
+Every component README must explain:
+
+* what the component does
+* how to import it
+* basic usage
+* props
+* customization
+* setup requirements
+
+Keep the README practical rather than overly verbose.
+
+⸻
+
+CHECKPOINT 1 VALIDATION
+
+Before stopping:
+
+Files
+
+Verify every new component has:
+
+* JSX
+* CSS
+* README
+
+Code
+
+Verify:
+
+* JSX imports the correct CSS
+* imports resolve
+* no DevMarket dependencies exist inside standalone components
+* no obvious duplicate components exist
+
+Quality
+
+Inspect representative components from multiple categories.
+
+Check:
+
+* layout
+* spacing
+* typography
+* responsive behavior
+* interaction states
+* visual hierarchy
+
+Existing project
+
+Do not break:
+
+* existing 16 components
+* Action Button Set
+* component detail pages
+* component downloads
+* existing previews
+* search
+* filters
+* Supabase library loading
+
+Build
+
+Run:
+
+pnpm run build
+
+If the build succeeds, report it.
+
+If the build fails because of a problem introduced by your changes, fix that problem.
+
+If an unrelated pre-existing environment problem occurs, do not redesign the environment.
+
+Git
+
+Do NOT commit.
+
+Do NOT push.
+
+Review the changed files and make sure there is no unrelated work.
+
+STOP HERE
+
+Report:
+
+* exact number of components created
+* names of all components created
+* categories represented
+* files created/modified
+* validation performed
+* build result
+* any issues
+* recommended commit message:
+
+Add first component library batch
+
+Then STOP and wait for my instruction.
+
+⸻
+
+CHECKPOINT 2 — SECOND COMPONENT BATCH + PACKAGES + PREVIEWS
+
+Only begin this checkpoint after I explicitly tell you to continue.
+
+Create another 10–12 new components.
+
+The second batch must complement Checkpoint 1 and the existing 16 components.
+
+Do not duplicate components from either previous batch.
+
+Favor categories that are underrepresented so far.
+
+By the end of this checkpoint, there should be approximately 20–24 new components total.
+
+⸻
+
+PACKAGE REQUIREMENT
+
+Every new component from Checkpoint 2 must have a real downloadable package.
+
+The expected package structure is:
+
+ComponentName.zip
+└── ComponentName/
+    ├── ComponentName.jsx
+    ├── ComponentName.css
+    └── README.md
+
+The ZIP must contain the actual component implementation.
+
+Do not create placeholder ZIP files.
+
+Do not package DevMarket application code.
+
+Do not include unrelated project files.
+
+Use the existing package/import architecture.
+
+Do not create a second package system.
+
+Component metadata should use:
+
+library/packages/<package-name>.zip
+
+Do not store local filesystem paths in Supabase metadata.
+
+⸻
+
+PREVIEW REQUIREMENT
+
+Every new component from Checkpoint 2 needs a working preview.
+
+Use the existing Action Button Set preview architecture.
+
+The preview must represent the actual component implementation.
+
+Do not use fake screenshots.
+
+Do not create a static image that merely looks like the component.
+
+Where the existing architecture supports it, the preview should render the same component/CSS implementation used by the package.
+
+Preview requirements:
+
+* renders correctly
+* fits the preview container
+* no unnecessary overflow
+* works at smaller widths
+* visually represents the real component
+* does not contain DevMarket branding
+
+⸻
+
+CHECKPOINT 2 VALIDATION
+
+Verify:
+
+1. All new components have JSX/CSS/README.
+2. All required ZIPs exist.
+3. ZIPs are valid.
+4. ZIPs contain the expected component folder.
+5. ZIPs contain JSX/CSS/README.
+6. JSX imports the included CSS.
+7. No DevMarket dependencies exist in packages.
+8. Representative previews load.
+9. Preview implementation matches the downloadable component.
+10. No duplicate/filler components were introduced.
+11. Existing components still work.
+12. Existing Action Button Set still works.
+13. Search/filter functionality still works.
+14. Component detail pages still work.
+
+Run:
+
+pnpm run build
+
+Fix issues introduced by your work.
+
+Do not modify unrelated infrastructure.
+
+STOP HERE
+
+Do NOT commit.
+
+Do NOT push.
+
+Report:
+
+* total new components so far
+* components created in Checkpoint 2
+* complete component list so far
+* package count
+* preview count
+* validation results
+* build result
+* any issues
+* recommended commit message:
+
+Add second component library batch and packages
+
+Then STOP.
+
+⸻
+
+CHECKPOINT 3 — COMPLETE THE FIRST-RELEASE LIBRARY
+
+Only begin after I explicitly tell you to continue.
+
+Create the remaining components needed to reach the release target.
+
+The final target is:
+
+At least 30 NEW components total.
+
+There are currently 16 existing published components.
+
+Therefore the final library must contain:
+
+At least 46 total published components.
+
+Do not inflate the number with trivial variations.
+
+Continue filling gaps across:
+
+* navigation
+* buttons/actions
+* cards/content
+* forms
+* inputs/controls
+* marketing
+* application UI
+* data/utility UI
+
+Potential additional areas include:
+
+* tables
+* comparison tables
+* notification centers
+* file upload areas
+* calendars
+* command palettes
+* activity feeds
+* timelines
+* dropdown menus
+* tooltips
+* pagination
+* status panels
+* dashboard modules
+
+Again, these are examples.
+
+Choose components based on what the existing library actually lacks.
+
+⸻
+
+SUPABASE LIBRARY INTEGRATION
+
+After the final components exist, integrate them using the existing Supabase schema.
+
+Use the existing:
+
+* categories
+* components
+* tags
+* component_tags
+
+Do NOT create a new schema.
+
+Do NOT redesign the database.
+
+Do NOT modify unrelated Builder/project tables.
+
+Every published component should have appropriate:
+
+* id
+* name
+* slug
+* type
+* description
+* category
+* status
+* VIP status
+* preview URL
+* package/code reference
+* tags
+* component/tag relationships
+
+Use meaningful tags.
+
+Do not create meaningless tags simply to increase the tag count.
+
+Do not expose service-role credentials.
+
+Do not put secrets into source code.
+
+⸻
+
+EXISTING 16 COMPONENTS
+
+Do not rewrite the existing 16 unnecessarily.
+
+Only update an existing component if required for:
+
+* package consistency
+* preview consistency
+* metadata correctness
+* compatibility with the completed library system
+
+Preserve existing working components.
+
+The Action Button Set implementation should remain the reference for the package/preview system.
+
+⸻
+
+LIBRARY UI POLISH
+
+Make only the focused improvements needed to support the expanded library.
+
+Review:
+
+* ComponentCard
+* component preview containers
+* component detail page
+* category sections
+* search
+* filters
+* tag filtering
+* type filtering
+* horizontal scrolling
+* mobile layout
+* loading states
+* error states
+* empty states
+
+Keep the existing architecture.
+
+This is NOT the full UI redesign planned for Prompt 7.
+
+Do not redesign the entire website.
+
+Do not add:
+
+* unnecessary decorative cards
+* excessive badges
+* repeated CTA buttons
+* unnecessary borders
+* excessive rounded containers
+* Builder promotional clutter
+
+The purpose here is to make the larger component library clean and usable.
+
+⸻
+
+FINAL QUALITY REVIEW
+
+The final library should feel intentionally curated.
+
+Ask:
+
+* Are there meaningful differences between components?
+* Does each component serve a useful purpose?
+* Are categories well represented?
+* Do components vary in layout and density?
+* Do some components have different visual structures rather than only different colors?
+* Are there enough application-oriented components?
+* Are there enough marketing-oriented components?
+* Are forms and controls represented?
+* Are navigation components varied?
+* Do the components avoid looking like generic AI filler?
+
+If two components are effectively the same component with minor visual differences, do not keep both.
+
+⸻
+
+FINAL CHECKPOINT 3 VALIDATION
+
+Verify the final library.
+
+Count
+
+Confirm:
+
+* existing components: 16 or more
+* new components: 30 or more
+* total published components: 46 or more
+
+Report the exact numbers.
+
+Packages
+
+Verify representative packages from:
+
+* navigation
+* buttons/actions
+* cards
+* forms
+* marketing
+* application UI
+
+Each package must contain:
+
+ComponentName/
+├── ComponentName.jsx
+├── ComponentName.css
+└── README.md
+
+Previews
+
+Verify representative previews across multiple categories.
+
+Supabase
+
+Verify:
+
+* categories
+* components
+* tags
+* component_tags
+* package references
+* preview references
+
+Search/filter
+
+Verify:
+
+* search
+* category filtering
+* type filtering
+* tag filtering
+* empty results
+* mobile filtering
+
+Detail pages
+
+Verify representative component detail pages:
+
+* title
+* description
+* preview
+* source/package
+* responsive layout
+
+Existing functionality
+
+Confirm that the expanded library did not break:
+
+* authentication
+* existing navigation
+* Action Button Set
+* downloads
+* previews
+* existing component detail pages
+* existing search/filter functionality
+
+Do not redesign unrelated features.
+
+Security
+
+Check that no:
+
+* Supabase service-role key
+* Firebase private credential
+* secret
+* API key that should not be public
+* temporary credential
+
+was added to the repository.
+
+Build
+
+Run:
+
+pnpm run build
+
+Fix problems introduced by this task.
+
+Do not spend time repairing unrelated environment warnings.
+
+⸻
+
+FINAL STOP
+
+Do NOT create a Git commit.
+
+Do NOT push.
+
+I will commit and push through Replit’s built-in Git UI.
+
+Report:
+
+1. Exact final component count.
+2. Exact number of new components.
+3. Full list of new components grouped by category.
+4. Existing components modified, if any.
+5. Package count.
+6. Preview count.
+7. Supabase metadata changes.
+8. Library UI changes.
+9. Validation performed.
+10. Build result.
+11. Any remaining issues.
+12. Recommended commit message:
+
+Complete first-release component library
+
+Then STOP.
+
+Do not begin Prompt 4.

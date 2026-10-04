@@ -1,0 +1,10 @@
+{
+  "name": "Form Stepper",
+  "slug": "form-stepper",
+  "type": "form",
+  "category": "Forms",
+  "description": "Multi-step form wrapper with progress indication, navigation, and step callbacks.",
+  "tags": ["form", "stepper", "progress", "multi-step"],
+  "is_vip": false,
+  "status": "published"
+}
