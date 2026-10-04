@@ -4,7 +4,14 @@
   "type": "application-ui",
   "category": "Application UI",
   "description": "Chronological activity stream with actor, event type, detail, and relative time.",
-  "tags": ["activity", "timeline", "events", "feed"],
+  "tags": [
+    "activity",
+    "timeline",
+    "events",
+    "feed"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/activity-timeline.html",
+  "code_reference": "library/packages/activity-timeline.zip"
 }

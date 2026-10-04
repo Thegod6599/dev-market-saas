@@ -4,7 +4,14 @@
   "type": "marketing",
   "category": "Marketing",
   "description": "Editorial feature presentation driven by content and optional supplied React icons.",
-  "tags": ["features", "marketing", "content", "grid"],
+  "tags": [
+    "features",
+    "marketing",
+    "content",
+    "grid"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/feature-grid.html",
+  "code_reference": "library/packages/feature-grid.zip"
 }

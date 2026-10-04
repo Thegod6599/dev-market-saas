@@ -11,5 +11,6 @@
   ],
   "is_vip": false,
   "status": "published",
-  "preview_url": "/component-previews/buttons-action.html"
+  "preview_url": "/component-previews/buttons-action.html",
+  "code_reference": "library/packages/buttons-action.zip"
 }

@@ -174,13 +174,23 @@ async function readComponentFolders(directory: string) {
     const outputDirectory = path.join(repositoryRoot, "public", "public", "library", "packages");
     await mkdir(outputDirectory, { recursive: true });
     await writeFile(path.join(outputDirectory, metadata.slug + ".zip"), archive);
-    let importedMetadata = metadata;
+    const previewSource = path.join(repositoryRoot, "public", "src", "component-previews", metadata.slug + ".jsx");
+    const previewHtml = path.join(repositoryRoot, "public", "component-previews", metadata.slug + ".html");
+    const previewExists = await Promise.all([stat(previewSource), stat(previewHtml)]).then(
+      () => true,
+      () => false,
+    );
+    let importedMetadata = previewExists
+      ? { ...metadata, preview_url: "/component-previews/" + metadata.slug + ".html" }
+      : metadata;
     try {
       const preview = await readFile(path.join(folderPath, "preview.svg"));
       const previewDirectory = path.join(repositoryRoot, "public", "public", "library", "previews");
       await mkdir(previewDirectory, { recursive: true });
       await writeFile(path.join(previewDirectory, metadata.slug + ".svg"), preview);
-      importedMetadata = { ...metadata, preview_url: "/library/previews/" + metadata.slug + ".svg" };
+      if (!previewExists) {
+        importedMetadata = { ...metadata, preview_url: "/library/previews/" + metadata.slug + ".svg" };
+      }
     } catch (error) {
       if (!(error && typeof error === "object" && "code" in error && error.code === "ENOENT")) throw error;
     }

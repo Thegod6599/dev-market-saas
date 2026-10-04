@@ -1,1 +1,17 @@
-{"name":"Toggle Settings","slug":"toggle-settings","type":"component","category":"Inputs & Controls","description":"A practical notification preferences panel with accessible switch semantics and controlled or local state.","tags":["settings","switch","preferences","notifications"],"is_vip":false,"status":"published","preview_url":"/component-previews/toggle-settings.html"}
+{
+  "name": "Toggle Settings",
+  "slug": "toggle-settings",
+  "type": "component",
+  "category": "Inputs & Controls",
+  "description": "A practical notification preferences panel with accessible switch semantics and controlled or local state.",
+  "tags": [
+    "settings",
+    "switch",
+    "preferences",
+    "notifications"
+  ],
+  "is_vip": false,
+  "status": "published",
+  "preview_url": "/component-previews/toggle-settings.html",
+  "code_reference": "library/packages/toggle-settings.zip"
+}

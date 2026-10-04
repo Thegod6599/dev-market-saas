@@ -4,9 +4,13 @@
   "type": "navbar",
   "category": "Navigation",
   "description": "A responsive navigation bar with clear active states and a compact mobile layout.",
-  "tags": ["navigation", "responsive", "modern"],
+  "tags": [
+    "navigation",
+    "responsive",
+    "modern"
+  ],
   "is_vip": false,
   "status": "published",
-  "code_reference": "seed/component-library/navigation-modern/component.jsx",
-  "preview_url": "/library/seed/navigation-modern.svg"
+  "code_reference": "library/packages/navigation-modern.zip",
+  "preview_url": "/component-previews/navigation-modern.html"
 }

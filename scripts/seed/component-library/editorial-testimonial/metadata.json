@@ -4,7 +4,14 @@
   "type": "card",
   "category": "Cards",
   "description": "Quote-led testimonial treatment with editorial typography and clear attribution.",
-  "tags": ["testimonial", "quote", "editorial", "attribution"],
+  "tags": [
+    "testimonial",
+    "quote",
+    "editorial",
+    "attribution"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/editorial-testimonial.html",
+  "code_reference": "library/packages/editorial-testimonial.zip"
 }

@@ -4,7 +4,14 @@
   "type": "navigation",
   "category": "Navigation",
   "description": "Sectioned workspace navigation with expandable groups and an active destination.",
-  "tags": ["sidebar", "workspace", "navigation", "collapsible"],
+  "tags": [
+    "sidebar",
+    "workspace",
+    "navigation",
+    "collapsible"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/workspace-sidebar.html",
+  "code_reference": "library/packages/workspace-sidebar.zip"
 }

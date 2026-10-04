@@ -4,7 +4,14 @@
   "type": "application-ui",
   "category": "Application UI",
   "description": "Keyboard-operable command search overlay with filtering and selection.",
-  "tags": ["command-palette", "search", "keyboard", "overlay"],
+  "tags": [
+    "command-palette",
+    "search",
+    "keyboard",
+    "overlay"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/command-palette.html",
+  "code_reference": "library/packages/command-palette.zip"
 }

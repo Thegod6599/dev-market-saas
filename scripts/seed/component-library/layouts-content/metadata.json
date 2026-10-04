@@ -4,9 +4,13 @@
   "type": "layout",
   "category": "Layouts",
   "description": "A readable content layout for articles, documentation, and long-form pages.",
-  "tags": ["layout", "content", "typography"],
+  "tags": [
+    "layout",
+    "content",
+    "typography"
+  ],
   "is_vip": false,
   "status": "published",
-  "code_reference": "seed/component-library/layouts-content/component.jsx",
-  "preview_url": "/library/seed/layouts-content.svg"
+  "code_reference": "library/packages/layouts-content.zip",
+  "preview_url": "/component-previews/layouts-content.html"
 }

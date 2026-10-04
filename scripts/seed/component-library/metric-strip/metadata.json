@@ -4,7 +4,14 @@
   "type": "card",
   "category": "Cards",
   "description": "Compact dashboard metric summary with a value and optional change or supporting detail.",
-  "tags": ["metrics", "dashboard", "summary", "statistics"],
+  "tags": [
+    "metrics",
+    "dashboard",
+    "summary",
+    "statistics"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/metric-strip.html",
+  "code_reference": "library/packages/metric-strip.zip"
 }

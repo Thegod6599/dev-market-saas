@@ -1,1 +1,17 @@
-{"name":"Floating Action Menu","slug":"floating-action-menu","type":"component","category":"Buttons","description":"A compact floating quick-action launcher with dismiss-on-select and Escape behavior.","tags":["floating","quick-actions","menu","launcher"],"is_vip":false,"status":"published","preview_url":"/component-previews/floating-action-menu.html"}
+{
+  "name": "Floating Action Menu",
+  "slug": "floating-action-menu",
+  "type": "component",
+  "category": "Buttons",
+  "description": "A compact floating quick-action launcher with dismiss-on-select and Escape behavior.",
+  "tags": [
+    "floating",
+    "quick-actions",
+    "menu",
+    "launcher"
+  ],
+  "is_vip": false,
+  "status": "published",
+  "preview_url": "/component-previews/floating-action-menu.html",
+  "code_reference": "library/packages/floating-action-menu.zip"
+}

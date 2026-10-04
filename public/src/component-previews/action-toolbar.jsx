@@ -1,9 +1,4 @@
 import { createRoot } from 'react-dom/client';
-import { ActionToolbar } from '../../../scripts/seed/component-library/action-toolbar/component.jsx';
-import './checkpoint-two-preview.css';
-
-createRoot(document.getElementById('root')).render(
-  <main className="checkpoint-two-preview checkpoint-two-preview--action-toolbar">
-    <ActionToolbar />
-  </main>,
-);
+import Preview from '../../../scripts/seed/component-library/action-toolbar/preview.jsx';
+import './component-preview.css';
+createRoot(document.getElementById('root')).render(<main className='cc-preview-shell'><Preview /></main>);

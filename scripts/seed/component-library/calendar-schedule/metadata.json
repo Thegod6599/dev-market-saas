@@ -1,1 +1,17 @@
-{"name":"Calendar Schedule","slug":"calendar-schedule","type":"component","category":"Data & Utility","description":"A five-day schedule grid with navigable weeks, event cards, and event selection callbacks.","tags":["calendar","schedule","week-view","events"],"is_vip":false,"status":"published","preview_url":"/component-previews/calendar-schedule.html"}
+{
+  "name": "Calendar Schedule",
+  "slug": "calendar-schedule",
+  "type": "component",
+  "category": "Data & Utility",
+  "description": "A five-day schedule grid with navigable weeks, event cards, and event selection callbacks.",
+  "tags": [
+    "calendar",
+    "schedule",
+    "week-view",
+    "events"
+  ],
+  "is_vip": false,
+  "status": "published",
+  "preview_url": "/component-previews/calendar-schedule.html",
+  "code_reference": "library/packages/calendar-schedule.zip"
+}

@@ -1,1 +1,17 @@
-{"name":"Range Slider","slug":"range-slider","type":"component","category":"Inputs & Controls","description":"A styled single-value range input with live output, configurable bounds, and native keyboard control.","tags":["range","slider","input","control"],"is_vip":false,"status":"published","preview_url":"/component-previews/range-slider.html"}
+{
+  "name": "Range Slider",
+  "slug": "range-slider",
+  "type": "component",
+  "category": "Inputs & Controls",
+  "description": "A styled single-value range input with live output, configurable bounds, and native keyboard control.",
+  "tags": [
+    "range",
+    "slider",
+    "input",
+    "control"
+  ],
+  "is_vip": false,
+  "status": "published",
+  "preview_url": "/component-previews/range-slider.html",
+  "code_reference": "library/packages/range-slider.zip"
+}

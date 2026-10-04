@@ -4,7 +4,14 @@
   "type": "application-ui",
   "category": "Application UI",
   "description": "Filterable notification list with unread states and read actions.",
-  "tags": ["notifications", "inbox", "filters", "unread"],
+  "tags": [
+    "notifications",
+    "inbox",
+    "filters",
+    "unread"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/notification-center.html",
+  "code_reference": "library/packages/notification-center.zip"
 }

@@ -1,1 +1,17 @@
-{"name":"Logo Cloud","slug":"logo-cloud","type":"component","category":"Marketing","description":"A restrained partner-logo band with a typographic editorial lead-in and responsive collaborator grid.","tags":["logos","partners","clients","social-proof"],"is_vip":false,"status":"published","preview_url":"/component-previews/logo-cloud.html"}
+{
+  "name": "Logo Cloud",
+  "slug": "logo-cloud",
+  "type": "component",
+  "category": "Marketing",
+  "description": "A restrained partner-logo band with a typographic editorial lead-in and responsive collaborator grid.",
+  "tags": [
+    "logos",
+    "partners",
+    "clients",
+    "social-proof"
+  ],
+  "is_vip": false,
+  "status": "published",
+  "preview_url": "/component-previews/logo-cloud.html",
+  "code_reference": "library/packages/logo-cloud.zip"
+}

@@ -4,7 +4,14 @@
   "type": "input-control",
   "category": "Inputs & Controls",
   "description": "Accessible single-choice segmented selector with controlled and uncontrolled modes.",
-  "tags": ["segmented-control", "selection", "tabs", "accessible"],
+  "tags": [
+    "segmented-control",
+    "selection",
+    "tabs",
+    "accessible"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/segmented-control.html",
+  "code_reference": "library/packages/segmented-control.zip"
 }

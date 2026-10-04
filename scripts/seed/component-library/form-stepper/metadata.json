@@ -4,7 +4,14 @@
   "type": "form",
   "category": "Forms",
   "description": "Multi-step form wrapper with progress indication, navigation, and step callbacks.",
-  "tags": ["form", "stepper", "progress", "multi-step"],
+  "tags": [
+    "form",
+    "stepper",
+    "progress",
+    "multi-step"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/form-stepper.html",
+  "code_reference": "library/packages/form-stepper.zip"
 }

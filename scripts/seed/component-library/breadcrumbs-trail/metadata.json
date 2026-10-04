@@ -4,7 +4,14 @@
   "type": "navigation",
   "category": "Navigation",
   "description": "An accessible hierarchical path with a clearly identified current page.",
-  "tags": ["breadcrumbs", "navigation", "hierarchy", "accessible"],
+  "tags": [
+    "breadcrumbs",
+    "navigation",
+    "hierarchy",
+    "accessible"
+  ],
   "is_vip": false,
-  "status": "published"
+  "status": "published",
+  "preview_url": "/component-previews/breadcrumbs-trail.html",
+  "code_reference": "library/packages/breadcrumbs-trail.zip"
 }
