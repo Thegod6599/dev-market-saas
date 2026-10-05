@@ -1,46 +1,37 @@
 # Action Button Set
 
-## Description
+A standalone set of primary, secondary, and quiet buttons for common interface actions. The component uses native buttons and includes focus, disabled, hover, active, and reduced-motion states.
 
-A reusable React button component with primary, secondary, and quiet action styles. It uses a native button element and includes keyboard focus, disabled, and reduced-motion states.
+## Setup
 
-## Installation
+Copy the `ActionButtonSet` folder into a React 18+ project with a JSX-capable build tool. The component imports its included stylesheet automatically.
 
-Copy the ActionButtonSet folder into your React/Vite project's source tree, such as src/components/ActionButtonSet/. The project needs React 18 or newer and a JSX-capable build tool.
+```jsx
+import { ActionButton } from './ActionButtonSet/ActionButtonSet.jsx';
 
-## Import
-
-The component imports its companion CSS file automatically:
-
-    import { ActionButton } from './components/ActionButtonSet/ActionButtonSet.jsx';
-
-## Usage
-
-    import { ActionButton } from './components/ActionButtonSet/ActionButtonSet.jsx';
-
-    export function SaveActions() {
-      return (
-        <div>
-          <ActionButton onClick={() => console.log('Saved')}>Save changes</ActionButton>
-          <ActionButton variant="secondary" onClick={() => console.log('Cancelled')}>
-            Cancel
-          </ActionButton>
-        </div>
-      );
-    }
+export function SaveActions() {
+  return (
+    <div>
+      <ActionButton onClick={save}>Save changes</ActionButton>
+      <ActionButton variant="secondary" onClick={cancel}>Cancel</ActionButton>
+      <ActionButton variant="quiet" onClick={skip}>Not now</ActionButton>
+    </div>
+  );
+}
+```
 
 ## Props
 
-- children: content displayed inside the button.
-- variant: primary (default), secondary, or quiet. Unknown values use primary.
-- className: optional class names added to the button.
-- type: native button type; defaults to button.
-- Other native button props, such as onClick, disabled, and aria-label, are forwarded to the underlying button.
+- `children`: button content.
+- `variant`: `primary` (default), `secondary`, or `quiet`. Unknown values fall back to `primary`.
+- `className`: optional classes appended to the component class.
+- `type`: native button type, defaults to `button`.
+- Native button props such as `onClick`, `disabled`, and `aria-label` are forwarded.
 
 ## Customization
 
-Edit the .action-button and .action-button--* rules in ActionButtonSet.css. The styles are component-scoped and use no project-wide CSS variables.
+Override `.action-button` and `.action-button--*` in `ActionButtonSet.css` to adjust color, shape, and spacing. Styles use no project-wide variables.
 
-## Requirements
+## Dependencies
 
 React 18 or newer and a JSX-capable build tool. No additional runtime packages are required.
