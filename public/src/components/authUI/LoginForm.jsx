@@ -94,7 +94,7 @@ function LoginForm({ onSwitch, notice }) {
           <div className={styles.loginActions}>
             <button type="submit" className={styles.loginButton} disabled={isSubmitting} data-testid="button-login">{isSubmitting ? 'Signing in…' : 'Login'}</button>
             <div className={styles.divider}/>
-            <button type='button' className={styles.googleButton} onClick={handleGoogleLogin} disabled={isSubmitting}>
+            <button type='button' className={styles.googleButton} onClick={handleGoogleLogin} disabled={isSubmitting} aria-label="Continue with Google">
               <GoogleIcon className={styles.googleIcon}/>
             </button>
           </div>

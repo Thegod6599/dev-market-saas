@@ -95,8 +95,10 @@
 }
 
 .themeSelect:focus-visible,
+.textInput:focus-visible,
 .backButton:focus-visible,
 .primaryButton:focus-visible,
+.dangerButton:focus-visible,
 .secondaryButton:focus-visible,
 .textButton:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -104,7 +106,9 @@
 }
 
 .themeSelect:disabled,
+.textInput:disabled,
 .primaryButton:disabled,
+.dangerButton:disabled,
 .secondaryButton:disabled,
 .textButton:disabled {
   cursor: wait;
@@ -116,6 +120,35 @@
   max-width: 520px;
   gap: 0.95rem;
   margin-top: 1rem;
+}
+
+.accountForm {
+  display: grid;
+  max-width: 520px;
+  gap: 0.95rem;
+}
+
+.fieldGroup {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.fieldLabel {
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.textInput {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-primary);
+  background: var(--color-surface-secondary);
+  font: inherit;
 }
 
 .passwordHint {
@@ -132,6 +165,7 @@
 }
 
 .primaryButton,
+.dangerButton,
 .secondaryButton,
 .textButton {
   display: inline-flex;
@@ -152,8 +186,14 @@
   background: var(--color-primary);
 }
 
+.dangerButton {
+  border: 1px solid var(--color-error);
+  color: #fff;
+  background: var(--color-error);
+}
+
 .secondaryButton {
-  border: 1px solid var(--color-border-dark);
+  border: 1px solid var(--color-border);
   color: var(--color-text-primary);
   background: var(--color-surface-secondary);
 }
@@ -168,6 +208,75 @@
   margin-top: 1.25rem;
   padding-top: 1rem;
   border-top: 1px solid var(--color-border);
+}
+
+.dangerCard {
+  border-color: color-mix(in srgb, var(--color-error) 45%, var(--color-border));
+}
+
+.deletionNotice {
+  margin: 0 0 1rem;
+  padding: 0.8rem 0.9rem;
+  border-left: 3px solid var(--color-error);
+  border-radius: var(--radius-small);
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+  line-height: 1.5;
+}
+
+.deleteConfirmation {
+  display: grid;
+  max-width: 620px;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-error) 40%, var(--color-border));
+  border-radius: var(--radius-medium);
+  background: var(--color-surface-secondary);
+}
+
+.deleteConfirmation h3,
+.deleteConfirmation p {
+  margin: 0;
+}
+
+.deleteConfirmation h3 {
+  color: var(--color-text-primary);
+  font-size: 1rem;
+}
+
+.deleteConfirmation p {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.deleteConfirmation strong {
+  color: var(--color-text-primary);
+}
+
+.unavailableList {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.unavailableList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.unavailableList li:last-child {
+  border-bottom: 0;
+}
+
+.unavailableList li span:last-child {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
 }
 
 .successMessage,

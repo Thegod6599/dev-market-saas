@@ -86,3 +86,22 @@ export function getPasswordChangeErrorMessage(error) {
       return 'We could not update your password. Please try again.';
   }
 }
+
+export function getAccountSettingsErrorMessage(error) {
+  switch (error?.code) {
+    case 'auth/invalid-email':
+      return 'Enter a valid email address.';
+    case 'auth/email-already-in-use':
+    case 'auth/email-already-exists':
+      return 'That email address is already in use.';
+    case 'auth/requires-recent-login':
+    case 'auth/user-token-expired':
+      return 'For your security, sign in again before retrying this action.';
+    case 'auth/network-request-failed':
+      return 'A network error occurred. Check your connection and try again.';
+    case 'auth/too-many-requests':
+      return 'There have been too many attempts. Wait a moment and try again.';
+    default:
+      return 'We could not complete this account action. Please try again.';
+  }
+}

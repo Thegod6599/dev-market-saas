@@ -3,8 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, LogOut } from 'lucide-react';
 import PasswordField from '../components/authUI/PasswordField';
 import { useAuth } from '../hooks/useAuth';
-import { logout as logoutUser, updateUserPassword } from '../services/authService';
-import { getPasswordChangeErrorMessage } from '../utils/firebaseAuthErrors';
+import {
+  deleteCurrentUser,
+  logout as logoutUser,
+  updateUserEmail,
+  updateUserPassword,
+} from '../services/authService';
+import {
+  getAccountSettingsErrorMessage,
+  getPasswordChangeErrorMessage,
+} from '../utils/firebaseAuthErrors';
 import styles from './pageStyles/Settings.module.css';
 
 function Settings() {
@@ -28,6 +36,16 @@ function Settings() {
   const [passwordError, setPasswordError] = useState('');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState('');
+  const [currentEmail, setCurrentEmail] = useState(user?.email || '');
+  const [newEmail, setNewEmail] = useState('');
+  const [confirmEmail, setConfirmEmail] = useState('');
+  const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
+  const [emailStatus, setEmailStatus] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const supportsPasswordAuth = user?.providerData?.some(
     (provider) => provider.providerId === 'password',
@@ -107,6 +125,65 @@ function Settings() {
     setNewPassword('');
     setConfirmPassword('');
     setPasswordError('');
+  }
+
+  async function handleEmailChange(event) {
+    event.preventDefault();
+    if (isUpdatingEmail || !user) return;
+
+    setEmailError('');
+    setEmailStatus('');
+    const nextEmail = newEmail.trim();
+    if (!nextEmail) {
+      setEmailError('Enter the new email address.');
+      return;
+    }
+    if (nextEmail.toLowerCase() === currentEmail.trim().toLowerCase()) {
+      setEmailError('Enter an email address that is different from your current one.');
+      return;
+    }
+    if (nextEmail.toLowerCase() !== confirmEmail.trim().toLowerCase()) {
+      setEmailError('The email addresses do not match.');
+      return;
+    }
+
+    setIsUpdatingEmail(true);
+    try {
+      await updateUserEmail(user, nextEmail);
+      setCurrentEmail(nextEmail);
+      setNewEmail('');
+      setConfirmEmail('');
+      setEmailStatus('Your account email has been updated.');
+    } catch (error) {
+      setEmailError(getAccountSettingsErrorMessage(error));
+    } finally {
+      setIsUpdatingEmail(false);
+    }
+  }
+
+  function cancelDeleteConfirmation() {
+    setShowDeleteConfirmation(false);
+    setDeleteConfirmation('');
+    setDeleteError('');
+  }
+
+  async function handleDeleteAccount(event) {
+    event.preventDefault();
+    if (isDeletingAccount || !user || deleteConfirmation !== 'DELETE') return;
+
+    setDeleteError('');
+    setIsDeletingAccount(true);
+    try {
+      await deleteCurrentUser(user);
+      navigate('/login', {
+        replace: true,
+        state: { notice: 'Your Firebase sign-in account was deleted.' },
+      });
+    } catch (error) {
+      setDeleteError(getAccountSettingsErrorMessage(error));
+    } finally {
+      setIsDeletingAccount(false);
+    }
   }
 
   async function handleLogout() {
@@ -287,11 +364,136 @@ function Settings() {
         </div>
       </section>
 
-      <section className={styles.settingsCard} aria-labelledby="availability-title">
+      <section className={styles.settingsCard} aria-labelledby="change-email-title">
         <div className={styles.sectionHeading}>
-          <h2 id="availability-title">Other account options</h2>
-          <p>Change email, account deletion, support, and policy pages are not available in this release.</p>
+          <h2 id="change-email-title">Change email</h2>
+          <p>Current email: {currentEmail || 'Not available'}</p>
         </div>
+        <form className={styles.accountForm} onSubmit={handleEmailChange} aria-busy={isUpdatingEmail}>
+          <div className={styles.fieldGroup}>
+            <label className={styles.fieldLabel} htmlFor="settings-new-email">New email address</label>
+            <input
+              className={styles.textInput}
+              id="settings-new-email"
+              name="newEmail"
+              type="email"
+              autoComplete="email"
+              value={newEmail}
+              onChange={(event) => setNewEmail(event.target.value)}
+              required
+              disabled={isUpdatingEmail}
+              data-testid="input-settings-new-email"
+            />
+          </div>
+          <div className={styles.fieldGroup}>
+            <label className={styles.fieldLabel} htmlFor="settings-confirm-email">Confirm new email address</label>
+            <input
+              className={styles.textInput}
+              id="settings-confirm-email"
+              name="confirmEmail"
+              type="email"
+              autoComplete="off"
+              value={confirmEmail}
+              onChange={(event) => setConfirmEmail(event.target.value)}
+              required
+              disabled={isUpdatingEmail}
+              data-testid="input-settings-confirm-email"
+            />
+          </div>
+          {emailError && <p className={styles.errorMessage} role="alert" data-testid="status-email-change-error">{emailError}</p>}
+          {emailStatus && <p className={styles.successMessage} role="status" data-testid="status-email-change-success">{emailStatus}</p>}
+          <button
+            className={styles.primaryButton}
+            type="submit"
+            disabled={isUpdatingEmail}
+            data-testid="button-save-email"
+          >
+            {isUpdatingEmail ? 'Updating email…' : 'Update email'}
+          </button>
+        </form>
+      </section>
+
+      <section className={`${styles.settingsCard} ${styles.dangerCard}`} aria-labelledby="delete-account-title">
+        <div className={styles.sectionHeading}>
+          <h2 id="delete-account-title">Delete account</h2>
+          <p>This permanently deletes your Firebase sign-in account.</p>
+        </div>
+        <p className={styles.deletionNotice} role="note" data-testid="text-delete-account-data-scope">
+          The existing deletion service removes the Firebase sign-in account only. It does not remove the
+          Firestore profile and settings document, which may remain after deletion.
+        </p>
+
+        {!showDeleteConfirmation && (
+          <button
+            className={styles.dangerButton}
+            type="button"
+            onClick={() => {
+              setDeleteError('');
+              setShowDeleteConfirmation(true);
+            }}
+            data-testid="button-start-account-deletion"
+          >
+            Delete account
+          </button>
+        )}
+
+        {showDeleteConfirmation && (
+          <form
+            className={styles.deleteConfirmation}
+            onSubmit={handleDeleteAccount}
+            aria-busy={isDeletingAccount}
+            aria-labelledby="delete-confirmation-title"
+          >
+            <h3 id="delete-confirmation-title">Confirm account deletion</h3>
+            <p>To continue, type <strong>DELETE</strong> below. This action cannot be undone.</p>
+            <div className={styles.fieldGroup}>
+              <label className={styles.fieldLabel} htmlFor="delete-account-confirmation">Type DELETE to confirm</label>
+              <input
+                className={styles.textInput}
+                id="delete-account-confirmation"
+                name="deleteConfirmation"
+                type="text"
+                autoComplete="off"
+                value={deleteConfirmation}
+                onChange={(event) => setDeleteConfirmation(event.target.value)}
+                disabled={isDeletingAccount}
+                data-testid="input-delete-account-confirmation"
+              />
+            </div>
+            {deleteError && <p className={styles.errorMessage} role="alert" data-testid="status-delete-account-error">{deleteError}</p>}
+            <div className={styles.buttonRow}>
+              <button
+                className={styles.dangerButton}
+                type="submit"
+                disabled={isDeletingAccount || deleteConfirmation !== 'DELETE'}
+                data-testid="button-confirm-account-deletion"
+              >
+                {isDeletingAccount ? 'Deleting account…' : 'Permanently delete sign-in account'}
+              </button>
+              <button
+                className={styles.textButton}
+                type="button"
+                onClick={cancelDeleteConfirmation}
+                disabled={isDeletingAccount}
+                data-testid="button-cancel-account-deletion"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+      </section>
+
+      <section className={styles.settingsCard} aria-labelledby="support-legal-title">
+        <div className={styles.sectionHeading}>
+          <h2 id="support-legal-title">Support and legal</h2>
+          <p>These destinations are not available yet.</p>
+        </div>
+        <ul className={styles.unavailableList}>
+          <li><span>Support</span><span>Coming soon</span></li>
+          <li><span>Privacy Policy</span><span>Coming soon</span></li>
+          <li><span>Terms of Service</span><span>Coming soon</span></li>
+        </ul>
       </section>
     </main>
   );

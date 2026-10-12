@@ -12,7 +12,6 @@ function SignupForm({ onSwitch }) {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [photoURL, setPhotoURL] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -22,7 +21,7 @@ function SignupForm({ onSwitch }) {
     setError("");
     setIsSubmitting(true);
     try {
-      await signupWithEmail(email, password, photoURL)
+      await signupWithEmail(email, password)
       const destination = location.state?.from?.pathname || '/';
       navigate(destination, { replace: true, state: null });
     } catch (err) {
@@ -57,8 +56,6 @@ function SignupForm({ onSwitch }) {
           <div className={styles.inputContainer}>
           <label className={styles.fieldLabel} htmlFor="signup-email">Email</label>
           <input id="signup-email" name="email" type="email" placeholder="Email" autoComplete="email" className={styles.emailInput} value={email} onChange={(e) => setEmail(e.target.value)} disabled={isSubmitting} required data-testid="input-signup-email"/>
-          <label className={styles.fieldLabel} htmlFor="signup-photo-url">Profile photo URL (optional)</label>
-          <input id="signup-photo-url" name="photoURL" type="url" placeholder="https://example.com/photo.jpg" autoComplete="url" className={styles.emailInput} value={photoURL} onChange={(e) => setPhotoURL(e.target.value)} disabled={isSubmitting} data-testid="input-signup-photo-url"/>
           <label className={styles.fieldLabel} htmlFor="signup-password">Password</label>
           <div className={styles.passwordContainer}>
           <input id="signup-password" name="password" type={showPassword ? 'text' :'password'} placeholder="Password" autoComplete="new-password" className={styles.passwordInput} value={password} onChange={(e) => setPassword(e.target.value)} disabled={isSubmitting} required data-testid="input-signup-password"/>
@@ -71,7 +68,7 @@ function SignupForm({ onSwitch }) {
           <div className={styles.signupActions}>
             <button type="submit" className={styles.signupButton} disabled={isSubmitting} data-testid="button-signup">{isSubmitting ? 'Creating account…' : 'Sign Up'}</button>
             <div className={styles.divider}/>
-            <button type='button' className={styles.googleButton} onClick={handleGoogleLogin} disabled={isSubmitting}>
+            <button type='button' className={styles.googleButton} onClick={handleGoogleLogin} disabled={isSubmitting} aria-label="Continue with Google">
               <GoogleIcon className={styles.googleIcon}/>
             </button>
           </div>

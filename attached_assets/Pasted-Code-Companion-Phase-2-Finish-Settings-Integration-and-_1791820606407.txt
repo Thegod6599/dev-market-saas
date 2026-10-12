@@ -1,0 +1,84 @@
+Code Companion — Phase 2: Finish Settings Integration and Account UX
+
+Objective
+
+Complete the Settings page by connecting its existing controls to the services already implemented in the project. Remove the signup photo URL field and fix the remaining account-form issues.
+
+Important: The Change Email and Delete Account services have already been created by the project owner. Find and use those existing services. Do not recreate, replace, or duplicate their logic.
+
+1. Connect the remaining Settings controls
+
+Inspect the existing Settings page, authentication context, services, and routes before editing.
+
+* Connect the Change Email control to the existing Change Email service.
+* Connect the Delete Account control to the existing Delete Account service.
+* Read each service’s function signature, expected arguments, return behavior, and error handling before integrating it.
+* Preserve the service implementations unless a specific integration incompatibility is found. Report any such incompatibility instead of rewriting the service.
+* Add the necessary UI interactions, form fields, validation, loading states, confirmation steps, success messages, and error messages.
+* Do not report success until the corresponding service confirms success.
+* For account deletion, require an explicit confirmation before invoking the existing service.
+* Preserve the already working theme persistence, password-change flow, logout behavior, and authenticated /settings route.
+* Do not move user-specific data to Supabase or modify database schemas.
+
+2. Remove the signup photo URL field
+
+Inspect public/src/components/authUI/SignupForm.jsx and its associated profile-creation logic.
+
+* Remove the user photo URL field from the signup UI.
+* Remove its obsolete form state and validation.
+* Ensure signup and profile creation continue to work without a user-supplied photo URL.
+* Preserve all other existing signup fields and behavior.
+* Reuse the existing optional/default photo behavior in profile creation.
+* Do not change the profile schema or authentication architecture.
+
+3. Resolve remaining account-form issues
+
+Inspect the current implementation and fix only outstanding items:
+
+* Add accessible labels to login inputs.
+* Add appropriate autocomplete attributes.
+* Give the Google sign-in button an accessible name without changing its behavior or configuration.
+* Keep authentication errors visible on their respective forms.
+* Ensure password-reset errors do not cause runtime exceptions.
+* Preserve existing loading states and prevent duplicate submissions.
+* Do not change Firebase’s password-reset email template or configuration.
+* Do not investigate or modify Google OAuth.
+
+4. Support and legal links
+
+The project owner will create the final Support, Privacy Policy, and Terms of Service content separately.
+
+* Do not invent policy content.
+* Do not create unrelated pages as part of this task.
+* Keep nonexistent destinations clearly marked as unavailable or coming soon rather than using broken links.
+
+5. Scope boundaries
+
+Preserve the existing React + Vite, React Router, Firebase, and Supabase architecture.
+
+Do not:
+
+* Recreate existing account services.
+* Rewrite working authentication or Settings functionality.
+* Redesign the entire application.
+* Modify component-library sources, ZIP packages, previews, or Supabase library metadata.
+* Change database schemas or live Firebase/Supabase configuration.
+* Commit, push, or deploy.
+* Fix unrelated warnings or reconfigure the environment.
+
+6. Validation and completion report
+
+Run the existing frontend build and git diff --check.
+
+Verify that:
+
+* Change Email and Delete Account call the existing services correctly.
+* Account deletion requires confirmation.
+* Errors and success states are handled correctly.
+* Signup works without the photo URL field.
+* Existing theme, password-change, logout, and route-protection behavior remains intact.
+* No unnecessary changes were made to service implementations or unrelated features.
+
+Distinguish code-level checks from live Firebase testing.
+
+Report the files changed, the services reused, the validation results, and any remaining blockers. Finish this phase and stop for review. Do not begin the broader UI redesign or additional component work.
