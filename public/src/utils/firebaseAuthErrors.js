@@ -43,3 +43,46 @@ export function getAuthErrorMessage(err) {
       return "Something went wrong. Please try again.";
   }
 }
+
+export function getPasswordResetErrorMessage(error) {
+  switch (error?.code) {
+    case 'auth/invalid-email':
+      return 'Enter a valid email address.';
+    case 'auth/unauthorized-domain':
+      return 'Password reset is not enabled for this app domain. Please try again later.';
+    case 'auth/expired-action-code':
+      return 'This password reset link has expired. Request a new one from the login page.';
+    case 'auth/invalid-action-code':
+      return 'This password reset link is invalid or has already been used. Request a new one from the login page.';
+    case 'auth/weak-password':
+      return 'Choose a stronger password and try again.';
+    case 'auth/too-many-requests':
+      return 'There have been too many attempts. Wait a moment and try again.';
+    case 'auth/network-request-failed':
+      return 'A network error occurred. Check your connection and try again.';
+    default:
+      return 'We could not complete the password reset. Please try again.';
+  }
+}
+
+export function getPasswordChangeErrorMessage(error) {
+  switch (error?.code) {
+    case 'auth/operation-not-allowed':
+      return 'Password changes are only available for email/password accounts.';
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+    case 'auth/user-mismatch':
+      return 'The current password is incorrect.';
+    case 'auth/weak-password':
+    case 'auth/password-does-not-meet-requirements':
+      return 'Choose a stronger password and try again.';
+    case 'auth/requires-recent-login':
+      return 'Please sign in again before changing your password.';
+    case 'auth/too-many-requests':
+      return 'There have been too many attempts. Wait a moment and try again.';
+    case 'auth/network-request-failed':
+      return 'A network error occurred. Check your connection and try again.';
+    default:
+      return 'We could not update your password. Please try again.';
+  }
+}

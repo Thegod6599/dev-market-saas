@@ -3,21 +3,14 @@ import LoginForm from "../components/authUI/LoginForm.jsx"
 import SignupForm from "../components/authUI/SignupForm.jsx"
 import { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { useAuth } from "../hooks/useAuth"
+import { useLocation } from "react-router-dom"
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true)
-  const { user, profile, loading, isAuthenticated } = useAuth();
+  const location = useLocation()
   
   return (
     <>
-      <div>
-        <p>Loading: {loading ? "Yes" : "no"}</p>
-        <p>Authenticated: {isAuthenticated ? "yes" : "no"}</p>
-        <p>User: {user ? user.email : "None"}</p>
-        <p>Profile: {profile ? "loaded" : "none"}</p>
-        <p>${window.location.origin}</p>
-      </div>
       <div className={styles.authContainer}>
       <AnimatePresence mode="sync">
       {isLogin ? 
@@ -33,7 +26,7 @@ function Login() {
           bounce: 2
         }}
         >
-      <LoginForm onSwitch={() => setIsLogin(false)}/>
+      <LoginForm onSwitch={() => setIsLogin(false)} notice={location.state?.notice}/>
       </motion.div>
       : 
       <motion.div key='signup' className={styles.authAnimation}

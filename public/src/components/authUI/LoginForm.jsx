@@ -3,11 +3,15 @@ import GoogleIcon from '../../assets/icons/google-icon.svg?react';
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react';
 import { loginWithEmail, loginWithGoogle, resetPassword } from '../../services/authService';
-import { getAuthErrorMessage } from '../../utils/firebaseAuthErrors'
-import { useNavigate } from 'react-router-dom'
+import {
+  getAuthErrorMessage,
+  getPasswordResetErrorMessage,
+} from '../../utils/firebaseAuthErrors'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-function LoginForm({ onSwitch }) {
+function LoginForm({ onSwitch, notice }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -17,20 +21,20 @@ function LoginForm({ onSwitch }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     setError("");
     setIsSubmitting(true);
     try {
       await loginWithEmail(email, password);
-      setPassword('')
+      const destination = location.state?.from?.pathname || '/';
+      navigate(destination, { replace: true, state: null });
     } catch (err) {
       console.error('Login error:', err)
       setError(getAuthErrorMessage(err))
-    }  finally {
-      setIsSubmitting(false);
       setPassword('');
-      setEmail('');
       setShowPassword(false);
-      navigate('/');
+    } finally {
+      setIsSubmitting(false);
     }
   }
   async function handleGoogleLogin() {
@@ -47,27 +51,21 @@ function LoginForm({ onSwitch }) {
     }
   }
   async function handlePasswordReset() {
+    if (isSubmitting) return;
     setError('')
     setResetSent(false)
-    setIsSubmitting(false)
 
-    if (!email) {
+    if (!email.trim()) {
       setError('Please enter your email address')
       return;
     }
     setIsSubmitting(true)
 
     try {
-      await resetPassword(email)
+      await resetPassword(email.trim())
       setResetSent(true)
     } catch (err) {
-      setError("Password reset failed. Please try again.")
-
-      if (err.code === 'auth/invalid-email') {
-        setError('Invalid email address')
-      } else {
-        setError(err.code + ":" + err.message)
-      }
+      setError(getPasswordResetErrorMessage(err))
     } finally {
       setIsSubmitting(false)
     }
@@ -78,20 +76,23 @@ function LoginForm({ onSwitch }) {
       <div className={styles.loginContainer}>
       <div className={styles.loginForm}>
         <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
+        {notice && <p className={styles.successMessage} role="status" data-testid="status-login-notice">{notice}</p>}
+        <form onSubmit={handleSubmit} aria-busy={isSubmitting}>
           <div className={styles.inputContainer}>
-          <input type="email" placeholder="Email" className={styles.emailInput} value={email} onChange={(e) => setEmail(e.target.value)} required/>
+          <label className={styles.fieldLabel} htmlFor="login-email">Email</label>
+          <input id="login-email" name="email" type="email" placeholder="Email" autoComplete="email" className={styles.emailInput} value={email} onChange={(e) => setEmail(e.target.value)} disabled={isSubmitting} required data-testid="input-login-email"/>
+          <label className={styles.fieldLabel} htmlFor="login-password">Password</label>
           <div className={styles.passwordContainer}>
-          <input type={showPassword ? 'text' :'password'} placeholder="Password" className={styles.passwordInput} value={password} onChange={(e) => setPassword(e.target.value)} required/>
+          <input id="login-password" name="password" type={showPassword ? 'text' :'password'} placeholder="Password" autoComplete="current-password" className={styles.passwordInput} value={password} onChange={(e) => setPassword(e.target.value)} disabled={isSubmitting} required data-testid="input-login-password"/>
           <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.passwordToggle} disabled={isSubmitting}>
             {showPassword ? <EyeOff/> : <Eye/>}
           </button>
           </div>
-            {resetSent && <p className={styles.successMessage}>Password reset email sent!</p>}
-            {error && <p className={styles.errorMessage}>{error}</p>}
+            {resetSent && <p className={styles.successMessage} role="status" data-testid="status-password-reset">If an account exists for this email, password reset instructions have been sent.</p>}
+            {error && <p className={styles.errorMessage} role="alert" data-testid="status-login-error">{error}</p>}
           </div>
           <div className={styles.loginActions}>
-            <button type="submit" className={styles.loginButton} disabled={isSubmitting}>Login</button>
+            <button type="submit" className={styles.loginButton} disabled={isSubmitting} data-testid="button-login">{isSubmitting ? 'Signing in…' : 'Login'}</button>
             <div className={styles.divider}/>
             <button type='button' className={styles.googleButton} onClick={handleGoogleLogin} disabled={isSubmitting}>
               <GoogleIcon className={styles.googleIcon}/>
@@ -99,8 +100,13 @@ function LoginForm({ onSwitch }) {
           </div>
         </form>
         <div className={styles.loginExtras}>
-          <p className={styles.forgotPassword} onClick={handlePasswordReset}>Forgot Password?</p>
-          <p className={styles.switchText}>Don't have an account? <span onClick={onSwitch}>Sign Up</span></p>
+          <button className={styles.forgotPassword} type="button" onClick={handlePasswordReset} disabled={isSubmitting} data-testid="button-forgot-password">
+            {isSubmitting ? 'Please wait…' : 'Forgot password?'}
+          </button>
+          <p className={styles.switchText}>
+            Don't have an account?{' '}
+            <button type="button" onClick={onSwitch} disabled={isSubmitting}>Sign Up</button>
+          </p>
         </div>
       </div>
       </div>

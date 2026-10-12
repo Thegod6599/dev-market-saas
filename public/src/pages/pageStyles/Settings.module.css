@@ -1,56 +1,208 @@
-.backButton{
-  display: flex;
+.settingsPage {
+  box-sizing: border-box;
+  width: min(100%, 860px);
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 2.5rem);
   color: var(--color-text-primary);
-  background: rgba(54, 124, 229, 0.25);
-  border-radius: var(--radius-small);
-  width: 80px;
-  height: 30px;
-  gap: 5px;
-  border: 2px solid var(--color-primary-lighter);
-  justify-content: center;
+}
+
+.pageHeader {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.backButton {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 40px;
   align-items: center;
-  margin-bottom: 40px;
-}
-
-.appearanceBox,
-.accountBox {
-  background: rgba(54, 124, 229, 0.25);
-  border: 2px solid var(--color-primary-lighter);
-  border-radius: var(--radius-small);
-  width: auto;
-  min-height: 80px;
-  margin: 5px 0 30px 0;
-}
-.dangerZoneBox {
-  background: rgba(244, 67, 54, 0.25);
-  border: 2px solid var(--color-error);
-  border-radius: var(--radius-small);
-  width: auto;
-  min-height: 80px;
-  margin: 5px 0 30px 0;
-}
-
-.appearanceSection h2,
-.accountSection h2,
-.dangerZone h2,
-.supportSection h2 {
-  margin-bottom: 5px;
+  gap: 0.45rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
   color: var(--color-text-primary);
-  font-size: var(--font-size-large);
+  background: var(--color-surface);
+  font: inherit;
+  cursor: pointer;
 }
 
-.appearanceSection p,
-.accountSection p,
-.dangerZone p,
-.supportSection p {
-  margin-top: 0;
+.eyebrow {
+  margin: 0 0 0.3rem;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(1.8rem, 5vw, 2.3rem);
+}
+
+.pageDescription {
+  margin: 0.45rem 0 0;
   color: var(--color-text-secondary);
 }
 
-.dangerZone p {
-  color: var(--color-error);
+.settingsCard {
+  margin-bottom: 1rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-small);
 }
 
-.settingsPage {
-  padding: 20px;
+.sectionHeading {
+  margin-bottom: 1.2rem;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.15rem;
+}
+
+.sectionHeading p {
+  margin: 0.4rem 0 0;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.settingRow label {
+  font-weight: 600;
+}
+
+.themeSelect {
+  min-width: 150px;
+  min-height: 42px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-primary);
+  background: var(--color-surface-secondary);
+  font: inherit;
+}
+
+.themeSelect:focus-visible,
+.backButton:focus-visible,
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.textButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.themeSelect:disabled,
+.primaryButton:disabled,
+.secondaryButton:disabled,
+.textButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.passwordForm {
+  display: grid;
+  max-width: 520px;
+  gap: 0.95rem;
+  margin-top: 1rem;
+}
+
+.passwordHint {
+  margin: -0.45rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.primaryButton,
+.secondaryButton,
+.textButton {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--radius-medium);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primaryButton {
+  border: 1px solid var(--color-primary);
+  color: #fff;
+  background: var(--color-primary);
+}
+
+.secondaryButton {
+  border: 1px solid var(--color-border-dark);
+  color: var(--color-text-primary);
+  background: var(--color-surface-secondary);
+}
+
+.textButton {
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  background: transparent;
+}
+
+.logoutArea {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.successMessage,
+.errorMessage,
+.statusMessage,
+.infoMessage {
+  margin: 0.85rem 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-medium);
+  line-height: 1.5;
+}
+
+.successMessage {
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-success) 13%, var(--color-surface));
+}
+
+.errorMessage {
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-error) 12%, var(--color-surface));
+}
+
+.statusMessage,
+.infoMessage {
+  color: var(--color-text-secondary);
+  background: var(--color-surface-secondary);
+}
+
+@media (max-width: 520px) {
+  .settingRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .themeSelect {
+    width: 100%;
+  }
 }
