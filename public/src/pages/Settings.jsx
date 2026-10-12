@@ -4,12 +4,16 @@ import { ArrowLeft, LogOut } from 'lucide-react';
 import PasswordField from '../components/authUI/PasswordField';
 import { useAuth } from '../hooks/useAuth';
 import {
-  deleteCurrentUser,
   logout as logoutUser,
   updateUserEmail,
   updateUserPassword,
 } from '../services/authService';
 import {
+  deleteAccountAndOwnedData,
+  hasPasswordAuthentication,
+} from '../services/accountDeletionService';
+import {
+  getAccountDeletionErrorMessage,
   getAccountSettingsErrorMessage,
   getPasswordChangeErrorMessage,
 } from '../utils/firebaseAuthErrors';
@@ -44,12 +48,12 @@ function Settings() {
   const [emailError, setEmailError] = useState('');
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [deleteCurrentPassword, setDeleteCurrentPassword] = useState('');
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteProgress, setDeleteProgress] = useState('');
   const [deleteError, setDeleteError] = useState('');
 
-  const supportsPasswordAuth = user?.providerData?.some(
-    (provider) => provider.providerId === 'password',
-  );
+  const supportsPasswordAuth = hasPasswordAuthentication(user);
 
   useEffect(() => {
     if (settingsLoading || !settings?.theme) return undefined;
@@ -164,6 +168,8 @@ function Settings() {
   function cancelDeleteConfirmation() {
     setShowDeleteConfirmation(false);
     setDeleteConfirmation('');
+    setDeleteCurrentPassword('');
+    setDeleteProgress('');
     setDeleteError('');
   }
 
@@ -172,15 +178,21 @@ function Settings() {
     if (isDeletingAccount || !user || deleteConfirmation !== 'DELETE') return;
 
     setDeleteError('');
+    setDeleteProgress('');
     setIsDeletingAccount(true);
     try {
-      await deleteCurrentUser(user);
+      await deleteAccountAndOwnedData(
+        user,
+        deleteCurrentPassword,
+        setDeleteProgress,
+      );
       navigate('/login', {
         replace: true,
-        state: { notice: 'Your Firebase sign-in account was deleted.' },
+        state: { notice: 'Your Firebase account and Firestore profile/settings were deleted.' },
       });
     } catch (error) {
-      setDeleteError(getAccountSettingsErrorMessage(error));
+      setDeleteError(getAccountDeletionErrorMessage(error));
+      setDeleteProgress('');
     } finally {
       setIsDeletingAccount(false);
     }
@@ -416,11 +428,12 @@ function Settings() {
       <section className={`${styles.settingsCard} ${styles.dangerCard}`} aria-labelledby="delete-account-title">
         <div className={styles.sectionHeading}>
           <h2 id="delete-account-title">Delete account</h2>
-          <p>This permanently deletes your Firebase sign-in account.</p>
+          <p>This permanently deletes your Firebase sign-in account and its in-app Firestore profile/settings document.</p>
         </div>
         <p className={styles.deletionNotice} role="note" data-testid="text-delete-account-data-scope">
-          The existing deletion service removes the Firebase sign-in account only. It does not remove the
-          Firestore profile and settings document, which may remain after deletion.
+          Deletion runs in steps: your account is reauthenticated, the Firestore profile/settings document is
+          removed, then Firebase Authentication is deleted. Shared Supabase library records are not account
+          data and are not changed. Provider-managed logs and backups may follow separate retention periods.
         </p>
 
         {!showDeleteConfirmation && (
@@ -446,6 +459,23 @@ function Settings() {
           >
             <h3 id="delete-confirmation-title">Confirm account deletion</h3>
             <p>To continue, type <strong>DELETE</strong> below. This action cannot be undone.</p>
+            {supportsPasswordAuth ? (
+              <PasswordField
+                id="settings-delete-current-password"
+                label="Current password"
+                value={deleteCurrentPassword}
+                onChange={(event) => setDeleteCurrentPassword(event.target.value)}
+                autoComplete="current-password"
+                minLength={1}
+                disabled={isDeletingAccount}
+                testId="input-delete-current-password"
+              />
+            ) : (
+              <p className={styles.infoMessage}>
+                Deletion requires a recent sign-in for this account. If this session is too old, sign out and
+                sign in again with your existing method before retrying. This form will not start another sign-in flow.
+              </p>
+            )}
             <div className={styles.fieldGroup}>
               <label className={styles.fieldLabel} htmlFor="delete-account-confirmation">Type DELETE to confirm</label>
               <input
@@ -460,6 +490,13 @@ function Settings() {
                 data-testid="input-delete-account-confirmation"
               />
             </div>
+            {deleteProgress && (
+              <p className={styles.statusMessage} role="status" data-testid="status-delete-account-progress">
+                {deleteProgress === 'reauthentication' && 'Verifying your sign-in…'}
+                {deleteProgress === 'firestore' && 'Removing your Firestore profile and settings…'}
+                {deleteProgress === 'firebase-auth' && 'Deleting your Firebase sign-in account…'}
+              </p>
+            )}
             {deleteError && <p className={styles.errorMessage} role="alert" data-testid="status-delete-account-error">{deleteError}</p>}
             <div className={styles.buttonRow}>
               <button
@@ -468,7 +505,7 @@ function Settings() {
                 disabled={isDeletingAccount || deleteConfirmation !== 'DELETE'}
                 data-testid="button-confirm-account-deletion"
               >
-                {isDeletingAccount ? 'Deleting account…' : 'Permanently delete sign-in account'}
+                {isDeletingAccount ? 'Deleting account data…' : 'Permanently delete account'}
               </button>
               <button
                 className={styles.textButton}

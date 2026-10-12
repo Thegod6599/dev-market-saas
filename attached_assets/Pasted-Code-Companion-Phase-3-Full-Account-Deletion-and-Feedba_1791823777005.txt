@@ -1,0 +1,166 @@
+Code Companion — Phase 3: Full Account Deletion and Feedback Page
+
+Objective
+
+Complete two first-release requirements:
+
+1. Implement coordinated account deletion that removes the user’s in-scope personal data across Firebase, Firestore, Supabase, and any other applicable persistent storage.
+2. Create a functional Feedback page so users can submit feedback about Code Companion.
+
+Inspect the current codebase first. Reuse existing services, schemas, routes, and UI patterns wherever possible. Do not rewrite working systems.
+
+Part A — Full Account Deletion and User Data Erasure
+
+1. Audit user-owned data
+
+Inspect the existing account-deletion service, Firestore deletion helper, database schema, and application data flows.
+
+Identify all applicable user-owned data in:
+
+* Firebase Authentication
+* Firestore profiles and settings
+* Other Firestore documents and subcollections owned by the user
+* Supabase favorites, feedback, projects, project pages, project components, and project assets, where applicable
+* User-owned uploaded files or other persistent storage, if present
+
+Trace actual ownership fields, references, foreign-key relationships, and existing deletion helpers. Do not assume every table contains user-specific data.
+
+Never delete shared component-library data, categories, tags, templates, or records belonging to other users.
+
+2. Implement coordinated deletion
+
+The existing deleteCurrentUser(user) service and Firestore profile-deletion helper already exist. Inspect and reuse them.
+
+* Preserve the existing explicit confirmation step in Settings.
+* Reauthenticate the user when required.
+* Remove all in-scope user-owned data from each applicable service.
+* Delete the Firebase Authentication account after the required cleanup operations succeed, where technically possible.
+* Handle dependencies and foreign-key relationships in the correct order.
+* Do not expose service-role keys or bypass security rules with privileged frontend credentials.
+* Do not weaken Firebase or Supabase access controls.
+* Make deletion operations safe to retry after partial completion.
+* If cleanup fails, do not show a full-deletion success message.
+* Display a safe, actionable error and preserve enough non-sensitive state for a retry.
+* If secure cleanup requires a server-side function or permission changes, explain the requirement instead of implementing an insecure workaround.
+
+Do not claim that deletion is atomic across Firebase and Supabase unless the implementation guarantees it. Explain how partial failures are handled.
+
+3. Deletion experience
+
+Update the existing Settings deletion flow to:
+
+* Explain that account deletion is permanent.
+* Require explicit confirmation.
+* Show progress while deletion is underway.
+* Show success and redirect/sign out only after the required deletion steps succeed.
+* Clearly report incomplete deletion if any required operation fails.
+* Never claim all personal data has been erased when cleanup is incomplete.
+
+Inspect possible retention in logs, backups, and other systems. Do not promise immediate deletion from backups or logs unless verified. Document applicable limitations.
+
+4. Account-deletion validation
+
+* Use mocked operations, isolated test data, or a safe test environment.
+* Do not delete a real user’s account for testing.
+* Verify the order of operations and partial-failure handling.
+* Verify that shared library data and other users’ records remain untouched.
+* Run the existing build and relevant tests.
+* Clearly distinguish verified behavior from untested or permission-blocked behavior.
+
+Part B — Create the Feedback Page
+
+1. Inspect before implementing
+
+Inspect the current routes, navigation, page styling, authentication context, and existing Supabase feedback table and service code.
+
+Reuse the existing schema and service if they support feedback submissions. Do not invent new database columns or modify the schema without first reporting why the existing schema is insufficient.
+
+2. Page and form requirements
+
+Create a functional Feedback page that fits Code Companion’s existing visual design.
+
+The page should include:
+
+* A clear heading and short explanation of why user feedback is valuable.
+* A feedback-type selector, using categories supported by the existing schema, such as bug report, feature request, or general feedback.
+* A required message field with sensible length validation.
+* A clear Submit Feedback action.
+* Loading and disabled states during submission.
+* A success confirmation after the database confirms the submission.
+* Useful error feedback when submission fails.
+* Accessible labels, keyboard focus, and mobile-friendly layout.
+
+Only add optional fields, such as a subject or contact email, if they fit the existing schema and are genuinely useful. Do not collect unnecessary personal information.
+
+3. Connect to Supabase safely
+
+* Use the existing Supabase client and feedback service, if available.
+* Inspect the feedback table’s actual columns, required fields, and Row Level Security policies.
+* Associate submissions with the authenticated user’s ID when appropriate and supported by the schema.
+* For signed-out users, follow the existing product’s intended access policy. Do not require login unless necessary for the existing schema or product decision.
+* Never trust a user ID supplied by the form as proof of identity.
+* Do not expose service-role credentials in frontend code.
+* If RLS or permissions prevent a secure submission, report the exact blocker rather than weakening security or falsely showing success.
+
+4. Routing and navigation
+
+* Add the Feedback route using the existing React Router setup.
+* Add an appropriate navigation link where users can reasonably find it, such as the existing footer, support area, or application navigation.
+* Check that the route works when opened directly.
+* Do not create duplicate routes or duplicate navigation entries.
+* Keep the existing Privacy Policy and Terms of Service marked as coming soon until the owner provides their content.
+* Do not invent legal text or create unrelated pages.
+
+5. Feedback validation
+
+Verify where possible:
+
+* The page renders on desktop and mobile.
+* Required-field and length validation work.
+* A successful submission creates the expected database record.
+* Failed submissions show an error without claiming success.
+* Authentication and RLS behavior match the existing schema.
+* The page does not expose other users’ feedback or private information.
+* The existing application build and relevant tests pass.
+
+Use a safe test environment or isolated test records. Do not pollute production feedback data with test submissions.
+
+Part C — Scope and architecture
+
+Preserve the existing architecture:
+
+* React + Vite
+* React Router
+* Firebase Authentication
+* Firestore for user-specific data
+* Supabase for shared library data and applicable application records
+
+Do not:
+
+* Introduce Next.js or migrate frameworks.
+* Rebuild the component library or regenerate component packages.
+* Change unrelated account services.
+* Modify production Firebase/Supabase security settings without approval.
+* Add a new schema or migration without establishing that it is necessary.
+* Expose secrets or weaken access controls.
+* Commit, push, or deploy.
+
+Keep the changes focused on full account deletion and the Feedback page.
+
+Part D — Final report and stopping conditions
+
+After implementation, report:
+
+1. All user-data locations identified and which ones the deletion flow handles.
+2. Existing deletion services and helpers reused.
+3. Deletion ordering, partial-failure behavior, and retry handling.
+4. Any remaining data-retention or permission limitations.
+5. Feedback page route, navigation location, fields, and submission service.
+6. The existing Supabase schema and RLS behavior used.
+7. Files changed and any schema/configuration changes proposed or made.
+8. Build and test results.
+9. Which behaviors were genuinely verified and which remain untested.
+
+Do not claim complete data erasure or a functional feedback submission unless the relevant operations have been verified.
+
+Finish these two tasks and stop for review. Do not begin a broader UI redesign or unrelated feature work.

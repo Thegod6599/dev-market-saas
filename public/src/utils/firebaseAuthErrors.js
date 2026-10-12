@@ -105,3 +105,38 @@ export function getAccountSettingsErrorMessage(error) {
       return 'We could not complete this account action. Please try again.';
   }
 }
+
+export function getAccountDeletionErrorMessage(error) {
+  if (error?.stage === 'reauthentication') {
+    switch (error.code) {
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+      case 'auth/user-mismatch':
+        return 'The current password could not be verified. No profile or settings data was removed.';
+      case 'auth/requires-recent-login':
+        return 'Your sign-in is not recent enough. No profile or settings data was removed; sign out and sign in again, then retry.';
+      case 'auth/network-request-failed':
+        return 'A network error prevented sign-in verification. No profile or settings data was removed; check your connection and retry.';
+      case 'auth/operation-not-allowed':
+        return 'This sign-in method cannot be reauthenticated here. No profile or settings data was removed.';
+      default:
+        return 'We could not verify your sign-in, so no profile or settings data was removed. Check your details and retry.';
+    }
+  }
+
+  if (error?.stage === 'firestore') {
+    if (error.code === 'permission-denied') {
+      return 'Access to your profile/settings document was denied. Firebase Authentication was not deleted; ask the app owner to review Firestore access rules.';
+    }
+    return 'Firestore profile/settings cleanup was not confirmed. Firebase Authentication was not deleted; check your connection and retry.';
+  }
+
+  if (error?.stage === 'firebase-auth') {
+    if (error.code === 'auth/requires-recent-login') {
+      return 'Firestore profile/settings cleanup completed, but Firebase account deletion needs a recent sign-in. Sign in again and retry; the cleanup step is safe to repeat.';
+    }
+    return 'Firestore profile/settings cleanup completed, but Firebase account deletion was not confirmed. Retry while signed in; the cleanup step is safe to repeat.';
+  }
+
+  return 'We could not complete account deletion. No full-deletion success was recorded; retry the operation.';
+}

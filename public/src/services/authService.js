@@ -57,6 +57,28 @@ export async function updateUserPassword(user, currentPassword, newPassword) {
   await reauthenticateWithCredential(user, credential);
   await updatePassword(user, newPassword);
 }
+
+export async function reauthenticateUserWithPassword(user, currentPassword) {
+  const supportsPasswordAuth = user?.providerData?.some(
+    (provider) => provider.providerId === 'password',
+  );
+
+  if (!user || !user.email || !supportsPasswordAuth) {
+    const error = new Error('Password reauthentication is only available for email/password accounts.');
+    error.code = 'auth/operation-not-allowed';
+    throw error;
+  }
+
+  if (!currentPassword) {
+    const error = new Error('A current password is required.');
+    error.code = 'auth/missing-password';
+    throw error;
+  }
+
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+}
+
 export async function updateUserEmail(user, newEmail) {
   if (!user) throw new Error("No user is currently signed in.");
   await updateEmail(user, newEmail);
