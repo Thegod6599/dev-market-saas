@@ -1,13 +1,21 @@
 import { getIdTokenResult } from 'firebase/auth';
-import { auth } from '../firebase/firebase';
 import { deleteCurrentUser, reauthenticateUserWithPassword } from './authService';
 import { deleteProfile } from './profileService';
 import { runAccountDeletion } from './accountDeletionFlow';
 
 const MAX_RECENT_SIGN_IN_AGE_MS = 4 * 60 * 1000;
 
+export const accountDeletionBlocker =
+  'Full account deletion is paused until a trusted server-side path can remove this user’s Supabase feedback rows. The current Supabase policies do not allow deletion, and this app has no Supabase-authenticated session.';
+
 export function hasPasswordAuthentication(user) {
   return Boolean(user?.providerData?.some((provider) => provider.providerId === 'password'));
+}
+
+async function deleteSupabaseFeedback() {
+  const error = new Error('Secure Supabase feedback deletion is not configured.');
+  error.code = 'account/supabase-feedback-cleanup-unavailable';
+  throw error;
 }
 
 async function verifyRecentSignIn(user) {
@@ -29,6 +37,7 @@ export function deleteAccountAndOwnedData(user, currentPassword, onProgress) {
     passwordAuthentication: hasPasswordAuthentication(user),
     reauthenticate: reauthenticateUserWithPassword,
     verifyRecentSignIn,
+    deleteSupabaseFeedback,
     deleteFirestoreProfile: deleteProfile,
     deleteFirebaseAccount: deleteCurrentUser,
     onProgress,

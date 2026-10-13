@@ -13,6 +13,7 @@ export async function runAccountDeletion({
   passwordAuthentication,
   reauthenticate,
   verifyRecentSignIn,
+  deleteSupabaseFeedback,
   deleteFirestoreProfile,
   deleteFirebaseAccount,
   onProgress = () => {},
@@ -32,6 +33,13 @@ export async function runAccountDeletion({
     }
   } catch (error) {
     throw deletionStepError('reauthentication', error);
+  }
+
+  onProgress('supabase-feedback');
+  try {
+    await deleteSupabaseFeedback(user.uid);
+  } catch (error) {
+    throw deletionStepError('supabase-feedback', error);
   }
 
   onProgress('firestore');

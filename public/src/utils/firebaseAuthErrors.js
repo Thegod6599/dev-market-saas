@@ -131,6 +131,10 @@ export function getAccountDeletionErrorMessage(error) {
     return 'Firestore profile/settings cleanup was not confirmed. Firebase Authentication was not deleted; check your connection and retry.';
   }
 
+  if (error?.stage === 'supabase-feedback') {
+    return 'Supabase feedback cleanup is not configured, so no profile/settings or Firebase account data was removed. A trusted server-side delete path or an approved owner-only Supabase DELETE policy is required first.';
+  }
+
   if (error?.stage === 'firebase-auth') {
     if (error.code === 'auth/requires-recent-login') {
       return 'Firestore profile/settings cleanup completed, but Firebase account deletion needs a recent sign-in. Sign in again and retry; the cleanup step is safe to repeat.';
