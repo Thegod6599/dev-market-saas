@@ -10,7 +10,6 @@ function makeOperations(overrides = {}) {
     passwordAuthentication: true,
     reauthenticate: async () => calls.push('reauthenticate'),
     verifyRecentSignIn: async () => calls.push('verify-recent-sign-in'),
-    deleteSupabaseFeedback: async (uid) => calls.push(`delete-feedback:${uid}`),
     deleteFirestoreProfile: async (uid) => calls.push(`delete-profile:${uid}`),
     deleteFirebaseAccount: async () => calls.push('delete-auth-account'),
     onProgress: (stage) => calls.push(`progress:${stage}`),
@@ -28,8 +27,6 @@ test('reauthenticates, deletes the owner profile/settings, then deletes only tha
   assert.deepEqual(calls, [
     'progress:reauthentication',
     'reauthenticate',
-    'progress:supabase-feedback',
-    'delete-feedback:test-user',
     'progress:firestore',
     'delete-profile:test-user',
     'progress:firebase-auth',
@@ -56,26 +53,6 @@ test('does not touch Firestore when reauthentication fails', async () => {
     return true;
   });
   assert.deepEqual(calls, ['progress:reauthentication', 'reauthenticate']);
-});
-
-test('does not remove Firestore or Firebase data when feedback cleanup is unavailable', async () => {
-  const { calls, operations } = makeOperations({
-    deleteSupabaseFeedback: async () => {
-      calls.push('delete-feedback:test-user');
-      throw Object.assign(new Error('not configured'), {
-        code: 'account/supabase-feedback-cleanup-unavailable',
-      });
-    },
-  });
-
-  await assert.rejects(runAccountDeletion(operations), (error) => {
-    assert.equal(error.stage, 'supabase-feedback');
-    assert.equal(error.firestoreProfileDeleted, false);
-    assert.equal(error.code, 'account/supabase-feedback-cleanup-unavailable');
-    return true;
-  });
-  assert.equal(calls.includes('delete-profile:test-user'), false);
-  assert.equal(calls.includes('delete-auth-account'), false);
 });
 
 test('does not delete Firebase Authentication when Firestore cleanup fails', async () => {

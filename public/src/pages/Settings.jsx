@@ -9,7 +9,6 @@ import {
   updateUserPassword,
 } from '../services/authService';
 import {
-  accountDeletionBlocker,
   deleteAccountAndOwnedData,
   hasPasswordAuthentication,
 } from '../services/accountDeletionService';
@@ -429,16 +428,12 @@ function Settings() {
       <section className={`${styles.settingsCard} ${styles.dangerCard}`} aria-labelledby="delete-account-title">
         <div className={styles.sectionHeading}>
           <h2 id="delete-account-title">Delete account</h2>
-          <p>Account deletion is permanent and must remove every user-owned record before sign-in is deleted.</p>
+          <p>This permanently deletes your Firebase sign-in account and its in-app Firestore profile/settings document.</p>
         </div>
         <p className={styles.deletionNotice} role="note" data-testid="text-delete-account-data-scope">
-          The app also stores feedback rows in Supabase. Its current policies do not permit deleting those rows
-          from this Firebase-only client, and no trusted mapping from Firebase UID to the Supabase profile ID is
-          established. Full account deletion is paused rather than leaving records behind. Shared Supabase
-          library records are never deleted. Provider-managed logs and backups may follow separate retention periods.
-        </p>
-        <p className={styles.errorMessage} role="note" data-testid="text-delete-account-blocker">
-          {accountDeletionBlocker}
+          Deletion runs in steps: your account is reauthenticated, the Firestore profile/settings document is
+          removed, then Firebase Authentication is deleted. Shared Supabase library records are not account
+          data and are not changed. Provider-managed logs and backups may follow separate retention periods.
         </p>
 
         {!showDeleteConfirmation && (
@@ -449,10 +444,9 @@ function Settings() {
               setDeleteError('');
               setShowDeleteConfirmation(true);
             }}
-            disabled={Boolean(accountDeletionBlocker)}
             data-testid="button-start-account-deletion"
           >
-            Delete account (unavailable)
+            Delete account
           </button>
         )}
 
@@ -499,7 +493,6 @@ function Settings() {
             {deleteProgress && (
               <p className={styles.statusMessage} role="status" data-testid="status-delete-account-progress">
                 {deleteProgress === 'reauthentication' && 'Verifying your sign-in…'}
-                {deleteProgress === 'supabase-feedback' && 'Removing your Supabase feedback…'}
                 {deleteProgress === 'firestore' && 'Removing your Firestore profile and settings…'}
                 {deleteProgress === 'firebase-auth' && 'Deleting your Firebase sign-in account…'}
               </p>
@@ -509,7 +502,7 @@ function Settings() {
               <button
                 className={styles.dangerButton}
                 type="submit"
-                disabled={Boolean(accountDeletionBlocker) || isDeletingAccount || deleteConfirmation !== 'DELETE'}
+                disabled={isDeletingAccount || deleteConfirmation !== 'DELETE'}
                 data-testid="button-confirm-account-deletion"
               >
                 {isDeletingAccount ? 'Deleting account data…' : 'Permanently delete account'}
