@@ -6,7 +6,7 @@ import { runAccountDeletion } from './accountDeletionFlow';
 const MAX_RECENT_SIGN_IN_AGE_MS = 4 * 60 * 1000;
 
 export const accountDeletionBlocker =
-  'Full account deletion is paused until a trusted server-side path can remove this user’s Supabase feedback rows. The current Supabase policies do not allow deletion, and this app has no Supabase-authenticated session.';
+  'Full account deletion is paused: the app has no trusted Firebase UID-to-Supabase profile ID mapping, and current policies do not permit feedback-row deletion from this Firebase-only client. Nothing is deleted until a secure mapping and server cleanup route are configured.';
 
 export function hasPasswordAuthentication(user) {
   return Boolean(user?.providerData?.some((provider) => provider.providerId === 'password'));

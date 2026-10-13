@@ -433,9 +433,9 @@ function Settings() {
         </div>
         <p className={styles.deletionNotice} role="note" data-testid="text-delete-account-data-scope">
           The app also stores feedback rows in Supabase. Its current policies do not permit deleting those rows
-          from this Firebase-only client, so full account deletion is paused rather than leaving your feedback
-          behind. Shared Supabase library records are never deleted. Provider-managed logs and backups may follow
-          separate retention periods.
+          from this Firebase-only client, and no trusted mapping from Firebase UID to the Supabase profile ID is
+          established. Full account deletion is paused rather than leaving records behind. Shared Supabase
+          library records are never deleted. Provider-managed logs and backups may follow separate retention periods.
         </p>
         <p className={styles.errorMessage} role="note" data-testid="text-delete-account-blocker">
           {accountDeletionBlocker}

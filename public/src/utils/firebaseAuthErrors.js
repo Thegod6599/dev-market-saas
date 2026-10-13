@@ -132,7 +132,7 @@ export function getAccountDeletionErrorMessage(error) {
   }
 
   if (error?.stage === 'supabase-feedback') {
-    return 'Supabase feedback cleanup is not configured, so no profile/settings or Firebase account data was removed. A trusted server-side delete path or an approved owner-only Supabase DELETE policy is required first.';
+    return 'Supabase feedback cleanup is not configured, so no profile/settings or Firebase account data was removed. A trusted Firebase UID-to-profiles.id server mapping and server-side feedback deletion endpoint are required before deletion can proceed.';
   }
 
   if (error?.stage === 'firebase-auth') {
