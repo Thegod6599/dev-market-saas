@@ -13,14 +13,10 @@ export const supabase = isSupabaseConfigured
         autoRefreshToken: false,
       },
       // Supabase's Firebase third-party auth integration validates Firebase
-      // ID tokens. The Firebase token must carry the required "authenticated"
-      // role claim; this callback does not create or modify that claim.
+      // ID tokens. The token must carry the required "authenticated" role
+      // claim; this callback does not create or modify that claim.
       accessToken: async () => {
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-          throw new Error('Sign in to use authenticated Supabase features.');
-        }
-        return currentUser.getIdToken();
+        return (await auth.currentUser?.getIdToken(false)) ?? null;
       },
     })
   : null;
