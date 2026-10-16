@@ -1,0 +1,48 @@
+name: Deploy Firestore Rules to Existing Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_backend_project:
+        description: "Type DEPLOY_RULES to confirm deployment to the existing Firebase backend"
+        required: true
+        type: string
+
+jobs:
+  deploy_rules:
+    if: ${{ inputs.confirm_backend_project == 'DEPLOY_RULES' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: codex/standalone-component-packages
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate existing backend configuration
+        env:
+          FIREBASE_BACKEND_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          test -n "$FIREBASE_BACKEND_PROJECT_ID" || { echo "::error::Missing existing backend project ID secret VITE_FIREBASE_PROJECT_ID."; exit 1; }
+          test -n "$FIREBASE_SERVICE_ACCOUNT_JSON" || { echo "::error::Missing existing backend service-account secret FIREBASE_SERVICE_ACCOUNT."; exit 1; }
+          case "$FIREBASE_BACKEND_PROJECT_ID" in
+            dev-market0) echo "::error::Refusing to deploy Firestore rules to the Hosting-only project dev-market0."; exit 1 ;;
+          esac
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-service-account.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
+          echo "FIREBASE_BACKEND_PROJECT_ID=$FIREBASE_BACKEND_PROJECT_ID" >> "$GITHUB_ENV"
+
+      - name: Install Firebase CLI
+        run: npm install --global firebase-tools
+
+      - name: Deploy Firestore rules only
+        run: firebase deploy --only firestore:rules --project "$FIREBASE_BACKEND_PROJECT_ID" --non-interactive
+
+      - name: Remove temporary service-account file
+        if: always()
+        run: rm -f "$RUNNER_TEMP/firebase-service-account.json"
