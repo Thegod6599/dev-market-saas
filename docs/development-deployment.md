@@ -52,3 +52,14 @@ the relative `library/packages/<slug>.zip` path in the existing Supabase
 `components.code_reference` field. An optional `preview.svg` is staged
 under `public/public/library/previews/`. Firebase Hosting serves these files
 as static resources; no Supabase Storage bucket or schema change is needed.
+
+## Firestore rules deployment
+
+`firebase.json` declares `firestore.rules`, but the Hosting workflows deploy
+Hosting only; they do not deploy Firestore rules. The proposed rules include
+Feedback permissions and must be reviewed against the currently deployed rules
+for the existing backend project before any rules deployment. Never deploy
+these rules to `dev-market0`, which is the Hosting-only production destination.
+A rules deployment can replace the database's existing rules, so it must be a
+separate, explicitly reviewed operation with an appropriately authorized
+backend project/account.
