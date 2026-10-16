@@ -41,6 +41,9 @@ jobs:
       - name: Build and type-check
         run: pnpm run build
 
+      - name: Run account-deletion flow tests
+        run: node --test public/tests/*.test.mjs
+
       - name: Verify SEO assets are included in Hosting output
         run: |
           test -s public/dist/public/robots.txt
