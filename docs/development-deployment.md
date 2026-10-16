@@ -1,24 +1,39 @@
 # Development deployment
 
-## Current development target
+## Firebase projects and deployment boundaries
 
-The branch `codex/standalone-component-packages` deploys to the live Firebase
-Hosting site for project `first-project-81a57`. The current site URL is
-https://first-project-81a57.web.app. GitHub Actions runs on pushes to that
-branch, installs the frozen pnpm lockfile, runs the root build (typecheck and
-workspace builds), then deploys the Vite output to the live Hosting channel.
+The app uses two separate Firebase projects for different purposes:
 
-Vite is rooted at `public/`; Firebase Hosting serves `public/dist/public`.
-Client-side routes use the existing SPA rewrite. Static library resources
-under `public/public/library/` are copied into that build output.
+- **Hosting project:** `dev-market0`, Hosting site `devmarket`, URL
+  https://devmarket.web.app. This is where the production Hosting workflow
+  publishes the built frontend.
+- **Existing application backend:** the project ID configured by the
+  `VITE_FIREBASE_PROJECT_ID` GitHub Actions secret. Keep its Firebase
+  Authentication and Firestore data in place. The frontend continues to use
+  this project for authentication and user data; do not change that secret to
+  `dev-market0`.
 
-## Actions configuration
+Supabase remains the existing source for component-library and Builder data.
+Do not replace its URL or publishable key as part of the Hosting migration.
+
+The branch `codex/standalone-component-packages` deploys development builds to
+the **`dev` preview channel** on Hosting site `devmarket` in project
+`dev-market0`. It must not publish branch pushes to the live channel. The
+production workflow deploys to the live channel only after a pull request is
+merged into `main`.
+
+## Build configuration
+
+Vite is rooted at `public/`; Firebase Hosting serves
+`public/dist/public`. Client-side routes use the existing SPA rewrite.
+Static library resources under `public/public/library/` are copied into that
+build output.
 
 The build step reads these GitHub Actions secrets by name:
 
 - `VITE_FIREBASE_API_KEY`
 - `VITE_FIREBASE_AUTH_DOMAIN`
-- `VITE_FIREBASE_PROJECT_ID`
+- `VITE_FIREBASE_PROJECT_ID` (existing application backend; preserve it)
 - `VITE_FIREBASE_STORAGE_BUCKET`
 - `VITE_FIREBASE_MESSAGING_SENDER_ID`
 - `VITE_FIREBASE_APP_ID`
@@ -26,20 +41,24 @@ The build step reads these GitHub Actions secrets by name:
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-The Hosting deploy step also reads `FIREBASE_SERVICE_ACCOUNT`. Only the
-build step receives the Vite variables. Vite embeds client configuration in
-the browser bundle; keep Firebase service-account and Supabase service-role
-credentials out of frontend code.
+The Hosting deployment workflows use `FIREBASE_PRODUCTION_SERVICE_ACCOUNT`
+to publish to the Hosting-only project `dev-market0`. Never use that project
+ID for the Firebase client configuration. The service-account JSON and any
+Supabase service-role credential must never be included in frontend code.
 
 For local Vite development, copy `public/.env.example` to
-`public/.env.local` and fill in the same Firebase and Supabase client
-configuration. `.env.local` is ignored by Git. The importer separately uses
-`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in a local developer shell.
+`public/.env.local` and fill in the existing Firebase backend and Supabase
+client configuration. `.env.local` is ignored by Git. The importer separately
+uses `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in a local developer
+shell.
 
-To move to another project, replace the related GitHub Actions secrets
-together: Firebase web app settings, the Hosting project ID
-(`VITE_FIREBASE_PROJECT_ID`), Firebase service account, and Supabase URL and
-publishable key. The app source contains no project values.
+## Firestore rules
+
+The repository declares `firestore.rules` in `firebase.json`, but the Hosting
+workflows deploy **Hosting only**. They do not deploy Firestore rules. Before
+deploying the repository rules, compare them with the currently deployed rules
+in the existing application-backend project; a rules deployment replaces that
+project's rules and must not be aimed at `dev-market0`.
 
 ## Component packages
 
@@ -52,14 +71,3 @@ the relative `library/packages/<slug>.zip` path in the existing Supabase
 `components.code_reference` field. An optional `preview.svg` is staged
 under `public/public/library/previews/`. Firebase Hosting serves these files
 as static resources; no Supabase Storage bucket or schema change is needed.
-
-## Firestore rules deployment
-
-`firebase.json` declares `firestore.rules`, but the Hosting workflows deploy
-Hosting only; they do not deploy Firestore rules. The proposed rules include
-Feedback permissions and must be reviewed against the currently deployed rules
-for the existing backend project before any rules deployment. Never deploy
-these rules to `dev-market0`, which is the Hosting-only production destination.
-A rules deployment can replace the database's existing rules, so it must be a
-separate, explicitly reviewed operation with an appropriately authorized
-backend project/account.
