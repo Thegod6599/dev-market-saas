@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, LogOut } from 'lucide-react';
 import PasswordField from '../components/authUI/PasswordField';
 import { useAuth } from '../hooks/useAuth';
@@ -521,17 +521,35 @@ function Settings() {
         )}
       </section>
 
-      <section className={styles.settingsCard} aria-labelledby="support-legal-title">
+      
+      <section
+        className={styles.settingsCard}
+        aria-labelledby="support-legal-title"
+      >
         <div className={styles.sectionHeading}>
           <h2 id="support-legal-title">Support and legal</h2>
-          <p>These destinations are not available yet.</p>
+          <p>
+            Find information about your privacy and the terms
+            for using Dev Market.
+          </p>
         </div>
+
         <ul className={styles.unavailableList}>
-          <li><span>Support</span><span>Coming soon</span></li>
-          <li><span>Privacy Policy</span><span>Coming soon</span></li>
-          <li><span>Terms of Service</span><span>Coming soon</span></li>
+          <li>
+            <Link to="/feedback">Feedback</Link>
+          </li>
+          <li>
+            <Link to="/privacy-policy">
+              Privacy Policy
+          </li>
+          <li>
+            <Link to="/terms-of-service">
+              Terms of Service
+            </Link>
+          </li>
         </ul>
       </section>
+
     </main>
   );
 }

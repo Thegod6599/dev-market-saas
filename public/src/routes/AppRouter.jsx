@@ -16,6 +16,9 @@ import Login from '../pages/Login';
 import ResetPassword from '../pages/ResetPassword';
 import Settings from '../pages/Settings';
 import LoadingPage from '../components/loadingPage/loadingPage.jsx';
+import TermsOfService from '../pages/termsOfService';
+import PrivacyPolicy from '../pages/privacyPolicy';
+import Feedback from '../pages/Feedback'
 import { useAuth } from '../hooks/useAuth';
 import { auth } from '../firebase/firebase';
 
@@ -70,6 +73,9 @@ const router = createBrowserRouter(
         { path: '/templates', element: <Templates /> },
         { path: '/templates/:slug', element: <TemplateDetail /> },
         { path: '/builder', element: <Builder /> },
+        { path: '/privacy-policy', element: <PrivacyPolicy />},
+        { path: '/terms-of-service', element: <TermsOfService />},
+        { path: '/feedback', element: <Feedback />}
       ],
     },
     {

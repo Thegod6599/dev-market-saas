@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react';
 import { signupWithEmail, loginWithGoogle } from '../../services/authService';
 import { getAuthErrorMessage } from '../../utils/firebaseAuthErrors'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 
 function SignupForm({ onSwitch }) {
   const navigate = useNavigate()
@@ -14,9 +14,16 @@ function SignupForm({ onSwitch }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!agreedToTerms) {
+      setError('Please agree to the Terms of Service and Privacy Policy to continue.');
+      return;
+    }
+
     if (isSubmitting) return;
     setError("");
     setIsSubmitting(true);
@@ -34,6 +41,10 @@ function SignupForm({ onSwitch }) {
     }
   }
   async function handleGoogleLogin() {
+    if (!agreedToTerms) {
+      setError('Please agree to the Terms of Service and Privacy Policy to continue.');
+      return;
+    }
     setError("");
     setIsSubmitting(true);
     try {
@@ -64,6 +75,29 @@ function SignupForm({ onSwitch }) {
           </button>
           </div>
           </div>
+          <div className={styles.agreementRow}>
+            <input
+              id="signup-agreement"
+              name="agreement"
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              disabled={isSubmitting}
+              required
+              data-testid="checkbox-signup-agreement"
+            />
+            <label htmlFor="signup-agreement">
+              I agree to the{' '}
+              <Link to="/terms-of-service">
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link to="/privacy-policy">
+                Privacy Policy
+              </Link>.
+            </label>
+          </div>
+
           {error && <p className={styles.errorMessage} role="alert" data-testid="status-signup-error">{error}</p>}
           <div className={styles.signupActions}>
             <button type="submit" className={styles.signupButton} disabled={isSubmitting} data-testid="button-signup">{isSubmitting ? 'Creating account…' : 'Sign Up'}</button>

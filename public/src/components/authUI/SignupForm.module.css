@@ -185,3 +185,35 @@ h2 {
   margin-top: var(--spacing-small);
   text-align: center;
 }
+.agreementRow {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+margin: 16px 0;
+font-size: 0.875rem;
+line-height: 1.5;
+color: #666666;
+}
+
+.agreementRow input[type=‘checkbox’] {
+flex-shrink: 0;
+width: 16px;
+height: 16px;
+margin-top: 3px;
+accent-color: #263CE5;
+cursor: pointer;
+}
+
+.agreementRow label {
+cursor: pointer;
+}
+
+.agreementRow a {
+color: #263CE5;
+text-decoration: underline;
+text-underline-offset: 2px;
+}
+
+.agreementRow a:hover {
+color: #367CE5;
+}
