@@ -1,8 +1,9 @@
-function deletionStepError(stage, cause, firestoreProfileDeleted = false) {
+function deletionStepError(stage, cause, supabaseDataDeleted = false, firestoreProfileDeleted = false) {
   const error = new Error('Account deletion did not complete.');
   error.stage = stage;
   error.code = cause?.code;
   error.cause = cause;
+  error.supabaseDataDeleted = supabaseDataDeleted;
   error.firestoreProfileDeleted = firestoreProfileDeleted;
   return error;
 }
@@ -13,6 +14,7 @@ export async function runAccountDeletion({
   passwordAuthentication,
   reauthenticate,
   verifyRecentSignIn,
+  deleteSupabaseData,
   deleteFirestoreProfile,
   deleteFirebaseAccount,
   onProgress = () => {},
@@ -34,21 +36,29 @@ export async function runAccountDeletion({
     throw deletionStepError('reauthentication', error);
   }
 
+  onProgress('supabase');
+  try {
+    await deleteSupabaseData(user.uid);
+  } catch (error) {
+    throw deletionStepError('supabase', error);
+  }
+
   onProgress('firestore');
   try {
     await deleteFirestoreProfile(user.uid);
   } catch (error) {
-    throw deletionStepError('firestore', error);
+    throw deletionStepError('firestore', error, true);
   }
 
   onProgress('firebase-auth');
   try {
     await deleteFirebaseAccount(user);
   } catch (error) {
-    throw deletionStepError('firebase-auth', error, true);
+    throw deletionStepError('firebase-auth', error, true, true);
   }
 
   return {
+    supabaseDataDeleted: true,
     firestoreProfileAndSettingsDeleted: true,
     firebaseAuthenticationDeleted: true,
   };
