@@ -10,8 +10,7 @@ function makeOperations(overrides = {}) {
     passwordAuthentication: true,
     reauthenticate: async () => calls.push('reauthenticate'),
     verifyRecentSignIn: async () => calls.push('verify-recent-sign-in'),
-    deleteSupabaseData: async (uid) => calls.push(`delete-supabase:${uid}`),
-    deleteFirestoreProfile: async (uid) => calls.push(`delete-profile:${uid}`),
+    deleteFirestoreProfile: async (uid) => calls.push(`delete-firestore-profile-and-feedback:${uid}`),
     deleteFirebaseAccount: async () => calls.push('delete-auth-account'),
     onProgress: (stage) => calls.push(`progress:${stage}`),
     ...overrides,
@@ -20,7 +19,7 @@ function makeOperations(overrides = {}) {
   return { calls, operations };
 }
 
-test('reauthenticates, deletes Supabase and Firestore data, then deletes only that auth account', async () => {
+test('reauthenticates, removes owned Firestore profile/feedback, then deletes Firebase Auth', async () => {
   const { calls, operations } = makeOperations();
 
   const result = await runAccountDeletion(operations);
@@ -28,21 +27,18 @@ test('reauthenticates, deletes Supabase and Firestore data, then deletes only th
   assert.deepEqual(calls, [
     'progress:reauthentication',
     'reauthenticate',
-    'progress:supabase',
-    'delete-supabase:test-user',
     'progress:firestore',
-    'delete-profile:test-user',
+    'delete-firestore-profile-and-feedback:test-user',
     'progress:firebase-auth',
     'delete-auth-account',
   ]);
   assert.deepEqual(result, {
-    supabaseDataDeleted: true,
     firestoreProfileAndSettingsDeleted: true,
     firebaseAuthenticationDeleted: true,
   });
 });
 
-test('does not touch Supabase, Firestore, or Firebase Auth when reauthentication fails', async () => {
+test('does not touch Firestore or Firebase Auth when reauthentication fails', async () => {
   const { calls, operations } = makeOperations({
     reauthenticate: async () => {
       calls.push('reauthenticate');
@@ -52,7 +48,6 @@ test('does not touch Supabase, Firestore, or Firebase Auth when reauthentication
 
   await assert.rejects(runAccountDeletion(operations), (error) => {
     assert.equal(error.stage, 'reauthentication');
-    assert.equal(error.supabaseDataDeleted, false);
     assert.equal(error.firestoreProfileDeleted, false);
     assert.equal(error.code, 'auth/invalid-credential');
     return true;
@@ -60,36 +55,16 @@ test('does not touch Supabase, Firestore, or Firebase Auth when reauthentication
   assert.deepEqual(calls, ['progress:reauthentication', 'reauthenticate']);
 });
 
-test('does not touch Firestore or Firebase Auth when Supabase cleanup fails', async () => {
-  const { calls, operations } = makeOperations({
-    deleteSupabaseData: async (uid) => {
-      calls.push(`delete-supabase:${uid}`);
-      throw Object.assign(new Error('cleanup incomplete'), { code: 'supabase/cleanup-incomplete' });
-    },
-  });
-
-  await assert.rejects(runAccountDeletion(operations), (error) => {
-    assert.equal(error.stage, 'supabase');
-    assert.equal(error.supabaseDataDeleted, false);
-    assert.equal(error.firestoreProfileDeleted, false);
-    assert.equal(error.code, 'supabase/cleanup-incomplete');
-    return true;
-  });
-  assert.equal(calls.includes('delete-profile:test-user'), false);
-  assert.equal(calls.includes('delete-auth-account'), false);
-});
-
 test('does not delete Firebase Authentication when Firestore cleanup fails', async () => {
   const { calls, operations } = makeOperations({
     deleteFirestoreProfile: async () => {
-      calls.push('delete-profile:test-user');
+      calls.push('delete-firestore-profile-and-feedback:test-user');
       throw Object.assign(new Error('permission denied'), { code: 'permission-denied' });
     },
   });
 
   await assert.rejects(runAccountDeletion(operations), (error) => {
     assert.equal(error.stage, 'firestore');
-    assert.equal(error.supabaseDataDeleted, true);
     assert.equal(error.firestoreProfileDeleted, false);
     assert.equal(error.code, 'permission-denied');
     return true;
@@ -97,18 +72,13 @@ test('does not delete Firebase Authentication when Firestore cleanup fails', asy
   assert.equal(calls.includes('delete-auth-account'), false);
 });
 
-test('reports partial cleanup and safely permits a retry after auth deletion fails', async () => {
+test('reports partial cleanup and allows retry if Firebase Auth deletion fails', async () => {
   let authAttempts = 0;
-  const deletedSupabaseUsers = new Set();
-  const deletedProfiles = new Set();
+  let firestoreCleanupAttempts = 0;
   const { calls, operations } = makeOperations({
-    deleteSupabaseData: async (uid) => {
-      calls.push(`delete-supabase:${uid}`);
-      deletedSupabaseUsers.add(uid);
-    },
     deleteFirestoreProfile: async (uid) => {
-      calls.push(`delete-profile:${uid}`);
-      deletedProfiles.add(uid);
+      calls.push(`delete-firestore-profile-and-feedback:${uid}`);
+      firestoreCleanupAttempts += 1;
     },
     deleteFirebaseAccount: async () => {
       authAttempts += 1;
@@ -121,19 +91,17 @@ test('reports partial cleanup and safely permits a retry after auth deletion fai
 
   await assert.rejects(runAccountDeletion(operations), (error) => {
     assert.equal(error.stage, 'firebase-auth');
-    assert.equal(error.supabaseDataDeleted, true);
     assert.equal(error.firestoreProfileDeleted, true);
     return true;
   });
   const retryResult = await runAccountDeletion(operations);
 
-  assert.equal(deletedSupabaseUsers.has('test-user'), true);
-  assert.equal(deletedProfiles.has('test-user'), true);
+  assert.equal(firestoreCleanupAttempts, 2);
   assert.equal(authAttempts, 2);
   assert.equal(retryResult.firebaseAuthenticationDeleted, true);
 });
 
-test('checks session recency without invoking password reauthentication for other providers', async () => {
+test('checks session recency without password reauthentication for other providers', async () => {
   const { calls, operations } = makeOperations({ passwordAuthentication: false });
 
   await runAccountDeletion(operations);
