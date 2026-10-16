@@ -188,7 +188,7 @@ function Settings() {
       );
       navigate('/login', {
         replace: true,
-        state: { notice: 'Your Firebase account and Firestore profile/settings were deleted.' },
+        state: { notice: 'Your Firebase account and in-app Firestore profile/settings data were deleted.' },
       });
     } catch (error) {
       setDeleteError(getAccountDeletionErrorMessage(error));
@@ -493,7 +493,6 @@ function Settings() {
             {deleteProgress && (
               <p className={styles.statusMessage} role="status" data-testid="status-delete-account-progress">
                 {deleteProgress === 'reauthentication' && 'Verifying your sign-in…'}
-                {deleteProgress === 'supabase' && 'Removing your Supabase profile, favorites, feedback, settings, and projects…'}
                 {deleteProgress === 'firestore' && 'Removing your Firestore profile and feedback…'}
                 {deleteProgress === 'firebase-auth' && 'Deleting your Firebase sign-in account…'}
               </p>
