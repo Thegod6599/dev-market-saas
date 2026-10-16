@@ -89,6 +89,9 @@ jobs:
           console.log('Verified Supabase client configuration in the Firebase Hosting build output.');
           NODE
 
+      - name: Test account-deletion flow
+        run: node --test public/tests/accountDeletionFlow.test.mjs
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
