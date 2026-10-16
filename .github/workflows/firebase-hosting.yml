@@ -1,4 +1,4 @@
-name: Deploy DevMarket Test
+name: Deploy DevMarket Development Preview
 
 on:
   push:
