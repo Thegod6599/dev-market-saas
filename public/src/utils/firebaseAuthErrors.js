@@ -124,28 +124,18 @@ export function getAccountDeletionErrorMessage(error) {
     }
   }
 
-  if (error?.stage === 'supabase') {
-    if (error.code === 'supabase/cleanup-incomplete') {
-      return 'Some Supabase records could not be erased with the current database permissions. Your Firebase sign-in account was not deleted; the database owner must review the user-owned data deletion policy before you retry.';
-    }
-    if (error.code === 'supabase/not-configured') {
-      return 'Supabase is not configured, so we could not verify removal of your saved data. Your Firebase sign-in account was not deleted; contact the app owner before retrying.';
-    }
-    return 'Supabase cleanup could not be verified. Your Firebase sign-in account was not deleted; check the connection and database permissions, then retry.';
-  }
-
   if (error?.stage === 'firestore') {
     if (error.code === 'permission-denied') {
-      return 'Supabase cleanup completed, but access to your Firestore profile/settings document was denied. Firebase Authentication was not deleted; ask the app owner to review Firestore access rules.';
+      return 'Access to your Firestore profile/settings or feedback was denied. Firebase Authentication was not deleted; ask the app owner to review Firestore access rules.';
     }
-    return 'Supabase cleanup completed, but Firestore profile/settings cleanup was not confirmed. Firebase Authentication was not deleted; check your connection and retry.';
+    return 'Firestore profile/settings and feedback cleanup was not confirmed. Firebase Authentication was not deleted; check your connection and retry.';
   }
 
   if (error?.stage === 'firebase-auth') {
     if (error.code === 'auth/requires-recent-login') {
-      return 'Supabase and Firestore cleanup completed, but Firebase account deletion needs a recent sign-in. Sign in again and retry; the cleanup steps are safe to repeat.';
+      return 'Your Firestore profile/settings and feedback were removed, but Firebase account deletion needs a recent sign-in. Sign in again and retry; the cleanup step is safe to repeat.';
     }
-    return 'Supabase and Firestore cleanup completed, but Firebase account deletion was not confirmed. Retry while signed in; the cleanup steps are safe to repeat.';
+    return 'Your Firestore profile/settings and feedback were removed, but Firebase account deletion was not confirmed. Retry while signed in; the cleanup step is safe to repeat.';
   }
 
   return 'We could not complete account deletion. No full-deletion success was recorded; retry the operation.';
