@@ -54,3 +54,6 @@ jobs:
           expected_entries=$(printf '%s\\n' 'ActionButtonSet/ActionButtonSet.css' 'ActionButtonSet/ActionButtonSet.jsx' 'ActionButtonSet/README.md')
           actual_entries=$(unzip -Z1 "$package_archive" | LC_ALL=C sort)
           test "$actual_entries" = "$expected_entries"
+
+      - name: Run account-deletion flow tests
+        run: node --test public/tests/accountDeletionFlow.test.mjs
