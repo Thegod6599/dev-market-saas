@@ -118,6 +118,10 @@ h2 {
   margin-bottom: var(--spacing-medium);
 }
 .forgotPassword {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-family: inherit;
   font-size: var(--font-size-small);
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -127,20 +131,32 @@ h2 {
 .forgotPassword:hover {
   text-decoration: underline
 }
+.forgotPassword:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 .switchText {
   font-size: var(--font-size-small);
   color: var(--color-text-secondary);
   text-align: center;
   margin-top: var(--spacing-medium);
 }
-.switchText span {
+.switchText button {
+  padding: 0;
+  border: 0;
   color: var(--color-primary);
+  background: transparent;
+  font: inherit;
   cursor: pointer;
-  font-weight: var(--font-weight-medium);
+  font-weight: 600;
 }
 
-.switchText span:hover {
+.switchText button:hover:not(:disabled) {
   text-decoration: underline;
+}
+.switchText button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .loginExtras {
@@ -164,6 +180,11 @@ h2 {
 .passwordInput:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+.fieldLabel {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-small);
+  font-weight: 600;
 }
 .passwordToggle:focus-visible {
   outline: 2px solid var(--color-primary);

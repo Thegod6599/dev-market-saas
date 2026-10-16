@@ -1,0 +1,59 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and type-check
+        run: pnpm run build
+
+      - name: Run account-deletion flow tests
+        run: node --test public/tests/*.test.mjs
+
+      - name: Verify SEO assets are included in Hosting output
+        run: |
+          test -s public/dist/public/robots.txt
+          test -s public/dist/public/sitemap.xml
+
+      - name: Verify standalone Action Button Set package
+        run: |
+          package_archive=public/dist/public/library/packages/buttons-action.zip
+          test -s "$package_archive"
+          unzip -t "$package_archive"
+          expected_entries=$(printf '%s\n' 'ActionButtonSet/ActionButtonSet.css' 'ActionButtonSet/ActionButtonSet.jsx' 'ActionButtonSet/README.md')
+          actual_entries=$(unzip -Z1 "$package_archive" | LC_ALL=C sort)
+          test "$actual_entries" = "$expected_entries"

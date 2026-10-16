@@ -1,0 +1,116 @@
+name: Deploy DevMarket Production on Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout merged main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Vite app
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          test -n "$VITE_FIREBASE_API_KEY" || { echo "::error::Missing Actions secret VITE_FIREBASE_API_KEY"; exit 1; }
+          test -n "$VITE_FIREBASE_AUTH_DOMAIN" || { echo "::error::Missing Actions secret VITE_FIREBASE_AUTH_DOMAIN"; exit 1; }
+          test -n "$VITE_FIREBASE_PROJECT_ID" || { echo "::error::Missing Actions secret VITE_FIREBASE_PROJECT_ID"; exit 1; }
+          test -n "$VITE_FIREBASE_STORAGE_BUCKET" || { echo "::error::Missing Actions secret VITE_FIREBASE_STORAGE_BUCKET"; exit 1; }
+          test -n "$VITE_FIREBASE_MESSAGING_SENDER_ID" || { echo "::error::Missing Actions secret VITE_FIREBASE_MESSAGING_SENDER_ID"; exit 1; }
+          test -n "$VITE_FIREBASE_APP_ID" || { echo "::error::Missing Actions secret VITE_FIREBASE_APP_ID"; exit 1; }
+          test -n "$VITE_SUPABASE_URL" || { echo "::error::Missing Actions secret VITE_SUPABASE_URL"; exit 1; }
+          test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo "::error::Missing Actions secret VITE_SUPABASE_PUBLISHABLE_KEY"; exit 1; }
+          pnpm run build
+
+          test -s public/dist/public/robots.txt || {
+            echo "::error::robots.txt is missing from the build output."
+            exit 1
+          }
+          test -s public/dist/public/sitemap.xml || {
+            echo "::error::sitemap.xml is missing from the build output."
+            exit 1
+          }
+          echo "Verified SEO files in the Firebase Hosting build output."
+
+          package_archive=public/dist/public/library/packages/buttons-action.zip
+          test -s "$package_archive" || { echo "::error::Component ZIP is missing from the Firebase Hosting build output."; exit 1; }
+          unzip -t "$package_archive" >/dev/null || { echo "::error::Component ZIP failed integrity verification."; exit 1; }
+          expected_entries=$(printf '%s\n' 'ActionButtonSet/ActionButtonSet.css' 'ActionButtonSet/ActionButtonSet.jsx' 'ActionButtonSet/README.md')
+          actual_entries=$(unzip -Z1 "$package_archive" | LC_ALL=C sort)
+          test "$actual_entries" = "$expected_entries" || { echo "::error::Component ZIP entries do not match the standalone package format."; exit 1; }
+          echo "Verified standalone component ZIP in the Firebase Hosting build output."
+
+          node --input-type=module <<'NODE'
+          import { readdir, readFile } from 'node:fs/promises';
+          import path from 'node:path';
+
+          const outputDirectory = 'public/dist/public';
+          const expected = [
+            ['VITE_SUPABASE_URL', process.env.VITE_SUPABASE_URL],
+            ['VITE_SUPABASE_PUBLISHABLE_KEY', process.env.VITE_SUPABASE_PUBLISHABLE_KEY],
+          ];
+
+          async function collectJavaScript(directory) {
+            const files = await readdir(directory, { withFileTypes: true });
+            const contents = await Promise.all(files.map(async (file) => {
+              const filePath = path.join(directory, file.name);
+              if (file.isDirectory()) return collectJavaScript(filePath);
+              return file.name.endsWith('.js') ? readFile(filePath, 'utf8') : '';
+            }));
+            return contents.flat(Infinity).join('\n');
+          }
+
+          const bundle = await collectJavaScript(path.join(outputDirectory, 'assets'));
+          if (!(await readFile(path.join(outputDirectory, 'index.html'), 'utf8'))) {
+            throw new Error('Firebase Hosting build output is missing index.html.');
+          }
+          for (const [name, value] of expected) {
+            if (!value || !bundle.includes(value)) {
+              throw new Error(`The production bundle does not contain configured ${name}.`);
+            }
+          }
+          console.log('Verified Supabase client configuration in the Firebase Hosting build output.');
+          NODE
+
+      - name: Test account-deletion flow
+        run: node --test public/tests/accountDeletionFlow.test.mjs
+
+      - name: Deploy to DevMarket production Hosting site
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: ${{ secrets.FIREBASE_PRODUCTION_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: dev-market0
+          target: production

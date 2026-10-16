@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight, Download, Eye, LockKeyhole } from 'lucide-react';
 import { useState } from 'react';
 import {
+  getComponentPackageFilename,
+  getComponentPackageUrl,
   getComponentResourceFilename,
   getComponentResourceUrl,
 } from '../../services/libraryService';
@@ -18,21 +20,33 @@ function Preview({ component }) {
     );
   }
 
+  const isImage = /\.(avif|gif|jpe?g|png|svg|webp)(\?.*)?$/i.test(component.preview_url);
+
   return (
     <div className={styles.previewFrame}>
-      <img
-        src={component.preview_url}
-        alt={`${component.name} preview`}
-        loading="lazy"
-        onError={() => setHasFailed(true)}
-      />
+      {isImage ? (
+        <img
+          src={component.preview_url}
+          alt={`${component.name} preview`}
+          loading="lazy"
+          onError={() => setHasFailed(true)}
+        />
+      ) : (
+        <iframe
+          src={component.preview_url}
+          title={`${component.name} preview`}
+          loading="lazy"
+          onError={() => setHasFailed(true)}
+        />
+      )}
     </div>
   );
 }
 
 export default function ComponentCard({ component }) {
-  const resourceUrl = getComponentResourceUrl(component);
-  const resourceFilename = getComponentResourceFilename(component);
+  const packageUrl = getComponentPackageUrl(component);
+  const resourceUrl = packageUrl || getComponentResourceUrl(component);
+  const resourceFilename = getComponentPackageFilename(component) || getComponentResourceFilename(component);
 
   return (
     <article className={styles.card}>
@@ -85,7 +99,7 @@ export default function ComponentCard({ component }) {
               download={resourceFilename}
             >
               <Download size={16} aria-hidden="true" />
-              Download
+              {packageUrl ? 'Download package' : 'Download'}
             </a>
           ) : (
             <span className={styles.disabledButton} title="No downloadable resource is linked yet">

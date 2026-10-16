@@ -1,4 +1,5 @@
-import { readdir, readFile, stat } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -13,7 +14,6 @@ type ComponentMetadata = {
   is_vip?: boolean;
   status?: string;
   preview_url?: string;
-  code_reference?: string;
 };
 
 type ImportSummary = {
@@ -25,7 +25,8 @@ type ImportSummary = {
 
 type ImportClient = SupabaseClient<any, "public", any, any, any>;
 
-const rootDirectory = process.argv[2];
+const packagesOnly = process.argv[2] === "--packages-only";
+const rootDirectory = process.argv[packagesOnly ? 3 : 2];
 const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -41,10 +42,11 @@ function getErrorMessage(error: unknown) {
   return typeof error === "string" ? error : JSON.stringify(error);
 }
 
-function requireConfig() {
+function requireConfig(skipSupabase = false) {
   if (!rootDirectory) {
-    fail("Usage: pnpm --filter @workspace/scripts import-components <components-folder>");
+    fail("Usage: pnpm --filter @workspace/scripts import-components [--packages-only] <components-folder>");
   }
+  if (skipSupabase) return;
   if (!supabaseUrl) {
     fail("SUPABASE_URL or VITE_SUPABASE_URL is required.");
   }
@@ -53,6 +55,64 @@ function requireConfig() {
       "SUPABASE_SERVICE_ROLE_KEY is required for the developer importer. Never expose it as a VITE_ variable.",
     );
   }
+}
+
+
+function crc32(bytes: Buffer) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function makeZip(folder: string, files: Array<{ name: string; content: string }>) {
+  const local: Buffer[] = [];
+  const central: Buffer[] = [];
+  let offset = 0;
+  for (const file of files) {
+    const name = Buffer.from(folder + "/" + file.name, "utf8");
+    const body = Buffer.from(file.content, "utf8");
+    const crc = crc32(body);
+    const header = Buffer.alloc(30);
+    header.writeUInt32LE(0x04034b50, 0);
+    header.writeUInt16LE(20, 4);
+    header.writeUInt16LE(0x0800, 6);
+    header.writeUInt16LE(0x0021, 12);
+    header.writeUInt32LE(crc, 14);
+    header.writeUInt32LE(body.length, 18);
+    header.writeUInt32LE(body.length, 22);
+    header.writeUInt16LE(name.length, 26);
+    local.push(header, name, body);
+    const entry = Buffer.alloc(46);
+    entry.writeUInt32LE(0x02014b50, 0);
+    entry.writeUInt16LE(20, 4);
+    entry.writeUInt16LE(20, 6);
+    entry.writeUInt16LE(0x0800, 8);
+    entry.writeUInt16LE(0x0021, 14);
+    entry.writeUInt32LE(crc, 16);
+    entry.writeUInt32LE(body.length, 20);
+    entry.writeUInt32LE(body.length, 24);
+    entry.writeUInt16LE(name.length, 28);
+    entry.writeUInt32LE(offset, 42);
+    central.push(entry, name);
+    offset += header.length + name.length + body.length;
+  }
+  const directory = Buffer.concat(central);
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(files.length, 8);
+  end.writeUInt16LE(files.length, 10);
+  end.writeUInt32LE(directory.length, 12);
+  end.writeUInt32LE(offset, 16);
+  return Buffer.concat([...local, directory, end]);
+}
+
+function packageName(name: string, slug: string) {
+  const words = (name || slug).match(/[A-Za-z0-9]+/g) ?? [];
+  const value = words.map((word) => word[0].toUpperCase() + word.slice(1)).join("") || "Component";
+  return /^[A-Za-z_$]/.test(value) ? value : "Component" + value;
 }
 
 function validateMetadata(value: unknown, folderName: string): ComponentMetadata {
@@ -75,23 +135,66 @@ function validateMetadata(value: unknown, folderName: string): ComponentMetadata
     is_vip: Boolean(metadata.is_vip),
     status: metadata.status ? String(metadata.status) : "published",
     preview_url: metadata.preview_url ? String(metadata.preview_url) : undefined,
-    code_reference: metadata.code_reference ? String(metadata.code_reference) : undefined,
   };
 }
 
 async function readComponentFolders(directory: string) {
   const entries = await readdir(directory, { withFileTypes: true });
-  const folders = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+  const isSingleComponent = entries.some((entry) => entry.isFile() && entry.name === "metadata.json");
+  const folders = isSingleComponent
+    ? [path.basename(directory)]
+    : entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
   const results: Array<{ folderName: string; directory: string; metadata: ComponentMetadata }> = [];
 
   for (const folderName of folders) {
-    const folderPath = path.join(directory, folderName);
+    const folderPath = isSingleComponent ? directory : path.join(directory, folderName);
     const metadataPath = path.join(folderPath, "metadata.json");
     const componentPath = path.join(folderPath, "component.jsx");
+    const cssPath = path.join(folderPath, "component.css");
+    const readmePath = path.join(folderPath, "README.md");
     const metadata = validateMetadata(JSON.parse(await readFile(metadataPath, "utf8")), folderName);
 
-    await stat(componentPath);
-    results.push({ folderName, directory: folderPath, metadata });
+    await Promise.all([stat(componentPath), stat(cssPath), stat(readmePath)]);
+    const [jsx, css, readme] = await Promise.all([
+      readFile(componentPath, "utf8"), readFile(cssPath, "utf8"), readFile(readmePath, "utf8"),
+    ]);
+    if (!jsx.trim() || !css.trim() || !readme.trim()) fail(`${folderName}: JSX, CSS, and README must not be empty.`);
+    if (!jsx.includes("./component.css")) fail(`${folderName}: component.jsx must import ./component.css.`);
+    if (/devmarket|supabase|firebase/i.test(jsx + "\n" + css)) {
+      fail(`${folderName}: component source must not contain DevMarket or service-specific logic.`);
+    }
+    const componentName = packageName(metadata.name, metadata.slug);
+    const packagedJsx = jsx.replaceAll("./component.css", "./" + componentName + ".css");
+    const archive = makeZip(componentName, [
+      { name: componentName + ".jsx", content: packagedJsx },
+      { name: componentName + ".css", content: css },
+      { name: "README.md", content: readme },
+    ]);
+    const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+    const outputDirectory = path.join(repositoryRoot, "public", "public", "library", "packages");
+    await mkdir(outputDirectory, { recursive: true });
+    await writeFile(path.join(outputDirectory, metadata.slug + ".zip"), archive);
+    const previewSource = path.join(repositoryRoot, "public", "src", "component-previews", metadata.slug + ".jsx");
+    const previewHtml = path.join(repositoryRoot, "public", "component-previews", metadata.slug + ".html");
+    const previewExists = await Promise.all([stat(previewSource), stat(previewHtml)]).then(
+      () => true,
+      () => false,
+    );
+    let importedMetadata = previewExists
+      ? { ...metadata, preview_url: "/component-previews/" + metadata.slug + ".html" }
+      : metadata;
+    try {
+      const preview = await readFile(path.join(folderPath, "preview.svg"));
+      const previewDirectory = path.join(repositoryRoot, "public", "public", "library", "previews");
+      await mkdir(previewDirectory, { recursive: true });
+      await writeFile(path.join(previewDirectory, metadata.slug + ".svg"), preview);
+      if (!previewExists) {
+        importedMetadata = { ...metadata, preview_url: "/library/previews/" + metadata.slug + ".svg" };
+      }
+    } catch (error) {
+      if (!(error && typeof error === "object" && "code" in error && error.code === "ENOENT")) throw error;
+    }
+    results.push({ folderName, directory: folderPath, metadata: importedMetadata });
   }
 
   return results;
@@ -148,7 +251,7 @@ async function importComponent(
       status: metadata.status,
       is_vip: metadata.is_vip,
       preview_url: metadata.preview_url ?? null,
-      code_reference: metadata.code_reference ?? path.join(directory, "component.jsx"),
+      code_reference: `library/packages/${metadata.slug}.zip`,
     };
     const component = await client
       .from("components")
@@ -184,11 +287,18 @@ async function importComponent(
 }
 
 async function main() {
-  requireConfig();
+  requireConfig(packagesOnly);
+  const items = await readComponentFolders(rootDirectory!);
+  if (packagesOnly) {
+    for (const item of items) {
+      console.log(`[packaged] ${item.folderName}: library/packages/${item.metadata.slug}.zip`);
+    }
+    return;
+  }
+
   const client: ImportClient = createClient(supabaseUrl!, serviceRoleKey!, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const items = await readComponentFolders(rootDirectory!);
   const results: ImportSummary[] = [];
 
   for (const item of items) {

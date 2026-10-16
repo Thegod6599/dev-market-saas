@@ -5,6 +5,8 @@ import {
   signInWithPopup,
   signOut,
   sendPasswordResetEmail,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   updatePassword,
   updateEmail,
   updateProfile,
@@ -36,12 +38,47 @@ export async function logout() {
   await signOut(auth);
 }
 export async function resetPassword(email) {
-  await sendPasswordResetEmail(auth, email);
+  const appBaseUrl = new URL(import.meta.env.BASE_URL, window.location.origin);
+  const continueUrl = new URL('login', appBaseUrl).toString();
+  await sendPasswordResetEmail(auth, email, { url: continueUrl });
 }
-export async function updateUserPassword(user, newPassword) {
-  if (!user) throw new Error("No user is currently signed in.");
+export async function updateUserPassword(user, currentPassword, newPassword) {
+  const supportsPasswordAuth = user?.providerData?.some(
+    (provider) => provider.providerId === 'password',
+  );
+
+  if (!user || !user.email || !supportsPasswordAuth) {
+    const error = new Error('Password changes are only available for email/password accounts.');
+    error.code = 'auth/operation-not-allowed';
+    throw error;
+  }
+
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
   await updatePassword(user, newPassword);
 }
+
+export async function reauthenticateUserWithPassword(user, currentPassword) {
+  const supportsPasswordAuth = user?.providerData?.some(
+    (provider) => provider.providerId === 'password',
+  );
+
+  if (!user || !user.email || !supportsPasswordAuth) {
+    const error = new Error('Password reauthentication is only available for email/password accounts.');
+    error.code = 'auth/operation-not-allowed';
+    throw error;
+  }
+
+  if (!currentPassword) {
+    const error = new Error('A current password is required.');
+    error.code = 'auth/missing-password';
+    throw error;
+  }
+
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+}
+
 export async function updateUserEmail(user, newEmail) {
   if (!user) throw new Error("No user is currently signed in.");
   await updateEmail(user, newEmail);

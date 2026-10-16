@@ -124,14 +124,22 @@ h2 {
   text-align: center;
   margin-top: var(--spacing-medium);
 }
-.switchText span {
+.switchText button {
+  padding: 0;
+  border: 0;
   color: var(--color-primary);
+  background: transparent;
+  font: inherit;
   cursor: pointer;
-  font-weight: var(--font-weight-medium);
+  font-weight: 600;
 }
 
-.switchText span:hover {
+.switchText button:hover:not(:disabled) {
   text-decoration: underline;
+}
+.switchText button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .signupExtras {
@@ -156,6 +164,11 @@ h2 {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+.fieldLabel {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
 .passwordToggle:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -171,4 +184,36 @@ h2 {
   font-size: var(--font-size-small);
   margin-top: var(--spacing-small);
   text-align: center;
+}
+.agreementRow {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+margin: 16px 0;
+font-size: 0.875rem;
+line-height: 1.5;
+color: #666666;
+}
+
+.agreementRow input[type=‘checkbox’] {
+flex-shrink: 0;
+width: 16px;
+height: 16px;
+margin-top: 3px;
+accent-color: #263CE5;
+cursor: pointer;
+}
+
+.agreementRow label {
+cursor: pointer;
+}
+
+.agreementRow a {
+color: #263CE5;
+text-decoration: underline;
+text-underline-offset: 2px;
+}
+
+.agreementRow a:hover {
+color: #367CE5;
 }

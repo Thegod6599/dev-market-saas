@@ -4,9 +4,13 @@
   "type": "button",
   "category": "Buttons",
   "description": "A split action control for a primary command and its related options.",
-  "tags": ["buttons", "actions", "menus"],
+  "tags": [
+    "buttons",
+    "actions",
+    "menus"
+  ],
   "is_vip": false,
   "status": "published",
-  "code_reference": "seed/component-library/buttons-split/component.jsx",
-  "preview_url": "/library/seed/buttons-split.svg"
+  "code_reference": "library/packages/buttons-split.zip",
+  "preview_url": "/component-previews/buttons-split.html"
 }

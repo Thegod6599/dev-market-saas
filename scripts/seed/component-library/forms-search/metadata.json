@@ -4,9 +4,13 @@
   "type": "form",
   "category": "Forms",
   "description": "A search input pattern with a visible label and submit action.",
-  "tags": ["forms", "search", "accessible"],
+  "tags": [
+    "forms",
+    "search",
+    "accessible"
+  ],
   "is_vip": false,
   "status": "published",
-  "code_reference": "seed/component-library/forms-search/component.jsx",
-  "preview_url": "/library/seed/forms-search.svg"
+  "code_reference": "library/packages/forms-search.zip",
+  "preview_url": "/component-previews/forms-search.html"
 }

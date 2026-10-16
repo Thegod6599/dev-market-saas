@@ -43,3 +43,100 @@ export function getAuthErrorMessage(err) {
       return "Something went wrong. Please try again.";
   }
 }
+
+export function getPasswordResetErrorMessage(error) {
+  switch (error?.code) {
+    case 'auth/invalid-email':
+      return 'Enter a valid email address.';
+    case 'auth/unauthorized-domain':
+      return 'Password reset is not enabled for this app domain. Please try again later.';
+    case 'auth/expired-action-code':
+      return 'This password reset link has expired. Request a new one from the login page.';
+    case 'auth/invalid-action-code':
+      return 'This password reset link is invalid or has already been used. Request a new one from the login page.';
+    case 'auth/weak-password':
+      return 'Choose a stronger password and try again.';
+    case 'auth/too-many-requests':
+      return 'There have been too many attempts. Wait a moment and try again.';
+    case 'auth/network-request-failed':
+      return 'A network error occurred. Check your connection and try again.';
+    default:
+      return 'We could not complete the password reset. Please try again.';
+  }
+}
+
+export function getPasswordChangeErrorMessage(error) {
+  switch (error?.code) {
+    case 'auth/operation-not-allowed':
+      return 'Password changes are only available for email/password accounts.';
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+    case 'auth/user-mismatch':
+      return 'The current password is incorrect.';
+    case 'auth/weak-password':
+    case 'auth/password-does-not-meet-requirements':
+      return 'Choose a stronger password and try again.';
+    case 'auth/requires-recent-login':
+      return 'Please sign in again before changing your password.';
+    case 'auth/too-many-requests':
+      return 'There have been too many attempts. Wait a moment and try again.';
+    case 'auth/network-request-failed':
+      return 'A network error occurred. Check your connection and try again.';
+    default:
+      return 'We could not update your password. Please try again.';
+  }
+}
+
+export function getAccountSettingsErrorMessage(error) {
+  switch (error?.code) {
+    case 'auth/invalid-email':
+      return 'Enter a valid email address.';
+    case 'auth/email-already-in-use':
+    case 'auth/email-already-exists':
+      return 'That email address is already in use.';
+    case 'auth/requires-recent-login':
+    case 'auth/user-token-expired':
+      return 'For your security, sign in again before retrying this action.';
+    case 'auth/network-request-failed':
+      return 'A network error occurred. Check your connection and try again.';
+    case 'auth/too-many-requests':
+      return 'There have been too many attempts. Wait a moment and try again.';
+    default:
+      return 'We could not complete this account action. Please try again.';
+  }
+}
+
+export function getAccountDeletionErrorMessage(error) {
+  if (error?.stage === 'reauthentication') {
+    switch (error.code) {
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+      case 'auth/user-mismatch':
+        return 'The current password could not be verified. No profile or settings data was removed.';
+      case 'auth/requires-recent-login':
+        return 'Your sign-in is not recent enough. No profile or settings data was removed; sign out and sign in again, then retry.';
+      case 'auth/network-request-failed':
+        return 'A network error prevented sign-in verification. No profile or settings data was removed; check your connection and retry.';
+      case 'auth/operation-not-allowed':
+        return 'This sign-in method cannot be reauthenticated here. No profile or settings data was removed.';
+      default:
+        return 'We could not verify your sign-in, so no profile or settings data was removed. Check your details and retry.';
+    }
+  }
+
+  if (error?.stage === 'firestore') {
+    if (error.code === 'permission-denied') {
+      return 'Access to your Firestore profile/settings or feedback was denied. Firebase Authentication was not deleted; ask the app owner to review Firestore access rules.';
+    }
+    return 'Firestore profile/settings and feedback cleanup was not confirmed. Firebase Authentication was not deleted; check your connection and retry.';
+  }
+
+  if (error?.stage === 'firebase-auth') {
+    if (error.code === 'auth/requires-recent-login') {
+      return 'Your Firestore profile/settings and feedback were removed, but Firebase account deletion needs a recent sign-in. Sign in again and retry; the cleanup step is safe to repeat.';
+    }
+    return 'Your Firestore profile/settings and feedback were removed, but Firebase account deletion was not confirmed. Retry while signed in; the cleanup step is safe to repeat.';
+  }
+
+  return 'We could not complete account deletion. No full-deletion success was recorded; retry the operation.';
+}

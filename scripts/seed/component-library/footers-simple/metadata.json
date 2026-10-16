@@ -4,9 +4,13 @@
   "type": "footer",
   "category": "Footers",
   "description": "A compact footer with brand context and grouped navigation links.",
-  "tags": ["footer", "navigation", "responsive"],
+  "tags": [
+    "footer",
+    "navigation",
+    "responsive"
+  ],
   "is_vip": false,
   "status": "published",
-  "code_reference": "seed/component-library/footers-simple/component.jsx",
-  "preview_url": "/library/seed/footers-simple.svg"
+  "code_reference": "library/packages/footers-simple.zip",
+  "preview_url": "/component-previews/footers-simple.html"
 }

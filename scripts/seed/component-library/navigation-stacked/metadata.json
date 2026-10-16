@@ -4,9 +4,13 @@
   "type": "navbar",
   "category": "Navigation",
   "description": "A stacked navigation pattern for content-rich products and documentation sites.",
-  "tags": ["navigation", "responsive", "layout"],
+  "tags": [
+    "navigation",
+    "responsive",
+    "layout"
+  ],
   "is_vip": false,
   "status": "published",
-  "code_reference": "seed/component-library/navigation-stacked/component.jsx",
-  "preview_url": "/library/seed/navigation-stacked.svg"
+  "code_reference": "library/packages/navigation-stacked.zip",
+  "preview_url": "/component-previews/navigation-stacked.html"
 }
