@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "dev-market0"
+  },
+  "targets": {
+    "dev-market0": {
+      "hosting": {
+        "production": [
+          "devmarket"
+        ]
+      }
+    }
+  }
+}
