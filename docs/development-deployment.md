@@ -71,3 +71,25 @@ the relative `library/packages/<slug>.zip` path in the existing Supabase
 `components.code_reference` field. An optional `preview.svg` is staged
 under `public/public/library/previews/`. Firebase Hosting serves these files
 as static resources; no Supabase Storage bucket or schema change is needed.
+
+## Account deletion and Supabase RLS
+
+The account-deletion flow now attempts to remove the signed-in user's Supabase
+feedback, favorites, projects (including their cascading pages/components/asset
+metadata), settings, and profile before deleting the Firestore profile and
+Firebase Authentication account. Each table cleanup is verified; if any
+records remain or cannot be checked, the flow stops before deleting the
+Firebase Authentication account. The cleanup is retryable, but operations
+across services are not atomic.
+
+The connected Supabase project currently has no Storage buckets. If user file
+uploads are introduced, account deletion must also remove files from their
+actual bucket before reporting full erasure.
+
+The current Supabase RLS policy for `public.feedback` permits users to read
+and insert their own rows but does not grant delete access. The current
+application Feedback page writes to Firestore, and the connected Supabase
+feedback table had no rows during this review. If Supabase feedback rows are
+introduced, deletion will safely stop when a user's row remains until a
+reviewed delete-own-feedback policy is applied to the existing backend. Do not
+weaken RLS or use a service-role key in the frontend to bypass this requirement.
