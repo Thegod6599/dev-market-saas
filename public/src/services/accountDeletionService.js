@@ -6,7 +6,7 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { db, auth } from '../firebase/firebase';
+import { db } from '../firebase/firebase';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { deleteCurrentUser, reauthenticateUserWithPassword } from './authService';
 import { deleteProfile } from './profileService';
