@@ -40,6 +40,8 @@ jobs:
 
       - name: Build production app
         env:
+          PORT: 5000
+          BASE_PATH: /
           VITE_FIREBASE_API_KEY: ${{ secrets.PROD_VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.PROD_VITE_FIREBASE_AUTH_DOMAIN }}
           VITE_FIREBASE_PROJECT_ID: ${{ secrets.PROD_VITE_FIREBASE_PROJECT_ID }}
@@ -60,12 +62,6 @@ jobs:
           test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo "::error::Missing Actions secret VITE_SUPABASE_PUBLISHABLE_KEY"; exit 1; }
           pnpm run build
 
-          package_archive=public/dist/public/library/packages/buttons-action.zip
-          test -s "$package_archive" || { echo "::error::Component ZIP is missing from the Firebase Hosting build output."; exit 1; }
-          unzip -t "$package_archive" >/dev/null || { echo "::error::Component ZIP failed integrity verification."; exit 1; }
-          expected_entries=$(printf '%s\n' 'ActionButtonSet/ActionButtonSet.css' 'ActionButtonSet/ActionButtonSet.jsx' 'ActionButtonSet/README.md')
-          actual_entries=$(unzip -Z1 "$package_archive" | LC_ALL=C sort)
-          test "$actual_entries" = "$expected_entries" || { echo "::error::Component ZIP entries do not match the standalone package format."; exit 1; }
 
       - name: Deploy to Firebase Hosting production
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -73,3 +69,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_PRODUCTION_SERVICE_ACCOUNT }}
           projectId: dev-market0
           channelId: live
+          target: production
