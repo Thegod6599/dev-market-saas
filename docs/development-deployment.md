@@ -72,21 +72,12 @@ the relative `library/packages/<slug>.zip` path in the existing Supabase
 under `public/public/library/previews/`. Firebase Hosting serves these files
 as static resources; no Supabase Storage bucket or schema change is needed.
 
-## User-data storage boundaries
+## Confirmed data architecture
 
-The intended data boundary is Firebase Authentication for sign-in identity,
-Firestore for per-user profile/settings and Feedback records, and Supabase for
-the shared component-library catalogue only. The Builder is currently a
-Coming Soon placeholder and does not save user projects. Existing Supabase
-tables named for profiles, favorites, settings, projects, or feedback are not
-used by the current application flow merely because they exist in the schema.
+- Firebase Authentication owns user identity and sign-in.
+- Firestore stores user profiles/settings and Feedback records.
+- Supabase stores shared component-library data only.
+- The Supabase tables named for profiles, favorites, settings, projects, and feedback are accidental leftovers and are not part of the intended application architecture. The application must not use them.
+- Account deletion removes the user's Firestore feedback and `users/{uid}` profile/settings document, then deletes Firebase Authentication. It must not query, delete, or otherwise modify Supabase user-oriented tables or shared component-library records.
+- The browser Supabase client must not forward Firebase ID tokens or establish a Supabase user session.
 
-The browser Supabase client must not forward Firebase ID tokens or maintain a
-Supabase user session. Account deletion reauthenticates the user, removes
-their Firestore feedback and `users/{uid}` profile/settings document, then
-deletes their Firebase Authentication account. It does not delete or modify
-shared Supabase component-library records.
-
-This is an application-code boundary, not a claim that the Supabase project
-contains no historical data. Existing table contents, database logs, and
-provider backups should be audited separately if data erasure is required.
