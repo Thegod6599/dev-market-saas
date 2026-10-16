@@ -9,6 +9,7 @@ on:
     paths:
       - "public/**"
       - "firebase.json"
+      - ".firebaserc"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - "package.json"
