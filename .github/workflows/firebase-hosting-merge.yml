@@ -54,6 +54,16 @@ jobs:
           test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo "::error::Missing Actions secret VITE_SUPABASE_PUBLISHABLE_KEY"; exit 1; }
           pnpm run build
 
+          test -s public/dist/public/robots.txt || {
+            echo "::error::robots.txt is missing from the build output."
+            exit 1
+          }
+          test -s public/dist/public/sitemap.xml || {
+            echo "::error::sitemap.xml is missing from the build output."
+            exit 1
+          }
+          echo "Verified SEO files in the Firebase Hosting build output."
+
           package_archive=public/dist/public/library/packages/buttons-action.zip
           test -s "$package_archive" || { echo "::error::Component ZIP is missing from the Firebase Hosting build output."; exit 1; }
           unzip -t "$package_archive" >/dev/null || { echo "::error::Component ZIP failed integrity verification."; exit 1; }
