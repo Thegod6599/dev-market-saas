@@ -2,16 +2,36 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // =========================
+    // USER DATA
+    // =========================
+
     match /users/{userId} {
-      allow read, write: if request.auth != null
+      allow read, create, update, delete: if request.auth != null
         && request.auth.uid == userId;
+
+      match /projects/{projectId} {
+        allow read, create, update, delete: if request.auth != null
+          && request.auth.uid == userId;
+      }
+
+      match /favorites/{favoriteId} {
+        allow read, create, update, delete: if request.auth != null
+          && request.auth.uid == userId;
+      }
     }
+
+    // =========================
+    // USER FEEDBACK
+    // =========================
 
     match /feedback/{feedbackId} {
       // Users can only read or delete feedback that belongs to their UID.
       allow read, delete: if request.auth != null
         && resource.data.userId == request.auth.uid;
 
+      // Users can submit feedback under their own UID.
       allow create: if request.auth != null
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.keys().hasOnly([
@@ -35,6 +55,25 @@ service cloud.firestore {
 
       // Feedback cannot be edited after submission.
       allow update: if false;
+    }
+
+    // =========================
+    // PUBLIC DEVMarket CONTENT
+    // =========================
+
+    match /components/{componentId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /templates/{templateId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if false;
     }
   }
 }
