@@ -1,9 +1,13 @@
-function deletionStepError(stage, cause, firestoreProfileDeleted = false) {
+function deletionStepError(stage, cause, userDataDeleted = false) {
   const error = new Error('Account deletion did not complete.');
   error.stage = stage;
   error.code = cause?.code;
   error.cause = cause;
-  error.firestoreProfileDeleted = firestoreProfileDeleted;
+  error.userDataDeleted = userDataDeleted;
+  // Preserve compatibility with existing UI code using the old property.
+  error.firestoreProfileDeleted = userDataDeleted;
+  error.failedTask = cause?.failedTask;
+  error.completedTasks = cause?.completedTasks ?? [];
   return error;
 }
 
@@ -13,6 +17,7 @@ export async function runAccountDeletion({
   passwordAuthentication,
   reauthenticate,
   verifyRecentSignIn,
+  deleteUserData,
   deleteFirestoreProfile,
   deleteFirebaseAccount,
   onProgress = () => {},
@@ -36,9 +41,16 @@ export async function runAccountDeletion({
 
   onProgress('firestore');
   try {
-    await deleteFirestoreProfile(user.uid);
+    // Support the previous handler name for any existing tests/callers.
+    if (deleteUserData) {
+      await deleteUserData(user.uid);
+    } else if (deleteFirestoreProfile) {
+      await deleteFirestoreProfile(user.uid);
+    } else {
+      throw new Error('No user-data cleanup handler was provided.');
+    }
   } catch (error) {
-    throw deletionStepError('firestore', error);
+    throw deletionStepError('firestore', error, false);
   }
 
   onProgress('firebase-auth');
@@ -50,6 +62,7 @@ export async function runAccountDeletion({
 
   return {
     firestoreProfileAndSettingsDeleted: true,
+    firestoreUserDataDeleted: true,
     firebaseAuthenticationDeleted: true,
   };
 }
