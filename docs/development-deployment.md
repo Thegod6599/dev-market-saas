@@ -72,24 +72,21 @@ the relative `library/packages/<slug>.zip` path in the existing Supabase
 under `public/public/library/previews/`. Firebase Hosting serves these files
 as static resources; no Supabase Storage bucket or schema change is needed.
 
-## Account deletion and Supabase RLS
+## User-data storage boundaries
 
-The account-deletion flow now attempts to remove the signed-in user's Supabase
-feedback, favorites, projects (including their cascading pages/components/asset
-metadata), settings, and profile before deleting the Firestore profile and
-Firebase Authentication account. Each table cleanup is verified; if any
-records remain or cannot be checked, the flow stops before deleting the
-Firebase Authentication account. The cleanup is retryable, but operations
-across services are not atomic.
+The intended data boundary is Firebase Authentication for sign-in identity,
+Firestore for per-user profile/settings and Feedback records, and Supabase for
+the shared component-library catalogue only. The Builder is currently a
+Coming Soon placeholder and does not save user projects. Existing Supabase
+tables named for profiles, favorites, settings, projects, or feedback are not
+used by the current application flow merely because they exist in the schema.
 
-The connected Supabase project currently has no Storage buckets. If user file
-uploads are introduced, account deletion must also remove files from their
-actual bucket before reporting full erasure.
+The browser Supabase client must not forward Firebase ID tokens or maintain a
+Supabase user session. Account deletion reauthenticates the user, removes
+their Firestore feedback and `users/{uid}` profile/settings document, then
+deletes their Firebase Authentication account. It does not delete or modify
+shared Supabase component-library records.
 
-The current Supabase RLS policy for `public.feedback` permits users to read
-and insert their own rows but does not grant delete access. The current
-application Feedback page writes to Firestore, and the connected Supabase
-feedback table had no rows during this review. If Supabase feedback rows are
-introduced, deletion will safely stop when a user's row remains until a
-reviewed delete-own-feedback policy is applied to the existing backend. Do not
-weaken RLS or use a service-role key in the frontend to bypass this requirement.
+This is an application-code boundary, not a claim that the Supabase project
+contains no historical data. Existing table contents, database logs, and
+provider backups should be audited separately if data erasure is required.
