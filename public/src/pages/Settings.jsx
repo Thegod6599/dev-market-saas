@@ -493,7 +493,8 @@ function Settings() {
             {deleteProgress && (
               <p className={styles.statusMessage} role="status" data-testid="status-delete-account-progress">
                 {deleteProgress === 'reauthentication' && 'Verifying your sign-in…'}
-                {deleteProgress === 'firestore' && 'Removing your Firestore profile and settings…'}
+                {deleteProgress === 'supabase' && 'Removing your Supabase profile, favorites, feedback, settings, and projects…'}
+                {deleteProgress === 'firestore' && 'Removing your Firestore profile and feedback…'}
                 {deleteProgress === 'firebase-auth' && 'Deleting your Firebase sign-in account…'}
               </p>
             )}
