@@ -51,7 +51,7 @@ jobs:
           package_archive=public/dist/public/library/packages/buttons-action.zip
           test -s "$package_archive"
           unzip -t "$package_archive"
-          expected_entries=$(printf '%s\\n' 'ActionButtonSet/ActionButtonSet.css' 'ActionButtonSet/ActionButtonSet.jsx' 'ActionButtonSet/README.md')
+          expected_entries=$(printf '%s\n' 'ActionButtonSet/ActionButtonSet.css' 'ActionButtonSet/ActionButtonSet.jsx' 'ActionButtonSet/README.md')
           actual_entries=$(unzip -Z1 "$package_archive" | LC_ALL=C sort)
           test "$actual_entries" = "$expected_entries"
 
