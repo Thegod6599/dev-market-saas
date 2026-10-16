@@ -6,5 +6,35 @@ service cloud.firestore {
       allow read, write: if request.auth != null
         && request.auth.uid == userId;
     }
+
+    match /feedback/{feedbackId} {
+      // Users can only read or delete feedback that belongs to their UID.
+      allow read, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'userId',
+          'type',
+          'message',
+          'status',
+          'createdAt'
+        ])
+        && request.resource.data.type in [
+          'bug',
+          'suggestion',
+          'component_request',
+          'general'
+        ]
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 10
+        && request.resource.data.message.size() <= 2000
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time;
+
+      // Feedback cannot be edited after submission.
+      allow update: if false;
+    }
   }
 }

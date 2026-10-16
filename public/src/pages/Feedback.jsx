@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { submitFeedback } from '../services/feedbackService';
 import styles from './pageStyles/Feedback.module.css';
 
 const FEEDBACK_TYPES = [
@@ -22,7 +23,7 @@ function Feedback() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     setError('');
@@ -52,8 +53,16 @@ function Feedback() {
       return;
     }
 
-    // Temporary confirmation until Firestore is connected.
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await submitFeedback({ userId: user.uid, type, message: cleanMessage });
+      setMessage('');
+      setSubmitted(true);
+    } catch {
+      setError('Your feedback could not be sent. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -197,8 +206,7 @@ function Feedback() {
               className={styles.successMessage}
               role="status"
             >
-              Your form passed validation. Firestore saving
-              has not been connected yet.
+              Thank you! Your feedback has been sent.
             </p>
           )}
 
