@@ -1,8 +1,7 @@
 import { getIdTokenResult } from 'firebase/auth';
-import { auth } from '../firebase/firebase';
 import { deleteCurrentUser, reauthenticateUserWithPassword } from './authService';
-import { deleteProfile } from './profileService';
 import { runAccountDeletion } from './accountDeletionFlow';
+import { deleteUserData } from './userDataCleanupService';
 
 const MAX_RECENT_SIGN_IN_AGE_MS = 4 * 60 * 1000;
 
@@ -29,7 +28,7 @@ export function deleteAccountAndOwnedData(user, currentPassword, onProgress) {
     passwordAuthentication: hasPasswordAuthentication(user),
     reauthenticate: reauthenticateUserWithPassword,
     verifyRecentSignIn,
-    deleteFirestoreProfile: deleteProfile,
+    deleteUserData,
     deleteFirebaseAccount: deleteCurrentUser,
     onProgress,
   });
