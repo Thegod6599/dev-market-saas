@@ -99,4 +99,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_PRODUCTION_SERVICE_ACCOUNT }}
           channelId: dev
           projectId: dev-market0
-          firebaseHostingSite: devmarket
+          target: production
