@@ -16,6 +16,7 @@ function SignupForm({ onSwitch }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+  const destination = location.state?.from?.pathname || '/';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -29,7 +30,6 @@ function SignupForm({ onSwitch }) {
     setIsSubmitting(true);
     try {
       await signupWithEmail(email, password)
-      const destination = location.state?.from?.pathname || '/';
       navigate(destination, { replace: true, state: null });
     } catch (err) {
       console.error('Signup error:', err)
@@ -40,24 +40,26 @@ function SignupForm({ onSwitch }) {
       setIsSubmitting(false);
     }
   }
+
   async function handleGoogleLogin() {
     if (!agreedToTerms) {
       setError('Please agree to the Terms of Service and Privacy Policy to continue.');
       return;
     }
+    if (isSubmitting) return;
     setError("");
     setIsSubmitting(true);
     try {
       await loginWithGoogle();
+      navigate(destination, { replace: true, state: null });
     } catch (err) {
       console.error('Google login error:', err)
       setError(getAuthErrorMessage(err))
     } finally {
       setIsSubmitting(false);
-      navigate('/')
     }
   }
-  
+
   return (
     <>
       <div className={styles.signupContainer}>
