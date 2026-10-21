@@ -1,6 +1,6 @@
 import './component.css';
 
-export function BreadcrumbTrail({ items = [{ label: 'Home', href: '/' }, { label: 'Projects', href: '/projects' }, { label: 'Design system' }], className = '' }) {
+export function BreadcrumbTrail({ items = [{ label: 'Home', href: '#' }, { label: 'Projects', href: '#' }, { label: 'Design system' }], className = '' }) {
   return (
     <nav className={`cc-breadcrumbs ${className}`} aria-label="Breadcrumb">
       <ol>{items.map((item, index) => {
